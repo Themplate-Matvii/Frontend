@@ -1,1 +1,2 @@
-export { PublicHomePage } from "./home/page";
+export { PublicHomePage } from "./home";
+export { PublicPricingPage } from "./pricing";

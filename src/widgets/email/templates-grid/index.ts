@@ -1,1 +1,1 @@
-export { EmailTemplatesGrid } from "./EmailTemplatesGrid";
+export * from "./EmailTemplatesGrid";

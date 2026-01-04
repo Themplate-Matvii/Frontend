@@ -1,1 +1,1 @@
-export { CurrentSubscriptionSection } from "./CurrentSubscriptionSection";
+export * from "./CurrentSubscriptionSection";
