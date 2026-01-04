@@ -1,7 +1,8 @@
 "use client";
 
 import clsx from "clsx";
-import type { User, UserRoleEnum } from "@/entities/user";
+import type { User } from "@/entities/user";
+import { UserRoleEnum } from "@/entities/user";
 import { UserAvatar } from "./UserAvatar";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
