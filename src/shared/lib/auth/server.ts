@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { AUTH } from "@/shared/config";
-import { User } from "@/entities/user/model/user/types";
-import { parseUserCookie } from "@/entities/user/api/user/index/userCookie";
+import { User } from "@/entities/identity/users/model/user/types";
+import { parseUserCookie } from "@/entities/identity/users/api/users/userCookie";
 import { cookies } from "next/headers";
 
 /**

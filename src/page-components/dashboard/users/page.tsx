@@ -9,10 +9,10 @@ import {
   useAppPermissions,
   usePermissionGuard,
   type User,
-} from "@/entities/user";
+} from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import { BillingMode, PricingApi, type PricingProduct } from "@/entities/pricing";
+import { BillingMode, PricingApi, type PricingProduct } from "@/entities/monetization/pricing";
 
 import { Container } from "@/shared/layout/Container";
 import { PageHeader } from "@/shared/layout/PageHeader";
@@ -20,7 +20,7 @@ import { PageShell } from "@/shared/layout/PageShell";
 
 import Field from "@/shared/ui/forms/Field";
 import { ItemCard } from "@/shared/ui/list/ItemCard";
-import { UserPreview } from "@/entities/user";
+import { UserPreview } from "@/entities/identity";
 import { DeleteModal } from "@/shared/ui/modal/DeleteModal";
 
 import { usePageSize } from "@/shared/lib/hooks/usePageSize";

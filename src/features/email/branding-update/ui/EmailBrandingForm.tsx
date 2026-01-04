@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { EmailBranding } from "@/entities/email";
+import type { EmailBranding } from "@/entities/communication/email";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";

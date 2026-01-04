@@ -5,16 +5,17 @@ import type {
   EmailBranding,
   EmailCategory,
   TemplatePreviewResult,
-} from "@/entities/email";
-import { EmailApi } from "@/entities/email";
+} from "@/entities/communication/email";
+import { EmailApi } from "@/entities/communication/email";
 import { Languages } from "@/i18n/translations";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { Modal, ModalSize } from "@/shared/ui/modal/Modal";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
+import { Select } from "@/shared/ui/forms/Select";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
-import { HeaderFooterPreview } from "@/entities/email-branding";
+import { HeaderFooterPreview } from "@/entities/communication/email/branding";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
 
 type EmailPreviewModalProps = {
@@ -73,6 +74,15 @@ export function EmailPreviewModal({
     }
   }, [payload]);
 
+  const localeOptions = useMemo(
+    () =>
+      languages.map((lng) => ({
+        value: lng,
+        label: lng.toUpperCase(),
+      })),
+    [],
+  );
+
   const handleRender = async () => {
     try {
       setError(null);
@@ -128,18 +138,13 @@ export function EmailPreviewModal({
             id="locale"
             label={t(messages.dashboard.email.preview.locale)}
           >
-            <select
+            <Select
               id="locale"
               value={locale}
-              onChange={(e) => setLocale(e.target.value)}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-text"
-            >
-              {languages.map((lng) => (
-                <option key={lng} value={lng}>
-                  {lng.toUpperCase()}
-                </option>
-              ))}
-            </select>
+              options={localeOptions}
+              onChange={(value) => setLocale(value as string)}
+              isClearable={false}
+            />
           </Field>
           <Field
             id="category"

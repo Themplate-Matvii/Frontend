@@ -3,7 +3,7 @@
 import React from "react";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import type { PricingProduct } from "@/entities/pricing";
+import type { PricingProduct } from "@/entities/monetization/pricing";
 import { SectionCard } from "@/shared/ui/section/SectionCard";
 import { PricingGrid } from "../pricing/PricingGrid";
 

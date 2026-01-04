@@ -8,7 +8,7 @@ import Tooltip from "@/shared/ui/Tooltip";
 import { useI18n } from "@/shared/lib/i18n";
 import { Languages } from "@/i18n/translations";
 import { messages } from "@/i18n/messages";
-import { useAuth, UserApi } from "@/entities/user";
+import { useAuth, UserApi } from "@/entities/identity";
 
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();

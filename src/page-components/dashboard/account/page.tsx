@@ -2,10 +2,10 @@
 
 import React, { FormEvent, useEffect, useState } from "react";
 
-import { useAuth, UserApi, type User } from "@/entities/user";
+import { useAuth, UserApi, type User } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import type { MediaItem } from "@/entities/media";
+import type { MediaItem } from "@/entities/content/media";
 
 import { ThemeToggle, LanguageSwitcher } from "@/widgets/app-shell/controls";
 import Spinner from "@/shared/ui/loading/Spinner";
@@ -30,7 +30,7 @@ import {
   MediaUploadField,
   type MediaUploadSelection,
 } from "@/features/media/upload";
-import { MediaApi } from "@/entities/media";
+import { MediaApi } from "@/entities/content/media";
 import { resolveMediaName } from "@/shared/lib/media";
 import { toast } from "@/shared/ui/toast";
 

@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./AuthProvider";
 import { I18nProvider } from "./I18nProvider";
 import { ThemeProvider } from "./ThemeProvider";
-import type { User } from "@/entities/user";
+import type { User } from "@/entities/identity";
 import { AppToaster } from "@/shared/ui/Toaster";
 
 type AppProvidersProps = {
@@ -24,14 +24,14 @@ export const AppProviders = ({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider initialUser={initialUser}>
-        <I18nProvider initialLocale={locale}>
+      <I18nProvider initialLocale={locale}>
+        <AuthProvider initialUser={initialUser}>
           <ThemeProvider>
             {children}
             <AppToaster />
           </ThemeProvider>
-        </I18nProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </I18nProvider>
     </QueryClientProvider>
   );
 };

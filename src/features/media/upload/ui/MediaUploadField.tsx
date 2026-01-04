@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import { useI18n } from "@/shared/lib/i18n";
 import { messages } from "@/i18n/messages";
-import type { MediaItem } from "@/entities/media/model/types";
+import type { MediaItem } from "@/entities/content/media/model/types";
 
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Field from "@/shared/ui/forms/Field";

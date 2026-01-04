@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 
-import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/user";
+import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 
@@ -11,10 +11,10 @@ import { PageHeader } from "@/shared/layout/PageHeader";
 import { PageShell } from "@/shared/layout/PageShell";
 
 import { usePageSize } from "@/shared/lib/hooks/usePageSize";
-import { FeedbackApi, type Feedback } from "@/entities/feedback";
+import { FeedbackApi, type Feedback } from "@/entities/communication/feedback";
 
 import { ItemCard } from "@/shared/ui/list/ItemCard";
-import { FeedbackPreview } from "@/entities/feedback";
+import { FeedbackPreview } from "@/entities/communication/feedback";
 import { ListSection } from "@/shared/ui/list/ListSection";
 import { sortEnum } from "@/shared/types/api/pagination";
 import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";

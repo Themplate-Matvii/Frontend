@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { MediaApi, type MediaItem } from "@/entities/media";
+import { MediaApi, type MediaItem } from "@/entities/content/media";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 
@@ -17,7 +17,7 @@ import { Select } from "@/shared/ui/forms/Select";
 import { usePageSize } from "@/shared/lib/hooks/usePageSize";
 import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { DeleteModal } from "@/shared/ui/modal/DeleteModal";
-import { MediaPreview } from "@/entities/media";
+import { MediaPreview } from "@/entities/content/media";
 import { sortEnum } from "@/shared/types/api/pagination";
 import { toast } from "@/shared/ui/toast";
 

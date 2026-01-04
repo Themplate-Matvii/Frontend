@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import type { Payment } from "@/entities/subscription";
+import type { Payment } from "@/entities/monetization/subscriptions";
 import { SectionCard } from "@/shared/ui/section/SectionCard";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
@@ -14,7 +14,7 @@ import {
   getProductLabel,
   getSourceLabel,
   getPaymentStatusLabel,
-} from "@/entities/subscription/lib/billing";
+} from "@/entities/monetization/billing";
 
 type Props = {
   payments: Payment[];

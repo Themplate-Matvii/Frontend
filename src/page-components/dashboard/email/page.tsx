@@ -8,8 +8,8 @@ import {
   type EmailCategory,
   type MarketingTemplate,
   type SystemTemplate,
-} from "@/entities/email";
-import { UserApi, useAppPermissions, usePermissionGuard } from "@/entities/user";
+} from "@/entities/communication/email";
+import { UserApi, useAppPermissions, usePermissionGuard } from "@/entities/identity";
 import { sortEnum } from "@/shared/types/api/pagination";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
@@ -20,8 +20,8 @@ import { SectionCard } from "@/shared/ui/section/SectionCard";
 import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
 import { EmailBrandingForm } from "@/features/email/branding-update";
-import { HeaderFooterPreview } from "@/entities/email-branding";
-import { EmailTemplateCard } from "@/entities/email-template";
+import { HeaderFooterPreview } from "@/entities/communication/email/branding";
+import { EmailTemplateCard } from "@/entities/communication/email/templates";
 import { EmailPreviewModal } from "@/features/email/preview";
 import { SendEmailModal } from "@/features/email/send";
 import { MarketingTemplateModal } from "@/features/email/marketing-template";

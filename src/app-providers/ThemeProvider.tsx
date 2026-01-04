@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Theme } from "@/shared/ui";
 import { THEME_COOKIE } from "@/shared/config";
 import { getCookie, setCookie } from "@/shared/lib/cookies";
-import { useAuth } from "@/entities/user";
+import { useAuth } from "@/entities/identity";
 import { ThemeContext } from "@/shared/lib/theme";
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({

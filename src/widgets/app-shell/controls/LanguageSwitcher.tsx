@@ -11,7 +11,7 @@ import { useOnEscape } from "@/shared/lib/hooks/useOnEscape";
 import { Languages } from "@/i18n/translations";
 import { useTheme } from "@/shared/lib/theme";
 import { setCookie } from "@/shared/lib/cookies";
-import { useAuth, UserApi } from "@/entities/user";
+import { useAuth, UserApi } from "@/entities/identity";
 
 const LANGS = Object.keys(translations).map((code) => ({
   code,

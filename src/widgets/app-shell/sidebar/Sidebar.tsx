@@ -17,7 +17,7 @@ import {
   Users2,
 } from "lucide-react";
 
-import { useAuth } from "@/entities/user";
+import { useAuth } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
@@ -27,7 +27,7 @@ import { SidebarAccount } from "./SidebarAccount";
 import { SidebarHeader } from "./SidebarHeader";
 import { SidebarMobileDrawer } from "./SidebarMobileDrawer";
 import { NavItem, SidebarProps } from "./types";
-import { useAppPermissions } from "@/entities/user";
+import { useAppPermissions } from "@/entities/identity";
 
 export function Sidebar({
   onLogoutClick,

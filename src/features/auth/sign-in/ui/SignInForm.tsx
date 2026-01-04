@@ -5,8 +5,8 @@ import { z } from "zod";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
-import { UserApi, OAuthIntent } from "@/entities/user";
-import { loginSchema } from "@/entities/user/api/user/auth/validation";
+import { UserApi, OAuthIntent } from "@/entities/identity";
+import { loginSchema } from "@/entities/identity/auth/api/auth/validation";
 
 import { AuthView } from "@/widgets/auth/auth-view";
 import { useAuthForm, FieldErrorsList } from "@/features/auth/lib/useAuthForm";

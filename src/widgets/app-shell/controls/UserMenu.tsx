@@ -3,13 +3,13 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/entities/user";
+import { useAuth } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { useOnClickOutside } from "@/shared/lib/hooks/useOnClickOutside";
 import { useOnEscape } from "@/shared/lib/hooks/useOnEscape";
 import Spinner from "@/shared/ui/loading/Spinner";
-import { UserAvatar } from "@/entities/user";
+import { UserAvatar } from "@/entities/identity";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
 import { toast } from "@/shared/ui/toast";
 

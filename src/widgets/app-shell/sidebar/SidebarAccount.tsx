@@ -3,8 +3,7 @@
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 
-import { useAuth } from "@/entities/user";
-import { UserPreview } from "@/entities/user";
+import { useAuth, UserPreview } from "@/entities/identity";
 
 type SidebarAccountProps = {
   isExpanded: boolean;

@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/user";
+import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import {
   PricingApi,
   type PricingProduct,
   BillingMode,
-} from "@/entities/pricing";
-import { PaymentsApi, SubscriptionsApi, type Payment } from "@/entities/subscription";
-import { BonusApi } from "@/entities/bonus";
+} from "@/entities/monetization/pricing";
+import { PaymentsApi, SubscriptionsApi, type Payment } from "@/entities/monetization/subscriptions";
+import { BonusApi } from "@/entities/monetization/bonus";
 import { Container } from "@/shared/layout/Container";
 import { PageHeader } from "@/shared/layout/PageHeader";
 import { PageShell } from "@/shared/layout/PageShell";

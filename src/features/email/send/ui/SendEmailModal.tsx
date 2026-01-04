@@ -7,8 +7,8 @@ import {
   type BroadcastEmailRequest,
   type EmailCategory,
   type SendEmailRequest,
-} from "@/entities/email";
-import type { User } from "@/entities/user";
+} from "@/entities/communication/email";
+import type { User } from "@/entities/identity";
 import { Languages } from "@/i18n/translations";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
@@ -122,6 +122,24 @@ export function SendEmailModal({
     return list;
   }, [canBroadcast, canSendOne, t]);
 
+  const categoryOptions = useMemo(
+    () =>
+      categories.map((cat) => ({
+        value: cat,
+        label: t(messages.dashboard.email.categories[cat] ?? cat),
+      })),
+    [t],
+  );
+
+  const localeOptions = useMemo(
+    () =>
+      Object.values(Languages).map((lng) => ({
+        value: lng,
+        label: lng.toUpperCase(),
+      })),
+    [],
+  );
+
   const handleSend = async () => {
     setError(null);
     setStatus(null);
@@ -209,36 +227,26 @@ export function SendEmailModal({
               ) : null
             }
           >
-            <select
+            <Select
               id="mode"
               value={mode}
-              onChange={(e) => setMode(e.target.value as RecipientMode)}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-text"
-            >
-              {modeOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              options={modeOptions}
+              onChange={(value) => setMode(value as RecipientMode)}
+              isClearable={false}
+            />
           </Field>
 
           <Field
             id="category"
             label={t(messages.dashboard.email.send.category)}
           >
-            <select
+            <Select
               id="category"
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value as EmailCategory)}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-text"
-            >
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {t(messages.dashboard.email.categories[cat] ?? cat)}
-                </option>
-              ))}
-            </select>
+              options={categoryOptions}
+              onChange={(value) => setSelectedCategory(value as EmailCategory)}
+              isClearable={false}
+            />
           </Field>
         </div>
 
@@ -287,18 +295,13 @@ export function SendEmailModal({
             id="locale"
             label={t(messages.dashboard.email.send.locale)}
           >
-            <select
+            <Select
               id="locale"
               value={locale}
-              onChange={(e) => setLocale(e.target.value)}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-text"
-            >
-              {Object.values(Languages).map((lng) => (
-                <option key={lng} value={lng}>
-                  {lng.toUpperCase()}
-                </option>
-              ))}
-            </select>
+              options={localeOptions}
+              onChange={(value) => setLocale(value as string)}
+              isClearable={false}
+            />
           </Field>
         </div>
 

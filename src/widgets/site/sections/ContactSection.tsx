@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import { FeedbackApi } from "@/entities/feedback";
+import { FeedbackApi } from "@/entities/communication/feedback";
 import { Container } from "@/shared/layout/Container";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
 import { H2, Lead, P, Small, TextColorEnum } from "@/shared/ui/Typography";

@@ -18,8 +18,8 @@ import {
   formatDate,
   getProductLabel,
   getStatusLabel,
-} from "@/entities/subscription/lib/billing";
-import type { Subscription } from "@/entities/subscription";
+} from "@/entities/monetization/billing";
+import type { Subscription } from "@/entities/monetization/subscriptions";
 
 type Props = {
   subscription: Subscription | null;

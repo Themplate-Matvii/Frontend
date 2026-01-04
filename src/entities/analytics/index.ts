@@ -1,3 +1,4 @@
-export * from "./model";
-export * as AnalyticsApi from "./api/analytics";
+export * from "./tracking/model";
+export * from "./reporting/model";
+export * as AnalyticsApi from "./api";
 export * from "./lib";

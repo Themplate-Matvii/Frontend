@@ -4,10 +4,10 @@ import React from "react";
 import { BadgeCheck } from "lucide-react";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import type { PricingProduct } from "@/entities/pricing";
+import type { PricingProduct } from "@/entities/monetization/pricing";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
-import { formatPrice } from "@/entities/subscription/lib/billing";
+import { formatPrice } from "@/entities/monetization/billing";
 import { Skeleton } from "@/shared/ui/loading/Skeleton";
 
 type Props = {

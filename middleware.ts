@@ -2,12 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { AUTH } from "@/shared/config";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/app", "/settings"];
+const AUTH_PREFIXES = ["/auth", "/login", "/register", "/forgot", "/forgot-password"];
 
 export function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  const hasSession = Boolean(request.cookies.get(AUTH.REFRESH_COOKIE_KEY)?.value);
+  const hasSession = Boolean(
+    request.cookies.get(AUTH.REFRESH_COOKIE_KEY)?.value ||
+      request.cookies.get(AUTH.TOKEN_COOKIE_KEY)?.value,
+  );
 
-  if (pathname.startsWith("/auth")) {
+  const isAuthRoute = AUTH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  if (isAuthRoute) {
     if (hasSession) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
@@ -25,5 +30,14 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/app/:path*", "/settings/:path*", "/auth/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/app/:path*",
+    "/settings/:path*",
+    "/auth/:path*",
+    "/login",
+    "/register",
+    "/forgot",
+    "/forgot-password",
+  ],
 };

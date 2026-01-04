@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { Small } from "@/shared/ui/Typography";
+import { Select } from "@/shared/ui/forms/Select";
 
 type PaginationProps = {
   page: number;
@@ -53,13 +54,21 @@ export const Pagination: React.FC<PaginationProps> = ({
     onPageChange(value);
   };
 
-  const handlePageSizeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const value = Number(event.target.value);
-    if (!Number.isFinite(value)) return;
-    onPageSizeChange(value);
+  const handlePageSizeChange = (value: string | string[]) => {
+    const nextValue = Array.isArray(value) ? value[0] : value;
+    const parsed = Number(nextValue);
+    if (!Number.isFinite(parsed)) return;
+    onPageSizeChange(parsed);
   };
+
+  const pageSizeSelectOptions = useMemo(
+    () =>
+      pageSizeOptions.map((option) => ({
+        value: String(option),
+        label: String(option),
+      })),
+    [pageSizeOptions],
+  );
 
   return (
     <div className="flex flex-col gap-3 pt-4 md:flex-row md:items-center md:justify-between">
@@ -67,17 +76,14 @@ export const Pagination: React.FC<PaginationProps> = ({
         <Small className="text-muted">
           {t(messages.common.pagination.perPageLabel)}
         </Small>
-        <select
-          className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-          value={pageSize}
-          onChange={handlePageSizeChange}
-        >
-          {pageSizeOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <div className="w-20">
+          <Select
+            value={String(pageSize)}
+            options={pageSizeSelectOptions}
+            onChange={handlePageSizeChange}
+            isClearable={false}
+          />
+        </div>
       </div>
 
       <div className="flex items-center justify-end gap-1">

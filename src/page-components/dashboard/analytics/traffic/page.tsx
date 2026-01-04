@@ -19,7 +19,7 @@ import { StatCard } from "@/widgets/analytics/overview";
 import { LineChart } from "@/shared/ui/charts/LineChart";
 import { BarChart } from "@/shared/ui/charts/BarChart";
 import { DateRangeInput, DateRange } from "@/shared/ui/charts/DateRangeInput";
-import { useAppPermissions, usePermissionGuard } from "@/entities/user";
+import { useAppPermissions, usePermissionGuard } from "@/entities/identity";
 
 export const DashboardTrafficAnalyticsPage = () => {
   const { t, i18n } = useI18n();

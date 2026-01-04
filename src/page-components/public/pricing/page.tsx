@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import { BillingMode, PricingApi } from "@/entities/pricing";
+import { BillingMode, PricingApi } from "@/entities/monetization/pricing";
 import { PageShell } from "@/shared/layout/PageShell";
 import { Container } from "@/shared/layout/Container";
 import { H1, H2, Lead, P, Small, TextColorEnum } from "@/shared/ui/Typography";

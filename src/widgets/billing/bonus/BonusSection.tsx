@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import type { BonusHistoryItem } from "@/entities/bonus";
+import type { BonusHistoryItem } from "@/entities/monetization/bonus";
 import { SectionCard } from "@/shared/ui/section/SectionCard";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
-import { formatDate, getSourceLabel } from "@/entities/subscription/lib/billing";
+import { formatDate, getSourceLabel } from "@/entities/monetization/billing";
 import { Skeleton } from "@/shared/ui/loading/Skeleton";
 
 type Props = {

@@ -6,12 +6,13 @@ import {
   type CreateMarketingTemplateRequest,
   type EmailCategory,
   type MarketingTemplate,
-} from "@/entities/email";
+} from "@/entities/communication/email";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { Modal } from "@/shared/ui/modal/Modal";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
+import { Select } from "@/shared/ui/forms/Select";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
 import { toast } from "@/shared/ui/toast";
@@ -75,6 +76,15 @@ export function MarketingTemplateModal({
       return null;
     }
   }, [previewData]);
+
+  const categoryOptions = useMemo(
+    () =>
+      categories.map((cat) => ({
+        value: cat,
+        label: t(messages.dashboard.email.categories[cat] ?? cat),
+      })),
+    [t],
+  );
 
   const handleSave = async () => {
     setError(null);
@@ -172,18 +182,13 @@ export function MarketingTemplateModal({
           id="category"
           label={t(messages.dashboard.email.marketing.categoryLabel)}
         >
-          <select
+          <Select
             id="category"
             value={category}
-            onChange={(e) => setCategory(e.target.value as EmailCategory)}
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-text"
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {t(messages.dashboard.email.categories[cat] ?? cat)}
-              </option>
-            ))}
-          </select>
+            options={categoryOptions}
+            onChange={(value) => setCategory(value as EmailCategory)}
+            isClearable={false}
+          />
         </Field>
 
         <Field
