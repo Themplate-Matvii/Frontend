@@ -1,0 +1,16 @@
+{
+  "name": "@packages/ui",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.ts",
+  "types": "index.ts",
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@packages/assets": "0.0.1",
+    "@packages/utils": "0.0.1",
+    "@packages/config": "0.0.1"
+  }
+}

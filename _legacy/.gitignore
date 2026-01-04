@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+.pnpm-store/
+.npm/
+package-lock.json
+yarn.lock
+
+# build
+apps/web/.next/
+dist/
+out/
+build/
+
+# system
+.DS_Store
+.env
+.env.local
+.env.*.local
+
+
+# web
