@@ -10,6 +10,7 @@ import { useOnClickOutside } from "@/shared/lib/hooks/useOnClickOutside";
 import { useOnEscape } from "@/shared/lib/hooks/useOnEscape";
 import { Languages } from "@/i18n/translations";
 import { useTheme } from "@/shared/lib/theme";
+import { setCookie } from "@/shared/lib/cookies";
 import { useAuth, UserApi } from "@/entities/user";
 
 const LANGS = Object.keys(translations).map((code) => ({
@@ -36,10 +37,7 @@ export const LanguageSwitcher = () => {
 
     if (i18n.language !== backendLocale) {
       void i18n.changeLanguage(backendLocale);
-
-      document.cookie = `${I18N.LOCALE_COOKIE_KEY}=${encodeURIComponent(
-        backendLocale,
-      )}; path=/; max-age=31536000; SameSite=Lax`;
+      setCookie(I18N.LOCALE_COOKIE_KEY, backendLocale);
     }
   }, [user?.settings?.locale, i18n]);
 
@@ -48,9 +46,7 @@ export const LanguageSwitcher = () => {
     await i18n.changeLanguage(lng);
 
     // Local cookie (for SSR and first load)
-    document.cookie = `${I18N.LOCALE_COOKIE_KEY}=${encodeURIComponent(
-      lng,
-    )}; path=/; max-age=31536000; SameSite=Lax`;
+    setCookie(I18N.LOCALE_COOKIE_KEY, lng);
 
     // Sync to backend
     if (user) {
