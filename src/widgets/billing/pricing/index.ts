@@ -1,1 +1,2 @@
-export { PricingSection } from "./PricingSection";
+export * from "./PlansSection";
+export * from "./PricingGrid";
