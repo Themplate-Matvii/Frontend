@@ -15,7 +15,6 @@ import { Container } from "@/shared/layout/Container";
 import { PageHeader } from "@/shared/layout/PageHeader";
 import { PageShell } from "@/shared/layout/PageShell";
 import { TextColorEnum } from "@/shared/ui/Typography";
-import Spinner from "@/shared/ui/loading/Spinner";
 import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
 import { CurrentSubscriptionSection } from "@/widgets/billing/current-subscription";
 import { CreditsSection } from "@/widgets/billing/credits";
@@ -23,6 +22,7 @@ import { PlansSection } from "@/widgets/billing/pricing";
 import { OneTimeSection } from "@/widgets/billing/one-time";
 import { PaymentsSection } from "@/widgets/billing/payments";
 import { BonusSection } from "@/widgets/billing/bonus";
+import { toast } from "sonner";
 
 export const DashboardSubscriptionPage = () => {
   const { t } = useI18n();
@@ -99,6 +99,7 @@ export const DashboardSubscriptionPage = () => {
       }
     } catch {
       setGlobalLoading(false);
+      toast.error(t(messages.notifications.subscription.checkoutError));
     }
   };
 
@@ -116,17 +117,36 @@ export const DashboardSubscriptionPage = () => {
       }
     } catch {
       setGlobalLoading(false);
+      toast.error(t(messages.notifications.subscription.checkoutError));
     }
   };
 
   const handleCancelSubscription = () => {
     if (!subscription) return;
-    cancelSubscriptionMutation.mutate();
+    cancelSubscriptionMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success(t(messages.notifications.subscription.cancelSuccess));
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message || t(messages.errors.generic);
+        toast.error(message);
+      },
+    });
   };
 
   const handleResumeSubscription = () => {
     if (!subscription) return;
-    resumeSubscriptionMutation.mutate();
+    resumeSubscriptionMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success(t(messages.notifications.subscription.resumeSuccess));
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message || t(messages.errors.generic);
+        toast.error(message);
+      },
+    });
   };
 
   const aiCredits = typeof user?.aiCredits === "number" ? user?.aiCredits : 0;

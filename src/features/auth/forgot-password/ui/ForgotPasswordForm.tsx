@@ -18,6 +18,7 @@ import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import Spinner from "@/shared/ui/loading/Spinner";
 import FormMessage, { FormMessageVariant } from "@/shared/ui/forms/FormMessage";
+import { toast } from "sonner";
 
 /** Forgot-password form values */
 type ForgotValues = { email: string };
@@ -45,9 +46,12 @@ export const ForgotPasswordForm = () => {
       if (res?.success) {
         setVariant(FormMessageVariant.success);
         setGlobalMsg(t(messages.auth.forgotPasswordEmailSent));
+        toast.success(t(messages.notifications.auth.resetLinkSent));
       } else {
         setVariant(FormMessageVariant.error);
-        setGlobalMsg(res?.message || t(messages.auth.forgotPasswordError));
+        const message = res?.message || t(messages.auth.forgotPasswordError);
+        setGlobalMsg(message);
+        toast.error(message);
       }
     },
     googleEnabled: false,

@@ -11,6 +11,7 @@ import { Pagination } from "@/shared/ui/list/Pagination";
 import { DangerZoneSection } from "@/shared/ui/section/DangerZoneSection";
 import { NoPermissionNotice } from "@/shared/ui/section/NoPermissionNotice";
 import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
+import { ListSkeleton } from "@/shared/ui/list/ListSkeleton";
 
 type FiltersConfig = {
   searchValue: string;
@@ -65,6 +66,7 @@ export function ListSection<T>({
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
   const currentPage = data?.page ?? page;
+  const showSkeleton = isLoading && items.length === 0;
 
   const showList = canView && !authLoading;
 
@@ -91,8 +93,12 @@ export function ListSection<T>({
             />
           )}
 
-          <div className="relative">
-            <LoadingOverlay loading={isLoading} />
+          <div className="relative" aria-busy={isLoading}>
+            <LoadingOverlay loading={isLoading && items.length > 0} />
+
+            {!isError && showSkeleton && (
+              <ListSkeleton rows={Math.min(pageSize, 6)} />
+            )}
 
             {!isError && items.length > 0 && (
               <div className="space-y-2">

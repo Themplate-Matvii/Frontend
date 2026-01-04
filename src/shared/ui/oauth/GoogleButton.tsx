@@ -3,6 +3,8 @@
 import { SiGoogle } from "react-icons/si";
 import Spinner from "@/shared/ui/loading/Spinner";
 import { useGoogleOAuth } from "@/features/auth/lib/useGoogleOAuth";
+import { useI18n } from "@/shared/lib/i18n";
+import { messages } from "@/i18n/messages";
 
 type GoogleButtonProps = {
   google?: ReturnType<typeof useGoogleOAuth> | null;
@@ -16,6 +18,7 @@ export function GoogleButton({
   disabled,
   preview,
 }: GoogleButtonProps) {
+  const { t } = useI18n();
   const isInteractive = !!google && !preview;
   const isRunning = isInteractive && google!.isRunning;
   const isReady = isInteractive && google!.isReady;
@@ -34,11 +37,11 @@ export function GoogleButton({
       className="w-full rounded-md border border-border px-3 py-2 text-sm transition flex items-center justify-center gap-2 disabled:opacity-60
                  bg-white text-gray-900 hover:bg-gray-50
                  dark:bg-[#111111] dark:text-white dark:hover:bg-black"
-      aria-label="Continue with Google"
-      title="Google"
+      aria-label={t(messages.auth.oauth.googleLabel)}
+      title={t(messages.auth.oauth.googleLabel)}
     >
       <SiGoogle size={16} />
-      <span>Google</span>
+      <span>{t(messages.auth.oauth.google)}</span>
       {isRunning && <Spinner size={16} />}
     </button>
   );

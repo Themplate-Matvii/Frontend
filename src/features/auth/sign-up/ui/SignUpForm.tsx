@@ -87,6 +87,7 @@ export const SignUpForm = () => {
           avatarSelection?.type === "file" ? avatarSelection.file : undefined,
       });
     },
+    successToastKey: messages.notifications.auth.registerSuccess,
     redirectTo: "/dashboard",
     googleEnabled: true,
     oauthIntent: OAuthIntent.register,

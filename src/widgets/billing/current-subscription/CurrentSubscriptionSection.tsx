@@ -13,6 +13,7 @@ import {
   ButtonVariantEnum,
 } from "@/shared/ui/Button";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
+import { Skeleton } from "@/shared/ui/loading/Skeleton";
 import {
   formatDate,
   getProductLabel,
@@ -60,8 +61,22 @@ export function CurrentSubscriptionSection({
       bodyClassName="space-y-4"
     >
       {loading ? (
-        <div className="flex items-center justify-center py-4">
-          <Spinner size={20} />
+        <div className="space-y-3" aria-busy="true">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-3 w-32" />
+              </div>
+            </div>
+            <Skeleton className="h-6 w-24 rounded-full" />
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </div>
         </div>
       ) : !subscription ? (
         <div className="space-y-1">

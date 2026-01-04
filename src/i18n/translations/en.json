@@ -11,6 +11,9 @@
       "delete": "Delete",
       "edit": "Edit",
       "back": "Back",
+      "close": "Close",
+      "toggleMenu": "Toggle menu",
+      "openUserMenu": "Open user menu",
       "tryAgain": "Try again",
       "search": "Search",
       "reset": "Reset",
@@ -48,7 +51,8 @@
       "title": "Insufficient permissions",
       "description": "You don’t have permission to perform this action."
     },
-    "aiCreditsLabel": "AI credits"
+    "aiCreditsLabel": "AI credits",
+    "logoAlt": "Company logo"
   },
   "meta": {
     "title": "Product workspace",
@@ -171,7 +175,11 @@
     "passwordResetSuccess": "Your password has been successfully reset. You can now sign in.",
     "passwordResetError": "Unable to reset your password. Please try again or request a new link.",
     "tokenMissing": "Reset token is missing or invalid.",
-    "confirmPassword": "Confirm password"
+    "confirmPassword": "Confirm password",
+    "oauth": {
+      "google": "Google",
+      "googleLabel": "Continue with Google"
+    }
   },
   "validation": {
     "required": "This field is required",
@@ -597,6 +605,12 @@
       "branding": {
         "title": "Branding & layout",
         "description": "Set the colors, logos, and footer copy that wrap every email header and footer.",
+        "defaults": {
+          "brandName": "Example",
+          "footerText": "You are receiving this email because you are a valued customer.",
+          "supportEmail": "support@example.com",
+          "supportUrl": "https://example.com/support"
+        },
         "brandName": "Brand name",
         "logoUrl": "Logo URL",
         "darkLogoUrl": "Dark logo URL",
@@ -611,6 +625,7 @@
         "socialLinks": "Social links",
         "socialLinksEmpty": "Add your community or social profiles to show in the footer.",
         "socialLabelPlaceholder": "Platform name",
+        "urlPlaceholder": "https://",
         "saving": "Saving branding...",
         "save": "Save branding",
         "saved": "Branding updated",
@@ -621,11 +636,14 @@
         "layoutDescription": "A shared frame for all transactional and marketing emails with CTAs, support, and unsubscribe copy.",
         "brandingFallback": "Your product brand",
         "brandingDescription": "Consistent visual system for every notification.",
+        "logoAlt": "Brand logo",
         "headerPlaceholder": "Add a clear headline that explains why the user is receiving this message.",
         "bodyPlaceholder": "Preview a template to render the full HTML body here.",
         "footerPlaceholder": "Add helpful links, billing context, and support details.",
         "footerSupport": "Need help? Email {{email}} or visit {{url}}.",
         "footerSupportDefault": "Need help? Visit our support center.",
+        "supportEmailFallback": "support@example.com",
+        "supportUrlFallback": "https://example.com",
         "unsubscribeHint": "Every broadcast and billing email includes an unsubscribe entry point.",
         "unsubscribeCopy": "Marketing and billing emails include a one-click unsubscribe link that opens this preferences page.",
         "title": "Preview template",
@@ -668,6 +686,7 @@
         "usersLabel": "Select users",
         "usersHint": "Use profile locales to send localized content automatically.",
         "emailLabel": "Target email",
+        "emailPlaceholder": "user@example.com",
         "locale": "Locale override",
         "payloadLabel": "Template data (JSON)",
         "payloadHint": "Include dynamic fields like plan, amount, URLs, or user context.",
@@ -958,6 +977,42 @@
     "description": "The page you’re looking for doesn’t exist or has been moved.",
     "goHome": "Go to Home",
     "hint": "Check the URL or return to the homepage."
+  },
+  "notifications": {
+    "auth": {
+      "loginSuccess": "Welcome back!",
+      "logoutSuccess": "You have been signed out.",
+      "registerSuccess": "Your account has been created.",
+      "resetLinkSent": "Password reset email sent.",
+      "passwordResetSuccess": "Your password has been updated."
+    },
+    "contact": {
+      "success": "Thanks! We will get back to you soon.",
+      "error": "We could not send your message. Please try again."
+    },
+    "account": {
+      "profileSaved": "Profile updated successfully.",
+      "deleteSuccess": "Your account has been deleted."
+    },
+    "users": {
+      "deleteSuccess": "User deleted."
+    },
+    "media": {
+      "deleteSuccess": "Media item deleted."
+    },
+    "email": {
+      "sendSuccess": "Email sent.",
+      "sendError": "Failed to send email.",
+      "templateSaved": "Template saved.",
+      "templateSaveError": "Unable to save template.",
+      "brandingSaved": "Branding saved.",
+      "brandingSaveError": "Unable to save branding."
+    },
+    "subscription": {
+      "cancelSuccess": "Subscription canceled.",
+      "resumeSuccess": "Subscription resumed.",
+      "checkoutError": "Checkout could not be started."
+    }
   },
   "errors": {
     "generic": "An error occurred"

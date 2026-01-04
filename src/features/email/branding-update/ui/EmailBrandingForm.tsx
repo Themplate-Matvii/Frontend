@@ -8,6 +8,7 @@ import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import { Small } from "@/shared/ui/Typography";
+import { Skeleton } from "@/shared/ui/loading/Skeleton";
 
 type EmailBrandingFormProps = {
   value: EmailBranding;
@@ -15,6 +16,7 @@ type EmailBrandingFormProps = {
   onSave: () => void;
   saving?: boolean;
   isDirty?: boolean;
+  loading?: boolean;
 };
 
 const colorFields: Array<{ key: keyof EmailBranding; labelKey: string }> = [
@@ -40,8 +42,27 @@ export function EmailBrandingForm({
   onSave,
   saving,
   isDirty = false,
+  loading = false,
 }: EmailBrandingFormProps) {
   const { t } = useI18n();
+
+  if (loading) {
+    return (
+      <div className="space-y-4" aria-busy="true">
+        <div className="grid gap-3 md:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={`branding-text-${index}`} className="h-10 w-full" />
+          ))}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={`branding-color-${index}`} className="h-10 w-full" />
+          ))}
+        </div>
+        <Skeleton className="h-10 w-40" />
+      </div>
+    );
+  }
 
   const updateField = (key: keyof EmailBranding, next: string) => {
     onChange({
@@ -141,7 +162,7 @@ export function EmailBrandingForm({
               <div className="flex gap-2">
                 <Input
                   className="flex-1"
-                  placeholder="https://"
+                  placeholder={t(messages.dashboard.email.branding.urlPlaceholder)}
                   value={link.url ?? ""}
                   onChange={(e) => updateSocialLink(idx, "url", e.target.value)}
                 />

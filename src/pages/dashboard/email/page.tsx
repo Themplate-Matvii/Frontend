@@ -25,18 +25,19 @@ import { EmailTemplateCard } from "@/entities/email-template";
 import { EmailPreviewModal } from "@/features/email/preview";
 import { SendEmailModal } from "@/features/email/send";
 import { MarketingTemplateModal } from "@/features/email/marketing-template";
+import { toast } from "sonner";
 
-const DEFAULT_BRANDING: EmailBranding = {
-  brandName: "Example",
+const getDefaultBranding = (t: (key: string) => string): EmailBranding => ({
+  brandName: t(messages.dashboard.email.branding.defaults.brandName),
   primaryColor: "#2563eb",
   secondaryColor: "#111827",
   accentColor: "#22d3ee",
   backgroundColor: "#0b1224",
   textColor: "#e5e7eb",
-  footerText: "You are receiving this email because you are a valued customer.",
-  supportEmail: "support@example.com",
-  supportUrl: "https://example.com/support",
-};
+  footerText: t(messages.dashboard.email.branding.defaults.footerText),
+  supportEmail: t(messages.dashboard.email.branding.defaults.supportEmail),
+  supportUrl: t(messages.dashboard.email.branding.defaults.supportUrl),
+});
 
 const getTemplateKey = (tpl: SystemTemplate | MarketingTemplate) => {
   if ("id" in tpl) return tpl.id;
@@ -66,7 +67,7 @@ export const DashboardEmailPage = () => {
   const updateBranding = EmailApi.useUpdateEmailBranding();
 
   const brandingSource =
-    brandingQuery || templateList?.branding || DEFAULT_BRANDING;
+    brandingQuery || templateList?.branding || getDefaultBranding(t);
 
   const [branding, setBranding] = useState<EmailBranding>(brandingSource);
   const [brandingStatus, setBrandingStatus] = useState<string | null>(null);
@@ -83,9 +84,11 @@ export const DashboardEmailPage = () => {
     updateBranding.mutate(branding, {
       onSuccess: () => {
         setBrandingStatus(t(messages.dashboard.email.branding.saved));
+        toast.success(t(messages.notifications.email.brandingSaved));
       },
       onError: () => {
         setBrandingStatus(t(messages.dashboard.email.branding.failed));
+        toast.error(t(messages.notifications.email.brandingSaveError));
       },
     });
   };
@@ -239,6 +242,7 @@ export const DashboardEmailPage = () => {
               onSave={handleSaveBranding}
               saving={updateBranding.isPending}
               isDirty={isBrandingDirty}
+              loading={brandingLoading}
             />
             {brandingStatus ? (
               <Small

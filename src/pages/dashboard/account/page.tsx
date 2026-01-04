@@ -32,6 +32,7 @@ import {
 } from "@/features/media/upload";
 import { MediaApi } from "@/entities/media";
 import { resolveMediaName } from "@/shared/lib/media";
+import { toast } from "sonner";
 
 export const DashboardAccountPage = () => {
   const { t } = useI18n();
@@ -61,8 +62,15 @@ export const DashboardAccountPage = () => {
     getLabel: (u) =>
       u.name && u.name.trim().length > 0 ? u.name.trim() : u.email,
     onDelete: async (u) => {
-      await deleteUser.mutateAsync(u.id as string);
-      await logout();
+      try {
+        await deleteUser.mutateAsync(u.id as string);
+        toast.success(t(messages.notifications.account.deleteSuccess));
+        await logout();
+      } catch (error: any) {
+        const message =
+          error?.response?.data?.message || t(messages.errors.generic);
+        toast.error(message);
+      }
     },
   });
 
@@ -91,6 +99,7 @@ export const DashboardAccountPage = () => {
       } catch (err: any) {
         const message = err?.response?.data?.message as string;
         setUploadError(message || t(messages.errors.generic));
+        toast.error(message || t(messages.errors.generic));
         setLoading(false);
         return;
       }
@@ -104,6 +113,12 @@ export const DashboardAccountPage = () => {
       {
         onSuccess: async () => {
           await refreshUser();
+          toast.success(t(messages.notifications.account.profileSaved));
+        },
+        onError: (error: any) => {
+          const message =
+            error?.response?.data?.message || t(messages.errors.generic);
+          toast.error(message);
         },
         onSettled: () => {
           setLoading(false);

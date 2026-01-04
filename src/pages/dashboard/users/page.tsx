@@ -28,7 +28,7 @@ import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { ListSection } from "@/shared/ui/list/ListSection";
 import { Select } from "@/shared/ui/forms/Select";
 import { sortEnum } from "@/shared/types/api/pagination";
-import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
+import { toast } from "sonner";
 
 export const DashboardUsersPage = () => {
   const { t } = useI18n();
@@ -111,8 +111,15 @@ export const DashboardUsersPage = () => {
     getLabel: (u) =>
       u.name && u.name.trim().length > 0 ? u.name.trim() : u.email,
     onDelete: async (u) => {
-      await deleteUserMutation.mutateAsync(u.id);
-      await refetch();
+      try {
+        await deleteUserMutation.mutateAsync(u.id);
+        toast.success(t(messages.notifications.users.deleteSuccess));
+        await refetch();
+      } catch (error: any) {
+        const message =
+          error?.response?.data?.message || t(messages.errors.generic);
+        toast.error(message);
+      }
     },
   });
 

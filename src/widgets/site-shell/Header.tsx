@@ -5,12 +5,15 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "@/shared/layout/Logo";
 import { Container } from "@/shared/layout/Container";
 import { headerLinks } from "@/shared/config/navigation";
+import { messages } from "@/i18n/messages";
+import { useI18n } from "@/shared/lib/i18n";
 import { LanguageSwitcher } from "@/widgets/app-shell/controls/LanguageSwitcher";
 import { ThemeToggle } from "@/widgets/app-shell/controls/ThemeToggle";
 import { NavLinks } from "@/widgets/site-shell/NavLinks";
 import UserMenu from "@/widgets/app-shell/controls/UserMenu";
 
 export const Header = () => {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [userMenuEpoch, setUserMenuEpoch] = useState(0);
 
@@ -51,7 +54,7 @@ export const Header = () => {
             <button
               className="p-2 rounded-lg hover:bg-primary/10"
               onClick={toggleBurger}
-              aria-label="Toggle menu"
+              aria-label={t(messages.common.actions.toggleMenu)}
               aria-expanded={open}
               aria-controls="mobile-menu"
             >

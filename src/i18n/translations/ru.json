@@ -11,6 +11,9 @@
       "delete": "Удалить",
       "edit": "Редактировать",
       "back": "Назад",
+      "close": "Закрыть",
+      "toggleMenu": "Переключить меню",
+      "openUserMenu": "Открыть меню пользователя",
       "tryAgain": "Попробовать снова",
       "search": "Поиск",
       "reset": "Сбросить",
@@ -48,7 +51,8 @@
       "title": "Недостаточно прав",
       "description": "У вас нет прав для выполнения этого действия."
     },
-    "aiCreditsLabel": "AI-кредиты"
+    "aiCreditsLabel": "AI-кредиты",
+    "logoAlt": "Логотип компании"
   },
   "meta": {
     "title": "Рабочее пространство продукта",
@@ -171,7 +175,11 @@
     "passwordResetSuccess": "Пароль успешно сброшен. Теперь вы можете войти.",
     "passwordResetError": "Не удалось сбросить пароль. Попробуйте снова или запросите новую ссылку.",
     "tokenMissing": "Токен сброса отсутствует или недействителен.",
-    "confirmPassword": "Подтвердите пароль"
+    "confirmPassword": "Подтвердите пароль",
+    "oauth": {
+      "google": "Google",
+      "googleLabel": "Продолжить с Google"
+    }
   },
   "validation": {
     "required": "Поле обязательно для заполнения",
@@ -596,6 +604,12 @@
       "branding": {
         "title": "Брендинг и макет",
         "description": "Цвета, логотипы и общий футер для всех писем.",
+        "defaults": {
+          "brandName": "Пример",
+          "footerText": "Вы получаете это письмо, потому что являетесь нашим клиентом.",
+          "supportEmail": "support@example.com",
+          "supportUrl": "https://example.com/support"
+        },
         "brandName": "Название бренда",
         "logoUrl": "Ссылка на логотип",
         "darkLogoUrl": "Ссылка на тёмный логотип",
@@ -610,6 +624,7 @@
         "socialLinks": "Социальные ссылки",
         "socialLinksEmpty": "Добавьте ссылки на соцсети или комьюнити, чтобы показывать их в футере.",
         "socialLabelPlaceholder": "Название площадки",
+        "urlPlaceholder": "https://",
         "saving": "Сохраняем брендинг...",
         "save": "Сохранить брендинг",
         "saved": "Брендинг обновлён",
@@ -620,11 +635,14 @@
         "layoutDescription": "Единый каркас для транзакционных и маркетинговых писем с CTA, поддержкой и отпиской.",
         "brandingFallback": "Ваш бренд",
         "brandingDescription": "Единый визуальный стиль для всех уведомлений.",
+        "logoAlt": "Логотип бренда",
         "headerPlaceholder": "Добавьте понятный заголовок, почему пользователь получил письмо.",
         "bodyPlaceholder": "Предпросмотр шаблона появится здесь после рендера.",
         "footerPlaceholder": "Укажите полезные ссылки, биллинговый контекст и контакты поддержки.",
         "footerSupport": "Нужна помощь? Напишите на {{email}} или перейдите на {{url}}.",
         "footerSupportDefault": "Нужна помощь? Перейдите в центр поддержки.",
+        "supportEmailFallback": "support@example.com",
+        "supportUrlFallback": "https://example.com",
         "unsubscribeHint": "Каждое маркетинговое и биллинговое письмо содержит ссылку для отписки.",
         "unsubscribeCopy": "В рассылках есть кнопка отписки, которая ведёт на эту страницу с настройками.",
         "title": "Предпросмотр шаблона",
@@ -667,6 +685,7 @@
         "usersLabel": "Выберите пользователей",
         "usersHint": "Используем локаль профиля, чтобы отправить переводы автоматически.",
         "emailLabel": "Email получателя",
+        "emailPlaceholder": "user@example.com",
         "locale": "Локаль по умолчанию",
         "payloadLabel": "Данные шаблона (JSON)",
         "payloadHint": "Например: план, сумма, ссылки, имя пользователя.",
@@ -957,6 +976,42 @@
     "description": "Страница, которую вы ищете, не существует или была перемещена.",
     "goHome": "На главную",
     "hint": "Проверьте адрес страницы или вернитесь на главную."
+  },
+  "notifications": {
+    "auth": {
+      "loginSuccess": "С возвращением!",
+      "logoutSuccess": "Вы вышли из аккаунта.",
+      "registerSuccess": "Аккаунт создан.",
+      "resetLinkSent": "Письмо для сброса пароля отправлено.",
+      "passwordResetSuccess": "Пароль обновлён."
+    },
+    "contact": {
+      "success": "Спасибо! Мы скоро свяжемся с вами.",
+      "error": "Не удалось отправить сообщение. Попробуйте снова."
+    },
+    "account": {
+      "profileSaved": "Профиль обновлён.",
+      "deleteSuccess": "Аккаунт удалён."
+    },
+    "users": {
+      "deleteSuccess": "Пользователь удалён."
+    },
+    "media": {
+      "deleteSuccess": "Медиафайл удалён."
+    },
+    "email": {
+      "sendSuccess": "Письмо отправлено.",
+      "sendError": "Не удалось отправить письмо.",
+      "templateSaved": "Шаблон сохранён.",
+      "templateSaveError": "Не удалось сохранить шаблон.",
+      "brandingSaved": "Брендинг сохранён.",
+      "brandingSaveError": "Не удалось сохранить брендинг."
+    },
+    "subscription": {
+      "cancelSuccess": "Подписка отменена.",
+      "resumeSuccess": "Подписка возобновлена.",
+      "checkoutError": "Не удалось открыть оплату."
+    }
   },
   "errors": {
     "generic": "Произошла ошибка"

@@ -49,6 +49,7 @@ export const SignInForm = () => {
     submit: async (v) => {
       await login({ email: v.email, password: v.password });
     },
+    successToastKey: messages.notifications.auth.loginSuccess,
     redirectTo: "/dashboard",
     googleEnabled: true,
     oauthIntent: OAuthIntent.login,

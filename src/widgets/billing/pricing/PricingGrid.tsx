@@ -8,6 +8,7 @@ import type { PricingProduct } from "@/entities/pricing";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
 import { formatPrice } from "@/entities/subscription/lib/billing";
+import { Skeleton } from "@/shared/ui/loading/Skeleton";
 
 type Props = {
   products: PricingProduct[];
@@ -38,6 +39,31 @@ export function PricingGrid({
 }: Props) {
   const { t } = useI18n();
 
+  if (loading && !products?.length) {
+    return (
+      <div
+        className={
+          "grid gap-4" + (!isFullWidth ? "md:grid-cols-2 xl:grid-cols-3" : "")
+        }
+        aria-busy="true"
+      >
+        {Array.from({ length: isFullWidth ? 2 : 3 }).map((_, index) => (
+          <div
+            key={`pricing-skeleton-${index}`}
+            className="rounded-lg border border-border bg-background/80 p-4 shadow-sm"
+          >
+            <div className="space-y-3">
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-8 w-2/3" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   if (!products?.length) {
     return <P color={TextColorEnum.Muted}>{emptyLabel}</P>;
   }
@@ -47,6 +73,7 @@ export function PricingGrid({
       className={
         "grid gap-4" + (!isFullWidth ? "md:grid-cols-2 xl:grid-cols-3" : "")
       }
+      aria-busy={loading}
     >
       {products.map((product) => {
         const isCurrent = currentKey === product.key;

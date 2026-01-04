@@ -19,6 +19,7 @@ import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { DeleteModal } from "@/shared/ui/modal/DeleteModal";
 import { MediaPreview } from "@/entities/media";
 import { sortEnum } from "@/shared/types/api/pagination";
+import { toast } from "sonner";
 
 export const DashboardMediaPage = () => {
   const { t } = useI18n();
@@ -49,7 +50,14 @@ export const DashboardMediaPage = () => {
     canDelete: true,
     getLabel: (media) => media.name || media.filename,
     onDelete: async (media) => {
-      await deleteMedia.mutateAsync(media.id);
+      try {
+        await deleteMedia.mutateAsync(media.id);
+        toast.success(t(messages.notifications.media.deleteSuccess));
+      } catch (error: any) {
+        const message =
+          error?.response?.data?.message || t(messages.errors.generic);
+        toast.error(message);
+      }
     },
   });
 

@@ -17,6 +17,7 @@ import Field from "@/shared/ui/forms/Field";
 import PasswordInput from "@/shared/ui/forms/PasswordInput";
 import Spinner from "@/shared/ui/loading/Spinner";
 import FormMessage, { FormMessageVariant } from "@/shared/ui/forms/FormMessage";
+import { toast } from "sonner";
 
 /** Reset password schema */
 const resetPasswordSchema = z.object({
@@ -54,7 +55,9 @@ export const ResetPasswordForm = () => {
     submit: async (v) => {
       if (!token) {
         setVariant(FormMessageVariant.error);
-        setGlobalMsg(t(messages.auth.tokenMissing));
+        const message = t(messages.auth.tokenMissing);
+        setGlobalMsg(message);
+        toast.error(message);
         return;
       }
 
@@ -63,10 +66,16 @@ export const ResetPasswordForm = () => {
       if (res?.success) {
         setVariant(FormMessageVariant.success);
         // show backend message if present, fallback to i18n
-        setGlobalMsg(res.message ?? t(messages.auth.passwordResetSuccess));
+        const message =
+          res.message ?? t(messages.auth.passwordResetSuccess);
+        setGlobalMsg(message);
+        toast.success(t(messages.notifications.auth.passwordResetSuccess));
       } else {
         setVariant(FormMessageVariant.error);
-        setGlobalMsg(res?.message ?? t(messages.auth.passwordResetError));
+        const message =
+          res?.message ?? t(messages.auth.passwordResetError);
+        setGlobalMsg(message);
+        toast.error(message);
       }
     },
     googleEnabled: false,

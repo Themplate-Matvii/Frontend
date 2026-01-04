@@ -14,6 +14,7 @@ import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
+import { toast } from "sonner";
 
 type MarketingTemplateModalProps = {
   open: boolean;
@@ -109,9 +110,11 @@ export function MarketingTemplateModal({
         await createMutation.mutateAsync(payload);
       }
       setStatus(t(messages.dashboard.email.marketing.saved));
+      toast.success(t(messages.notifications.email.templateSaved));
       onClose();
     } catch {
       setError(t(messages.dashboard.email.marketing.failed));
+      toast.error(t(messages.notifications.email.templateSaveError));
     }
   };
 

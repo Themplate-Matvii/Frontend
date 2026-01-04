@@ -9,6 +9,7 @@ import { Container } from "@/shared/layout/Container";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
 import { H2, Lead, P, Small, TextColorEnum } from "@/shared/ui/Typography";
 import Input from "@/shared/ui/forms/Input";
+import { toast } from "sonner";
 
 interface ContactSectionProps {
   onSubmit?: () => void;
@@ -44,13 +45,16 @@ export const ContactSection = ({ onSubmit }: ContactSectionProps) => {
       onSubmit?.();
       await mutateAsync();
       setStatus(t(messages.landing.contact.success));
+      toast.success(t(messages.notifications.contact.success));
       setName("");
       setEmail("");
       setPhone("");
       setMessage("");
     } catch (error: any) {
       const msg = error?.response?.data?.message as string;
-      setStatus(msg || t(messages.errors.generic));
+      const message = msg || t(messages.errors.generic);
+      setStatus(message);
+      toast.error(t(messages.notifications.contact.error));
     }
   };
 

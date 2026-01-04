@@ -11,6 +11,7 @@ import { useOnEscape } from "@/shared/lib/hooks/useOnEscape";
 import Spinner from "@/shared/ui/loading/Spinner";
 import { UserAvatar } from "@/entities/user";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
+import { toast } from "sonner";
 
 export default function UserMenu() {
   const { user, logout, loading } = useAuth();
@@ -45,7 +46,7 @@ export default function UserMenu() {
             className={`absolute inset-0 rounded-full focus:outline-none transition-opacity ${
               user ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
-            aria-label="User menu"
+            aria-label={t(messages.common.actions.openUserMenu)}
             aria-expanded={open}
             aria-haspopup="menu"
             // keep hover behavior consistent with previous version
@@ -86,9 +87,19 @@ export default function UserMenu() {
               <button
                 type="button"
                 role="menuitem"
-                onClick={() => {
+                onClick={async () => {
                   setOpen(false);
-                  void logout();
+                  try {
+                    await logout();
+                    toast.success(
+                      t(messages.notifications.auth.logoutSuccess),
+                    );
+                  } catch (error: any) {
+                    const message =
+                      error?.response?.data?.message ||
+                      t(messages.errors.generic);
+                    toast.error(message);
+                  }
                   requestAnimationFrame(() => buttonRef.current?.focus());
                 }}
                 className="block w-full text-left px-3 py-2 text-sm whitespace-nowrap transition-colors hover:bg-primaryHover hover:text-white active:bg-primary active:text-white"

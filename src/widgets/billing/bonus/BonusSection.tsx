@@ -5,10 +5,10 @@ import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import type { BonusHistoryItem } from "@/entities/bonus";
 import { SectionCard } from "@/shared/ui/section/SectionCard";
-import Spinner from "@/shared/ui/loading/Spinner";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { formatDate, getSourceLabel } from "@/entities/subscription/lib/billing";
+import { Skeleton } from "@/shared/ui/loading/Skeleton";
 
 type Props = {
   bonusHistory: BonusHistoryItem[];
@@ -29,8 +29,17 @@ export function BonusSection({ bonusHistory, loading }: Props) {
         description={t(messages.dashboard.billing.bonus.subtitle)}
         bodyClassName="overflow-x-auto"
       >
-        <div className="flex items-center justify-center py-4">
-          <Spinner size={20} />
+        <div className="space-y-3" aria-busy="true">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={`bonus-skeleton-${index}`}
+              className="flex items-center gap-3 px-2 py-3"
+            >
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+          ))}
         </div>
       </SectionCard>
     );

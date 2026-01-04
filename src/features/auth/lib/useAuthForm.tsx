@@ -12,6 +12,7 @@ import { ENV } from "@/shared/config";
 import { useGoogleOAuth } from "@/features/auth/lib/useGoogleOAuth";
 import { useTheme } from "@/shared/lib/theme";
 import { OAuthIntent, UserApi } from "@/entities/user";
+import { toast } from "sonner";
 
 /** Parse "i18n.key|{json}" into { key, params } */
 function parseI18n(raw: unknown): { key: string | null; params: any } {
@@ -73,6 +74,7 @@ type UseAuthFormOptions<TValues extends Record<string, any>> = {
   schema: z.ZodSchema<TValues>;
   pick: Partial<Record<keyof TValues, z.ZodSchema<any>>>;
   submit: (values: TValues) => Promise<void>;
+  successToastKey?: string;
   /**
    * Redirect behavior after successful submit:
    * - undefined: redirect to "/dashboard" (default, keeps old behavior)
@@ -141,13 +143,19 @@ export function useAuthForm<TValues extends Record<string, any>>(
     setGlobalMsg(null);
     try {
       await opts.submit(payload);
+      if (opts.successToastKey) {
+        toast.success(t(opts.successToastKey));
+      }
       if (shouldRedirect) router.replace(redirectTarget);
     } catch (err: any) {
 
       const data = err?.response?.data;
       const perField: FieldErrors = data?.errors || {};
       if (Object.keys(perField).length) setFieldErrors(perField);
-      setGlobalMsg((data?.message as string) || t(messages.errors.generic));
+      const message =
+        (data?.message as string) || t(messages.errors.generic);
+      setGlobalMsg(message);
+      toast.error(message);
     }
   };
 
@@ -176,14 +184,19 @@ export function useAuthForm<TValues extends Record<string, any>>(
               theme,
               intent: opts.oauthIntent ?? OAuthIntent.login,
             });
+            if (opts.successToastKey) {
+              toast.success(t(opts.successToastKey));
+            }
             if (shouldRedirect) router.replace(redirectTarget);
           } catch (err: any) {
             const data = err?.response?.data;
             const perField: FieldErrors = data?.errors || {};
             if (Object.keys(perField).length) setFieldErrors(perField);
-            setGlobalMsg(
-              (data?.message as string) || t(messages.errors.generic),
-            );
+            const message =
+              (data?.message as string) ||
+              t(messages.errors.generic);
+            setGlobalMsg(message);
+            toast.error(message);
           }
         }
       })

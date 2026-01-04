@@ -174,7 +174,7 @@ export default function NetworkStatusToast() {
 
           <button
             type="button"
-            aria-label="Закрыть"
+            aria-label={t(messages.common.actions.close)}
             onClick={() => setVisible(false)}
             className="ml-2 rounded-md p-1 text-current/70 hover:text-current hover:bg-black/5 dark:hover:bg-white/5 transition"
           >

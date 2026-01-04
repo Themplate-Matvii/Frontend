@@ -18,6 +18,7 @@ import Input from "@/shared/ui/forms/Input";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { Select, Option } from "@/shared/ui/forms/Select";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
+import { toast } from "sonner";
 
 type RecipientMode = "all" | "selected" | "custom";
 
@@ -179,8 +180,10 @@ export function SendEmailModal({
       }
 
       setStatus(t(messages.dashboard.email.send.success));
+      toast.success(t(messages.notifications.email.sendSuccess));
     } catch {
       setError(t(messages.dashboard.email.send.failed));
+      toast.error(t(messages.notifications.email.sendError));
     }
   };
 
@@ -264,7 +267,7 @@ export function SendEmailModal({
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@example.com"
+              placeholder={t(messages.dashboard.email.send.emailPlaceholder)}
             />
           </Field>
         ) : null}

@@ -51,7 +51,7 @@ export function HeaderFooterPreview({
           {(branding?.logoUrl || branding?.darkLogoUrl) && (
             <Image
               src={branding?.darkLogoUrl || branding?.logoUrl || ""}
-              alt="logo"
+              alt={t(messages.dashboard.email.preview.logoAlt)}
               width={120}
               height={40}
               unoptimized
@@ -123,8 +123,12 @@ export function HeaderFooterPreview({
             <Small className="text-xs text-slate-400">
               {branding?.supportEmail || branding?.supportUrl
                 ? t(messages.dashboard.email.preview.footerSupport, {
-                    email: branding.supportEmail ?? "support@example.com",
-                    url: branding.supportUrl ?? "https://example.com",
+                    email:
+                      branding.supportEmail ??
+                      t(messages.dashboard.email.preview.supportEmailFallback),
+                    url:
+                      branding.supportUrl ??
+                      t(messages.dashboard.email.preview.supportUrlFallback),
                   })
                 : t(messages.dashboard.email.preview.footerSupportDefault)}
             </Small>
