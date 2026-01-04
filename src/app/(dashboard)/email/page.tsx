@@ -1,4 +1,4 @@
-import { DashboardEmailPage } from "@/pages/dashboard/email";
+import { DashboardEmailPage } from "@/page-components/dashboard/email";
 
 export default function Page() {
   return <DashboardEmailPage />;

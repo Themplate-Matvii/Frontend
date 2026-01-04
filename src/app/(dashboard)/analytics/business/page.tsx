@@ -1,4 +1,4 @@
-import { DashboardBusinessAnalyticsPage } from "@/pages/dashboard/analytics/business";
+import { DashboardBusinessAnalyticsPage } from "@/page-components/dashboard/analytics/business";
 
 export default function Page() {
   return <DashboardBusinessAnalyticsPage />;

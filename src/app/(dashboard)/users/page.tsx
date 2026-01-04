@@ -1,4 +1,4 @@
-import { DashboardUsersPage } from "@/pages/dashboard/users";
+import { DashboardUsersPage } from "@/page-components/dashboard/users";
 
 export default function Page() {
   return <DashboardUsersPage />;
