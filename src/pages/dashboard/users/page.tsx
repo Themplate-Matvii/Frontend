@@ -28,7 +28,7 @@ import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { ListSection } from "@/shared/ui/list/ListSection";
 import { Select } from "@/shared/ui/forms/Select";
 import { sortEnum } from "@/shared/types/api/pagination";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 export const DashboardUsersPage = () => {
   const { t } = useI18n();

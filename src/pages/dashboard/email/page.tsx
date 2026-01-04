@@ -25,7 +25,7 @@ import { EmailTemplateCard } from "@/entities/email-template";
 import { EmailPreviewModal } from "@/features/email/preview";
 import { SendEmailModal } from "@/features/email/send";
 import { MarketingTemplateModal } from "@/features/email/marketing-template";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 const getDefaultBranding = (t: (key: string) => string): EmailBranding => ({
   brandName: t(messages.dashboard.email.branding.defaults.brandName),

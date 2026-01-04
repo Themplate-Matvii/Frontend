@@ -18,7 +18,7 @@ import Input from "@/shared/ui/forms/Input";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { Select, Option } from "@/shared/ui/forms/Select";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 type RecipientMode = "all" | "selected" | "custom";
 

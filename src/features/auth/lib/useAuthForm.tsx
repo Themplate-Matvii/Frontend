@@ -12,7 +12,7 @@ import { ENV } from "@/shared/config";
 import { useGoogleOAuth } from "@/features/auth/lib/useGoogleOAuth";
 import { useTheme } from "@/shared/lib/theme";
 import { OAuthIntent, UserApi } from "@/entities/user";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 /** Parse "i18n.key|{json}" into { key, params } */
 function parseI18n(raw: unknown): { key: string | null; params: any } {

@@ -9,7 +9,7 @@ import { Container } from "@/shared/layout/Container";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
 import { H2, Lead, P, Small, TextColorEnum } from "@/shared/ui/Typography";
 import Input from "@/shared/ui/forms/Input";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 interface ContactSectionProps {
   onSubmit?: () => void;

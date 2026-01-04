@@ -32,7 +32,7 @@ import {
 } from "@/features/media/upload";
 import { MediaApi } from "@/entities/media";
 import { resolveMediaName } from "@/shared/lib/media";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 export const DashboardAccountPage = () => {
   const { t } = useI18n();

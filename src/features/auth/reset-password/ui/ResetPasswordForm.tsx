@@ -17,7 +17,7 @@ import Field from "@/shared/ui/forms/Field";
 import PasswordInput from "@/shared/ui/forms/PasswordInput";
 import Spinner from "@/shared/ui/loading/Spinner";
 import FormMessage, { FormMessageVariant } from "@/shared/ui/forms/FormMessage";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 /** Reset password schema */
 const resetPasswordSchema = z.object({

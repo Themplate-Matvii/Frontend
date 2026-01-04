@@ -18,7 +18,7 @@ import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import Spinner from "@/shared/ui/loading/Spinner";
 import FormMessage, { FormMessageVariant } from "@/shared/ui/forms/FormMessage";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 /** Forgot-password form values */
 type ForgotValues = { email: string };

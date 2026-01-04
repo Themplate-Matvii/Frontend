@@ -19,7 +19,7 @@ import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { DeleteModal } from "@/shared/ui/modal/DeleteModal";
 import { MediaPreview } from "@/entities/media";
 import { sortEnum } from "@/shared/types/api/pagination";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 export const DashboardMediaPage = () => {
   const { t } = useI18n();

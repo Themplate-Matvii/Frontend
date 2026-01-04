@@ -22,7 +22,7 @@ import { PlansSection } from "@/widgets/billing/pricing";
 import { OneTimeSection } from "@/widgets/billing/one-time";
 import { PaymentsSection } from "@/widgets/billing/payments";
 import { BonusSection } from "@/widgets/billing/bonus";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 export const DashboardSubscriptionPage = () => {
   const { t } = useI18n();

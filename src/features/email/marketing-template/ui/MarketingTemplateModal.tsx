@@ -14,7 +14,7 @@ import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 type MarketingTemplateModalProps = {
   open: boolean;

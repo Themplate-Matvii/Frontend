@@ -11,7 +11,7 @@ import { useOnEscape } from "@/shared/lib/hooks/useOnEscape";
 import Spinner from "@/shared/ui/loading/Spinner";
 import { UserAvatar } from "@/entities/user";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 
 export default function UserMenu() {
   const { user, logout, loading } = useAuth();
