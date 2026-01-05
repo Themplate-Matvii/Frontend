@@ -12,6 +12,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { user } = useAuth();
   const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
+  const [resolvedTheme, setResolvedTheme] = useState<Theme>(Theme.LIGHT);
 
   // Load theme from cookie or system preference
   useEffect(() => {
@@ -34,15 +35,34 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     setTheme(backendTheme);
   }, [user?.settings?.theme, setTheme]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (theme !== Theme.SYSTEM) {
+      setResolvedTheme(theme);
+      return;
+    }
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const sync = () =>
+      setResolvedTheme(media.matches ? Theme.DARK : Theme.LIGHT);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, [theme]);
+
   // Apply theme class and sync to cookie
   useEffect(() => {
     if (typeof document !== "undefined") {
-      document.documentElement.classList.remove(Theme.LIGHT, Theme.DARK);
-      document.documentElement.classList.add(theme);
+      document.documentElement.classList.remove(Theme.LIGHT);
+      document.documentElement.classList.toggle(
+        "dark",
+        resolvedTheme === Theme.DARK,
+      );
       document.documentElement.dataset.theme = theme;
+      document.documentElement.dataset.resolvedTheme = resolvedTheme;
     }
     setCookie(THEME_COOKIE, theme);
-  }, [theme]);
+  }, [theme, resolvedTheme]);
 
   const toggleTheme = () =>
     setTheme((prev) => (prev === Theme.LIGHT ? Theme.DARK : Theme.LIGHT));

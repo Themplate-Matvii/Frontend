@@ -252,6 +252,7 @@ export function SendEmailModal({
 
         {mode === "selected" ? (
           <Field
+            id="users"
             label={t(messages.dashboard.email.send.usersLabel)}
             footer={
               <Small color={TextColorEnum.Secondary}>
@@ -260,6 +261,7 @@ export function SendEmailModal({
             }
           >
             <Select
+              id="users"
               value={userIds}
               options={userOptions}
               isMulti

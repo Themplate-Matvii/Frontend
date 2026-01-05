@@ -1,6 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
+import clsx from "clsx";
+import {
+  Select as AriaSelect,
+  Button as AriaButton,
+  ListBox,
+  ListBoxItem,
+  Popover,
+  SelectValue,
+} from "react-aria-components";
+import { ChevronDown, X } from "lucide-react";
 import { useI18n } from "@/shared/lib/i18n";
 import { messages } from "@/i18n/messages";
 
@@ -49,57 +59,95 @@ export function Select({
     .filter(Boolean)
     .join(" ");
 
-  const selectClassName = [
-    "h-[38px] w-full rounded-md border bg-background px-2 text-sm",
-    "text-foreground focus:outline-none focus:ring-2",
-    isDisabled ? "opacity-60" : "cursor-pointer",
-    invalid ? "border-danger focus:ring-danger" : "border-border focus:ring-primary",
-    isClearable && hasValue ? "pr-9" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const selectedKeys = useMemo(() => {
+    if (!isMulti) return undefined;
+    return new Set(Array.isArray(value) ? value : []);
+  }, [isMulti, value]);
+
+  const selectedKey = useMemo(() => {
+    if (isMulti) return undefined;
+    return typeof value === "string" && value !== "" ? value : null;
+  }, [isMulti, value]);
 
   return (
-    <div className={`relative ${wrapperClassName}`}>
-      <select
+    <div className={clsx("relative", wrapperClassName)}>
+      <AriaSelect
         id={id}
-        disabled={isDisabled}
-        multiple={isMulti}
-        className={selectClassName}
-        value={value}
-        onChange={(event) => {
+        aria-labelledby={id ? `${id}-label` : undefined}
+        aria-label={!id ? placeholderOption?.label || t(messages.common.actions.select) : undefined}
+        isDisabled={isDisabled}
+        isInvalid={invalid}
+        selectionMode={isMulti ? "multiple" : "single"}
+        selectedKey={selectedKey ?? undefined}
+        selectedKeys={selectedKeys}
+        onSelectionChange={(selection) => {
           if (isMulti) {
-            const selectedValues = Array.from(event.target.selectedOptions).map(
-              (option) => option.value,
-            );
-            onChange(selectedValues);
+            if (selection === "all") {
+              onChange(options.filter((opt) => opt.value !== "").map((opt) => opt.value));
+              return;
+            }
+            onChange(Array.from(selection) as string[]);
             return;
           }
-
-          onChange(event.target.value);
+          if (!selection) {
+            onChange("");
+            return;
+          }
+          onChange(selection as string);
         }}
+        className="relative w-full"
       >
-        {!isMulti && placeholderOption && (
-          <option value="">{placeholderOption.label}</option>
-        )}
-        {options
-          .filter((opt) => opt.value !== "")
-          .map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-      </select>
-      {isClearable && hasValue && (
-        <button
-          type="button"
-          onClick={() => onChange(isMulti ? [] : "")}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted hover:text-danger"
-          aria-label={t(messages.common.actions.clear)}
+        <AriaButton
+          className={clsx(
+            "flex h-[38px] w-full items-center justify-between gap-2 rounded-md border bg-background px-3 text-sm",
+            "text-text shadow-sm transition focus:outline-none focus:ring-2 focus:ring-primary/30",
+            isDisabled ? "opacity-60" : "cursor-pointer",
+            invalid ? "border-danger" : "border-border",
+            isClearable && hasValue ? "pr-9" : "",
+          )}
         >
-          ×
-        </button>
-      )}
+          <SelectValue>
+            {({ selectedText }) =>
+              selectedText || placeholderOption?.label || t(messages.common.actions.select)
+            }
+          </SelectValue>
+          <ChevronDown size={16} className="shrink-0 text-muted" />
+        </AriaButton>
+
+        {isClearable && hasValue && (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onChange(isMulti ? [] : "");
+            }}
+            className="absolute right-8 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted hover:text-danger focus:outline-none focus:ring-2 focus:ring-danger/40"
+            aria-label={t(messages.common.actions.clear)}
+          >
+            <X size={12} />
+          </button>
+        )}
+
+        <Popover
+          className="z-50 mt-2 w-[--trigger-width] rounded-lg border border-border bg-background shadow-lg"
+          placement="bottom start"
+        >
+          <ListBox
+            className="max-h-60 overflow-auto p-1 text-sm text-text outline-none"
+            items={options.filter((opt) => opt.value !== "")}
+          >
+            {(item) => (
+              <ListBoxItem
+                id={item.value}
+                textValue={item.label}
+                className="cursor-pointer rounded-md px-3 py-2 outline-none transition-colors focus:bg-primary/10 focus:text-text data-[hovered]:bg-primary/10 data-[selected]:bg-primary data-[selected]:text-white data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary/40"
+              >
+                {item.label}
+              </ListBoxItem>
+            )}
+          </ListBox>
+        </Popover>
+      </AriaSelect>
     </div>
   );
 };

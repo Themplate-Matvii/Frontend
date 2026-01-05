@@ -98,7 +98,7 @@ export const LanguageSwitcher = () => {
               <button
                 key={lng.code}
                 onClick={() => changeLang(lng.code)}
-                className={`block w-full text-left px-3 py-2 text-sm transition-colors text-text dark:text-white hover:bg-primaryHover hover:text-white active:bg-primary active:text-white ${
+                className={`block w-full text-left px-3 py-2 text-sm transition-colors text-text hover:bg-primaryHover hover:text-white active:bg-primary active:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
                   active ? "bg-primary text-white" : "bg-background"
                 }`}
                 role="option"

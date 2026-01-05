@@ -24,13 +24,13 @@ export function AppToaster() {
         <div
           key={toast.id}
           className={clsx(
-            "rounded-xl border px-4 py-3 text-sm shadow-lg",
+            "rounded-xl border bg-white px-4 py-3 text-sm text-gray-900 shadow-lg",
             toast.variant === "success" &&
-              "border-success/40 bg-success text-white",
+              "border-success",
             toast.variant === "error" &&
-              "border-danger/40 bg-danger text-white",
+              "border-danger",
             toast.variant === "info" &&
-              "border-border bg-card text-text",
+              "border-border",
           )}
           role="status"
           aria-live="polite"
@@ -41,10 +41,8 @@ export function AppToaster() {
               type="button"
               onClick={() => toastStore.remove(toast.id)}
               className={clsx(
-                "rounded-full p-1 transition-colors focus:outline-none focus:ring-2",
-                toast.variant === "info"
-                  ? "hover:bg-primary/10 focus:ring-primary/30"
-                  : "hover:bg-white/20 focus:ring-white/40",
+                "rounded-full p-1 transition-colors focus:outline-none focus:ring-2 cursor-pointer",
+                "text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:ring-primary/30",
               )}
               aria-label={t(messages.common.actions.close)}
             >

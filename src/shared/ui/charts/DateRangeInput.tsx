@@ -1,16 +1,25 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import Flatpickr from "react-flatpickr";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Russian } from "flatpickr/dist/l10n/ru.js";
-import type { Instance as FlatpickrInstance } from "flatpickr";
-
-import "flatpickr/dist/flatpickr.min.css";
-import "./dateRangeInput.css";
-
-import { Theme, colors } from "@/shared/ui";
-import { useTheme } from "@/shared/lib/theme";
+import { useMemo } from "react";
+import {
+  Button as AriaButton,
+  CalendarCell,
+  CalendarGrid,
+  CalendarGridBody,
+  CalendarGridHeader,
+  CalendarHeaderCell,
+  DateInput,
+  DateRangePicker,
+  DateSegment,
+  Dialog,
+  Group,
+  Heading,
+  Popover,
+  RangeCalendar,
+} from "react-aria-components";
+import { I18nProvider } from "react-aria";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { getLocalTimeZone, toCalendarDate, fromDate } from "@internationalized/date";
 
 export type DateRange = {
   from?: Date;
@@ -32,97 +41,115 @@ export function DateRangeInput({
   className,
   language,
 }: DateRangeInputProps) {
-  const { theme } = useTheme();
-  const tone = theme === Theme.DARK ? "dark" : "light";
-  const localeCode = language ?? "en";
-  const calendarRef = useRef<FlatpickrInstance | null>(null);
+  const localeCode = language ?? "en-US";
+  const timeZone = getLocalTimeZone();
 
-  const fpLocale = useMemo(() => {
-    return localeCode.toLowerCase().startsWith("ru") ? Russian : undefined;
-  }, [localeCode]);
-
-  const fpValue = useMemo(() => {
-    if (value?.from && value?.to) return [value.from, value.to];
-    if (value?.from) return [value.from];
-    return [];
-  }, [value?.from, value?.to]);
-
-  const inputStyle = useMemo(
-    () => ({
-      backgroundColor: colors.background[tone],
-      borderColor: colors.border[tone],
-      color: colors.text[tone],
-    }),
-    [tone],
-  );
-
-  const applyCalendarTone = useCallback(
-    (instance?: FlatpickrInstance | null) => {
-      if (!instance?.calendarContainer) return;
-
-      instance.calendarContainer.classList.remove(
-        "flatpickr-theme-light",
-        "flatpickr-theme-dark",
-      );
-      instance.calendarContainer.classList.add(
-        tone === "dark" ? "flatpickr-theme-dark" : "flatpickr-theme-light",
-      );
-    },
-    [tone],
-  );
-
-  useEffect(() => {
-    applyCalendarTone(calendarRef.current);
-  }, [applyCalendarTone]);
+  const rangeValue = useMemo(() => {
+    const start = value?.from
+      ? toCalendarDate(fromDate(value.from, timeZone))
+      : null;
+    const end = value?.to
+      ? toCalendarDate(fromDate(value.to, timeZone))
+      : null;
+    if (!start && !end) return null;
+    return { start: start ?? null, end: end ?? null };
+  }, [timeZone, value?.from, value?.to]);
 
   return (
-    <div className={`relative ${className ?? ""}`}>
-      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted z-10">
-        <CalendarIcon size={18} />
-      </span>
-
-      <Flatpickr
-        value={fpValue}
-        options={{
-          mode: "range",
-          locale: fpLocale,
-          dateFormat: "Y-m-d",
-          disableMobile: true,
-          closeOnSelect: false,
-        }}
-        onClose={(selectedDates: Date[], _dateStr: string, instance: FlatpickrInstance) => {
-          if (selectedDates.length < 2) {
-            instance.open();
-          }
-        }}
-        onOpen={(_, __, instance: FlatpickrInstance) => {
-          calendarRef.current = instance;
-          applyCalendarTone(instance);
-        }}
-        onReady={(_, __, instance: FlatpickrInstance) => {
-          calendarRef.current = instance;
-          applyCalendarTone(instance);
-        }}
-        onChange={(selectedDates: Date[], _dateStr: string, instance: FlatpickrInstance) => {
-          if (!selectedDates || selectedDates.length === 0) {
+    <I18nProvider locale={localeCode}>
+      <DateRangePicker
+        value={rangeValue ?? undefined}
+        onChange={(range) => {
+          if (!range?.start && !range?.end) {
             onChange(undefined);
             return;
           }
-
-          if (selectedDates.length === 1) {
-            onChange({ from: selectedDates[0], to: undefined });
-            instance.open();
-            return;
-          }
-
-          const [from, to] = selectedDates;
-          onChange({ from, to });
-          instance.close();
+          onChange({
+            from: range?.start ? range.start.toDate(timeZone) : undefined,
+            to: range?.end ? range.end.toDate(timeZone) : undefined,
+          });
         }}
-        className="w-full rounded-lg border px-3 py-2 pl-10 text-left text-sm shadow-sm hover:border-primary transition focus:outline-none focus:ring-2 focus:ring-primary/30"
-        placeholder={placeholder}
-        style={inputStyle as any}
-      />
-    </div>
+        shouldCloseOnSelect={false}
+        className={className}
+        aria-label={placeholder}
+      >
+        <div className="relative">
+          <Group className="flex w-full items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm shadow-sm transition hover:border-primary focus-within:ring-2 focus-within:ring-primary/30">
+            <span className="text-muted">
+              <CalendarIcon size={18} />
+            </span>
+            <DateInput
+              slot="start"
+              className="flex flex-1 items-center gap-1 text-text"
+            >
+              {(segment) => (
+                <DateSegment
+                  segment={segment}
+                  className="rounded px-0.5 data-[placeholder]:text-muted data-[focused]:bg-primary/10 data-[invalid]:text-danger"
+                />
+              )}
+            </DateInput>
+            <span className="text-muted">–</span>
+            <DateInput
+              slot="end"
+              className="flex flex-1 items-center gap-1 text-text"
+            >
+              {(segment) => (
+                <DateSegment
+                  segment={segment}
+                  className="rounded px-0.5 data-[placeholder]:text-muted data-[focused]:bg-primary/10 data-[invalid]:text-danger"
+                />
+              )}
+            </DateInput>
+            <AriaButton className="rounded-md p-1 text-muted transition hover:bg-primary/10 hover:text-text">
+              <span className="sr-only">{placeholder}</span>
+              <CalendarIcon size={16} />
+            </AriaButton>
+          </Group>
+        </div>
+
+        <Popover
+          placement="bottom start"
+          className="z-50 mt-2 rounded-xl border border-border bg-background p-3 shadow-lg"
+        >
+          <Dialog className="outline-none">
+            <RangeCalendar className="w-full">
+              <header className="mb-2 flex items-center justify-between">
+                <AriaButton
+                  slot="previous"
+                  className="rounded-md p-1 text-muted transition hover:bg-primary/10 hover:text-text"
+                >
+                  <ChevronLeft size={16} />
+                </AriaButton>
+                <Heading className="text-sm font-semibold text-text" />
+                <AriaButton
+                  slot="next"
+                  className="rounded-md p-1 text-muted transition hover:bg-primary/10 hover:text-text"
+                >
+                  <ChevronRight size={16} />
+                </AriaButton>
+              </header>
+              <CalendarGrid className="w-full">
+                <CalendarGridHeader>
+                  {(day) => (
+                    <CalendarHeaderCell className="pb-1 text-xs font-medium text-muted">
+                      {day}
+                    </CalendarHeaderCell>
+                  )}
+                </CalendarGridHeader>
+                <CalendarGridBody>
+                  {(date) => (
+                    <CalendarCell
+                      date={date}
+                      className="mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sm transition data-[outside-visible-range]:text-muted/50 data-[disabled]:text-muted/40 data-[hovered]:bg-primary/10 data-[selected]:bg-primary/15 data-[selected]:text-text data-[selection-start]:bg-primary data-[selection-start]:text-white data-[selection-end]:bg-primary data-[selection-end]:text-white"
+                    />
+                  )}
+                </CalendarGridBody>
+              </CalendarGrid>
+            </RangeCalendar>
+          </Dialog>
+        </Popover>
+      </DateRangePicker>
+    </I18nProvider>
   );
 }

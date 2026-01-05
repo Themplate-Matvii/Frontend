@@ -7,6 +7,7 @@ export const messages = {
       edit: "common.actions.edit",
       back: "common.actions.back",
       close: "common.actions.close",
+      select: "common.actions.select",
       toggleMenu: "common.actions.toggleMenu",
       openUserMenu: "common.actions.openUserMenu",
       tryAgain: "common.actions.tryAgain",
@@ -562,6 +563,11 @@ export const messages = {
         subtitle: "dashboard.users.detail.subtitle",
         infoTitle: "dashboard.users.detail.infoTitle",
         metaTitle: "dashboard.users.detail.metaTitle",
+        fields: {
+          id: "dashboard.users.detail.fields.id",
+          role: "dashboard.users.detail.fields.role",
+          plan: "dashboard.users.detail.fields.plan",
+        },
         bonusAdjust: {
           title: "dashboard.users.detail.bonusAdjust.title",
           subtitle: "dashboard.users.detail.bonusAdjust.subtitle",

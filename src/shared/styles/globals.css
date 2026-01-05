@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-primary: #2563eb;
   --color-primaryHover: #3b82f6;
@@ -48,6 +50,14 @@ html,
 body {
   min-height: 100%;
   background-color: var(--color-background);
+}
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 body {

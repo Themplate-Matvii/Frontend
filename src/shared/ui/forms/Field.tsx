@@ -17,6 +17,7 @@ export default function Field({ id, label, footer, children }: FieldProps) {
       {label ? (
         <label
           htmlFor={id}
+          id={id ? `${id}-label` : undefined}
           className="block text-xs font-medium uppercase tracking-wide text-secondary"
         >
           {label}

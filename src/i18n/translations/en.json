@@ -12,6 +12,7 @@
       "edit": "Edit",
       "back": "Back",
       "close": "Close",
+      "select": "Select",
       "toggleMenu": "Toggle menu",
       "openUserMenu": "Open user menu",
       "tryAgain": "Try again",
@@ -567,6 +568,11 @@
         "subtitle": "User information and account actions.",
         "infoTitle": "User information",
         "metaTitle": "Metadata",
+        "fields": {
+          "id": "User ID",
+          "role": "Role",
+          "plan": "Plan"
+        },
         "bonusAdjust": {
           "title": "Adjust AI credits",
           "subtitle": "Set the user's AI credits to an absolute value.",

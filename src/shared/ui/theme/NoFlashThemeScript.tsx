@@ -10,8 +10,9 @@ export function NoFlashThemeScript() {
   var match=document.cookie.match(/(?:^|; )${THEME_COOKIE}=([^;]+)/);
   var t=match?decodeURIComponent(match[1]):null;
   var m=window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if(t==='dark'||(!t&&m)) document.documentElement.classList.add('dark');
-  else document.documentElement.classList.remove('dark');
+  var resolved=(t==='system'||!t)?(m?'dark':'light'):t;
+  document.documentElement.classList.toggle('dark', resolved==='dark');
+  document.documentElement.dataset.theme=t||resolved;
 }catch(e){}}();`,
       }}
     />
