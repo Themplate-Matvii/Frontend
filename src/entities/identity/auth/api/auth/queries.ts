@@ -24,9 +24,8 @@ export const useRegister = () => {
 
       const authPayload = (maybeEnvelope as any)?.data ?? maybeEnvelope;
 
-      if (!authPayload?.accessToken || !authPayload?.user) {
-        const message = (maybeEnvelope as any)?.message || "Invalid register response";
-        throw new Error(message);
+      if (!authPayload?.user) {
+        throw new Error("INVALID_AUTH_RESPONSE");
       }
 
       return authPayload as AuthResponse;

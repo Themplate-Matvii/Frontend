@@ -12,17 +12,72 @@ import {
   ResetPasswordRequest,
 } from "@/entities/identity/auth/model/types";
 import { apiClient } from "@/shared/lib/http/apiClient";
+import { I18N } from "@/shared/config";
+import { getCookie } from "@/shared/lib/cookies";
+
+const localeHeaders = () => {
+  const lng = getCookie(I18N.LOCALE_COOKIE_KEY) || I18N.DEFAULT_LOCALE;
+  return lng ? { "Accept-Language": lng } : {};
+};
+
+const bffRequest = async <T>(
+  url: string,
+  options: RequestInit & { headers?: Record<string, string> } = {},
+) => {
+  const body = options.body;
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+  const headers: Record<string, string> = {
+    ...localeHeaders(),
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    ...(options.headers ?? {}),
+  };
+
+  const res = await fetch(url, {
+    ...options,
+    headers,
+    cache: "no-store",
+    credentials: "include",
+  });
+
+  const contentType = res.headers.get("Content-Type") || "";
+  const data = contentType.includes("application/json")
+    ? await res.json().catch(() => ({}))
+    : await res.text();
+
+  if (!res.ok) {
+    const err: any = new Error("BFF_REQUEST_FAILED");
+    err.response = { data, status: res.status };
+    throw err;
+  }
+
+  return { data: data as T };
+};
+
+const buildSearchParams = (params?: OauthAuthorizeParams) => {
+  if (!params) return "";
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    search.set(key, String(value));
+  });
+  const query = search.toString();
+  return query ? `?${query}` : "";
+};
 
 export const authService = {
   // Build provider authorization URL
   oauthAuthorize: (provider: string, params?: OauthAuthorizeParams) =>
-    apiClient.get<{ url: string }>(`/api/auth/oauth/${provider}/authorize`, {
-      params,
-    }),
+    bffRequest<{ url: string }>(
+      `/api/auth/oauth/${provider}/authorize${buildSearchParams(params)}`,
+      { method: "GET" },
+    ),
 
   // SPA direct login with idToken or code
   oauthLogin: (provider: string, data: OauthLoginRequest) =>
-    apiClient.post<AuthResponse>(`/api/auth/oauth/${provider}`, data),
+    bffRequest<AuthResponse>(`/api/auth/oauth/${provider}`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
 
   register: (data: RegisterRequest) => {
     const { avatarFile, ...rest } = data;
@@ -38,26 +93,33 @@ export const authService = {
 
       formData.append("avatar", avatarFile);
 
-      return apiClient.post<AuthResponseEnvelope>("/api/auth/register", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      return bffRequest<AuthResponseEnvelope>("/api/auth/register", {
+        method: "POST",
+        body: formData,
       });
     }
 
-    return apiClient.post<AuthResponseEnvelope>("/api/auth/register", rest);
-  },
-
-  login: (data: LoginRequest) =>
-    apiClient.post<AuthResponse>("/api/auth/login", data),
-
-  // Returns { accessToken } only
-  refresh(config?: AxiosRequestConfig) {
-    return apiClient.post<RefreshResponse>("/api/auth/refresh", undefined, {
-      ...config,
-      __skipAuthRefresh: true, // prevent infinite loop in interceptors
+    return bffRequest<AuthResponseEnvelope>("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(rest),
     });
   },
 
-  logout: () => apiClient.post<void>("/api/auth/logout"),
+  login: (data: LoginRequest) =>
+    bffRequest<AuthResponse>("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  // Returns { accessToken } only
+  refresh(config?: AxiosRequestConfig) {
+    return bffRequest<RefreshResponse>("/api/auth/refresh", {
+      method: "POST",
+      headers: { ...(config?.headers as Record<string, string>) },
+    });
+  },
+
+  logout: () => bffRequest<void>("/api/auth/logout", { method: "POST" }),
 
   // Forgot password: allow 4xx body passthrough
   forgotPassword: (data: ForgotPasswordRequest) =>
