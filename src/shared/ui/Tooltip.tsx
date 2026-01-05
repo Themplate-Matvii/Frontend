@@ -159,9 +159,18 @@ export default function Tooltip({
     }
   }, [open, offsetPx, placement]);
 
+  React.useLayoutEffect(() => {
+    if (!open) return;
+    let raf1 = requestAnimationFrame(() => updatePosition());
+    let raf2 = requestAnimationFrame(() => updatePosition());
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [open, updatePosition]);
+
   React.useEffect(() => {
     if (!open) return;
-    updatePosition();
     const handleScroll = () => updatePosition();
     window.addEventListener("scroll", handleScroll, true);
     window.addEventListener("resize", handleScroll);
@@ -203,7 +212,11 @@ export default function Tooltip({
             role="tooltip"
             data-placement={currentPlacement}
             className="z-[60] overflow-visible select-none pointer-events-none rounded-md border border-border bg-background text-text px-2.5 py-1.5 text-xs shadow-md transition-opacity transition-colors duration-300"
-            style={coords ? { position: "fixed", top: coords.top, left: coords.left } : undefined}
+            style={
+              coords
+                ? { position: "fixed", top: coords.top, left: coords.left }
+                : { position: "fixed", top: 0, left: 0, visibility: "hidden" }
+            }
           >
             <div className="leading-tight">{content}</div>
             <div

@@ -18,7 +18,7 @@ const AUTH_PUBLIC = [
 const AUTH_ANY = [/^\/api\/auth\//];
 
 export const apiClient = axios.create({
-  baseURL: ENV.API_URL,
+  baseURL: "",
   withCredentials: true,
 });
 

@@ -49,6 +49,7 @@ export const ThemeToggle = () => {
     <Tooltip content={theme === Theme.DARK ? t(messages.tooltips.themeToggleToLight) : t(messages.tooltips.themeToggleToDark)}>
       <Button
         onClick={handleToggle}
+        type="button"
         variant={ButtonVariantEnum.icon}
         size={ButtonSizeEnum.md}
         aria-label={t("toggleTheme")}

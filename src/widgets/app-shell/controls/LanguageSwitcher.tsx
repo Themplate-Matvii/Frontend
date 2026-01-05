@@ -90,7 +90,7 @@ export const LanguageSwitcher = () => {
       {open && (
         <div
           role="listbox"
-          className="absolute right-0 mt-1 w-20 rounded-lg bg-background border border-border shadow-lg overflow-hidden z-50"
+          className="absolute right-0 mt-1 w-20 rounded-lg bg-background border border-border shadow-lg overflow-hidden z-50 text-text"
         >
           {LANGS.map((lng) => {
             const active = i18n.language === lng.code;
@@ -98,8 +98,8 @@ export const LanguageSwitcher = () => {
               <button
                 key={lng.code}
                 onClick={() => changeLang(lng.code)}
-                className={`block w-full text-left px-3 py-2 text-sm transition-colors dark:text-white hover:bg-primaryHover hover:text-white active:bg-primary active:text-white ${
-                  active ? "bg-primary text-white" : ""
+                className={`block w-full text-left px-3 py-2 text-sm transition-colors text-text dark:text-white hover:bg-primaryHover hover:text-white active:bg-primary active:text-white ${
+                  active ? "bg-primary text-white" : "bg-background"
                 }`}
                 role="option"
                 aria-selected={active}

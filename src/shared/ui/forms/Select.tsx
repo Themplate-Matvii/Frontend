@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { useI18n } from "@/shared/lib/i18n";
+import { messages } from "@/i18n/messages";
 
 export type Option = {
   value: string;
@@ -36,6 +38,7 @@ export function Select({
   className,
   invalid = false,
 }: SelectProps) {
+  const { t } = useI18n();
   const placeholderOption = options.find((opt) => opt.value === "");
 
   const hasValue = isMulti
@@ -92,7 +95,7 @@ export function Select({
           type="button"
           onClick={() => onChange(isMulti ? [] : "")}
           className="absolute right-2 top-1/2 -translate-y-1/2 text-muted hover:text-danger"
-          aria-label="Clear selection"
+          aria-label={t(messages.common.actions.clear)}
         >
           ×
         </button>

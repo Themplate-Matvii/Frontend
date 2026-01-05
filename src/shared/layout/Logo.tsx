@@ -22,8 +22,8 @@ export const Logo = ({
   const { t } = useI18n();
   const altText = alt ?? t(messages.common.logoAlt);
   // choose asset set depending on mode
-  const light = compact ? FaviconLight : LogoLight;
-  const dark = compact ? FaviconDark : LogoDark;
+  const light = compact ? FaviconDark : LogoDark;
+  const dark = compact ? FaviconLight : LogoLight;
 
   return (
     <Link

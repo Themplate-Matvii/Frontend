@@ -39,6 +39,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     if (typeof document !== "undefined") {
       document.documentElement.classList.remove(Theme.LIGHT, Theme.DARK);
       document.documentElement.classList.add(theme);
+      document.documentElement.dataset.theme = theme;
     }
     setCookie(THEME_COOKIE, theme);
   }, [theme]);

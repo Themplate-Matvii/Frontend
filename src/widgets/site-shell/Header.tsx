@@ -31,8 +31,8 @@ export const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 bg-background text-text border-b border-secondary backdrop-blur-md bg-background/90">
-        <Container className="flex items-center justify-between py-3 px-3 md:py-4">
+      <header className="fixed top-0 left-0 w-full z-50 bg-background text-text border-b border-border backdrop-blur-md bg-background/90">
+        <Container className="flex items-center justify-between py-2.5 px-3 md:py-3.5">
           <div className="shrink-0">
             <Logo />
           </div>
@@ -83,7 +83,7 @@ export const Header = () => {
         )}
       </header>
 
-      <div className="h-[64px] md:h-[72px]" />
+      <div className="h-[56px] md:h-[64px]" />
     </>
   );
 };
