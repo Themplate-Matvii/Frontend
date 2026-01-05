@@ -35,13 +35,42 @@ export default function Tooltip({
   children,
 }: TooltipProps) {
   const [open, setOpen] = React.useState(false);
-  const [currentPlacement, setCurrentPlacement] = React.useState<TooltipPosition>(placement);
+  const [currentPlacement, setCurrentPlacement] =
+    React.useState<TooltipPosition>(placement);
   const triggerRef = React.useRef<HTMLElement | null>(null);
   const tooltipRef = React.useRef<HTMLDivElement | null>(null);
-  const arrowRef = React.useRef<HTMLDivElement | null>(null);
-  const [coords, setCoords] = React.useState<{ top: number; left: number } | null>(null);
+  const [coords, setCoords] = React.useState<{ top: number; left: number } | null>(
+    null,
+  );
   const [arrowStyle, setArrowStyle] = React.useState<React.CSSProperties>({});
+  const openTimerRef = React.useRef<number | null>(null);
+  const closeTimerRef = React.useRef<number | null>(null);
   const id = React.useId();
+
+  const clearTimers = React.useCallback(() => {
+    if (openTimerRef.current) {
+      window.clearTimeout(openTimerRef.current);
+      openTimerRef.current = null;
+    }
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const handleOpen = React.useCallback(() => {
+    clearTimers();
+    openTimerRef.current = window.setTimeout(() => {
+      setOpen(true);
+    }, 120);
+  }, [clearTimers]);
+
+  const handleClose = React.useCallback(() => {
+    clearTimers();
+    closeTimerRef.current = window.setTimeout(() => {
+      setOpen(false);
+    }, 80);
+  }, [clearTimers]);
 
   const updatePosition = React.useCallback(() => {
     if (!open || !triggerRef.current || !tooltipRef.current) return;
@@ -142,13 +171,15 @@ export default function Tooltip({
     };
   }, [open, updatePosition]);
 
+  React.useEffect(() => () => clearTimers(), [clearTimers]);
+
   const child = React.cloneElement(children, {
     ref: triggerRef,
     "aria-describedby": open ? id : undefined,
-    onMouseEnter: mergeHandlers(children.props.onMouseEnter, () => setOpen(true)),
-    onMouseLeave: mergeHandlers(children.props.onMouseLeave, () => setOpen(false)),
-    onFocus: mergeHandlers(children.props.onFocus, () => setOpen(true)),
-    onBlur: mergeHandlers(children.props.onBlur, () => setOpen(false)),
+    onMouseEnter: mergeHandlers(children.props.onMouseEnter, handleOpen),
+    onMouseLeave: mergeHandlers(children.props.onMouseLeave, handleClose),
+    onFocus: mergeHandlers(children.props.onFocus, handleOpen),
+    onBlur: mergeHandlers(children.props.onBlur, handleClose),
   });
 
   const arrowClassBySide =
@@ -176,7 +207,6 @@ export default function Tooltip({
           >
             <div className="leading-tight">{content}</div>
             <div
-              ref={arrowRef}
               className={clsx(
                 "absolute h-2.5 w-2.5 rotate-45 bg-background border border-border transition-colors duration-300",
                 arrowClassBySide,
