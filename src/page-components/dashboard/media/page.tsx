@@ -4,7 +4,11 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { MediaApi, type MediaItem } from "@/entities/content/media";
-import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/identity";
+import {
+  useAuth,
+  useAppPermissions,
+  usePermissionGuard,
+} from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 
@@ -20,7 +24,7 @@ import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { DeleteModal } from "@/shared/ui/modal/DeleteModal";
 import { MediaPreview } from "@/entities/content/media";
 import { sortEnum } from "@/shared/types/api/pagination";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 export const DashboardMediaPage = () => {
   const { t } = useI18n();
@@ -57,8 +61,12 @@ export const DashboardMediaPage = () => {
     [page, pageSize, search, mime, sort],
   );
 
-  const { data: mediaPage, isLoading, isError, refetch } =
-    MediaApi.useMediaList(queryParams, { enabled: canViewMedia });
+  const {
+    data: mediaPage,
+    isLoading,
+    isError,
+    refetch,
+  } = MediaApi.useMediaList(queryParams, { enabled: canViewMedia });
   const deleteMedia = MediaApi.useDeleteMedia();
 
   const { requestDelete, modalProps } = useDeleteWithConfirm<MediaItem>({
@@ -79,8 +87,14 @@ export const DashboardMediaPage = () => {
   const mimeOptions = useMemo(
     () => [
       { value: "", label: t(messages.dashboard.media.list.filters.all) },
-      { value: "image", label: t(messages.dashboard.media.list.filters.images) },
-      { value: "video", label: t(messages.dashboard.media.list.filters.videos) },
+      {
+        value: "image",
+        label: t(messages.dashboard.media.list.filters.images),
+      },
+      {
+        value: "video",
+        label: t(messages.dashboard.media.list.filters.videos),
+      },
       { value: "audio", label: t(messages.dashboard.media.list.filters.audio) },
     ],
     [t],

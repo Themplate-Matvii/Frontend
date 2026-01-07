@@ -9,7 +9,7 @@ import { Container } from "@/shared/layout/Container";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
 import { H2, Lead, P, Small, TextColorEnum } from "@/shared/ui/Typography";
 import Input from "@/shared/ui/forms/Input";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 interface ContactSectionProps {
   onSubmit?: () => void;
@@ -64,7 +64,9 @@ export const ContactSection = ({ onSubmit }: ContactSectionProps) => {
         <div className="space-y-4">
           <H2>{t(messages.landing.contact.title)}</H2>
           <Lead>{t(messages.landing.contact.subtitle)}</Lead>
-          <P color={TextColorEnum.Secondary}>{t(messages.landing.contact.helper)}</P>
+          <P color={TextColorEnum.Secondary}>
+            {t(messages.landing.contact.helper)}
+          </P>
         </div>
 
         <div className="rounded-2xl border border-border bg-background/70 p-6 shadow-sm">
@@ -111,7 +113,9 @@ export const ContactSection = ({ onSubmit }: ContactSectionProps) => {
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder={t(messages.landing.contact.form.messagePlaceholder)}
+                placeholder={t(
+                  messages.landing.contact.form.messagePlaceholder,
+                )}
                 className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-primary focus:outline-none"
                 rows={4}
               />
@@ -123,7 +127,12 @@ export const ContactSection = ({ onSubmit }: ContactSectionProps) => {
               </Small>
             )}
 
-            <Button type="submit" size={ButtonSizeEnum.md} disabled={isPending} className="w-full">
+            <Button
+              type="submit"
+              size={ButtonSizeEnum.md}
+              disabled={isPending}
+              className="w-full"
+            >
               {isPending
                 ? t(messages.landing.contact.form.pending)
                 : t(messages.landing.contact.form.submit)}

@@ -5,7 +5,7 @@ import { messages } from "@/i18n/messages";
 import { FaviconDark } from "@/shared/ui/assets";
 import { NoFlashThemeScript } from "@/shared/ui";
 import { getUser } from "@/shared/lib/auth/server";
-import NetworkStatusToast from "@/shared/ui/NetworkStatusToast";
+import NetworkStatusToast from "@/shared/ui/toast/NetworkStatusToast";
 import "@/shared/styles/globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {

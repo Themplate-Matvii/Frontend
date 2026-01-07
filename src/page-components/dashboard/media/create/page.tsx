@@ -4,7 +4,11 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { MediaApi } from "@/entities/content/media";
-import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/identity";
+import {
+  useAuth,
+  useAppPermissions,
+  usePermissionGuard,
+} from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 
@@ -21,7 +25,7 @@ import {
 import { resolveMediaName } from "@/shared/lib/media";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Spinner from "@/shared/ui/loading/Spinner";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 export const DashboardMediaCreatePage = () => {
   const { t } = useI18n();

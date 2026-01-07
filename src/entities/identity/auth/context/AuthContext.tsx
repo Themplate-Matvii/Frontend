@@ -15,7 +15,7 @@ import { User } from "@/entities/identity/users/model/user/types";
 import { useRouter } from "next/navigation";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 type Ctx = {
   user: User | null;
@@ -106,7 +106,7 @@ export function AuthProvider({
       logout,
       refreshUser,
     }),
-    [user, loading, login, logout, refreshUser]
+    [user, loading, login, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

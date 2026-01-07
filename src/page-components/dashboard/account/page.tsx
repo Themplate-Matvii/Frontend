@@ -12,11 +12,7 @@ import Spinner from "@/shared/ui/loading/Spinner";
 import { Container } from "@/shared/layout/Container";
 import { PageHeader } from "@/shared/layout/PageHeader";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
-import {
-  Button,
-  ButtonSizeEnum,
-  ButtonVariantEnum,
-} from "@/shared/ui/Button";
+import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import { GoogleButton } from "@/shared/ui/oauth/GoogleButton";
@@ -32,7 +28,7 @@ import {
 } from "@/features/media/upload";
 import { MediaApi } from "@/entities/content/media";
 import { resolveMediaName } from "@/shared/lib/media";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 export const DashboardAccountPage = () => {
   const { t } = useI18n();
@@ -50,9 +46,7 @@ export const DashboardAccountPage = () => {
   const uploadMedia = MediaApi.useUploadMedia();
 
   const authProviders =
-    (user as any)?.authProviders ??
-    (user as any)?.providers ??
-    [];
+    (user as any)?.authProviders ?? (user as any)?.providers ?? [];
 
   const {
     requestDelete: requestAccountDelete,
@@ -77,7 +71,8 @@ export const DashboardAccountPage = () => {
   const handleNameSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const hasNameChange = name !== (user?.name ?? "");
-    const hasAvatarChange = avatar?.id !== user?.avatar?.id || Boolean(avatarSelection);
+    const hasAvatarChange =
+      avatar?.id !== user?.avatar?.id || Boolean(avatarSelection);
     if (!name || (!hasNameChange && !hasAvatarChange)) return;
 
     setUploadError(null);
@@ -87,9 +82,13 @@ export const DashboardAccountPage = () => {
 
     if (avatarSelection) {
       try {
-        const inferredName = resolveMediaName(avatarSelection, avatarSelection.name || name);
+        const inferredName = resolveMediaName(
+          avatarSelection,
+          avatarSelection.name || name,
+        );
         const { media } = await uploadMedia.mutateAsync({
-          file: avatarSelection.type === "file" ? avatarSelection.file : undefined,
+          file:
+            avatarSelection.type === "file" ? avatarSelection.file : undefined,
           url: avatarSelection.type === "url" ? avatarSelection.url : undefined,
           name: inferredName || undefined,
         });
@@ -149,30 +148,18 @@ export const DashboardAccountPage = () => {
           <div className="space-y-6 lg:basis-3/5 lg:flex-1">
             <SectionCard
               title={t(messages.dashboard.account.profileTitle)}
-              description={t(
-                messages.dashboard.account.profileDescription,
-              )}
+              description={t(messages.dashboard.account.profileDescription)}
             >
-              <form
-                onSubmit={handleNameSubmit}
-                className="space-y-4 relative"
-              >
+              <form onSubmit={handleNameSubmit} className="space-y-4 relative">
                 <LoadingOverlay loading={loading} />
 
-                <Field
-                  id="name"
-                  label={t(messages.validation.nameLabel)}
-                >
+                <Field id="name" label={t(messages.validation.nameLabel)}>
                   <Input
                     id="name"
                     type="text"
                     value={name}
-                    onChange={(event) =>
-                      setName(event.target.value)
-                    }
-                    placeholder={t(
-                      messages.validation.namePlaceholder,
-                    )}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder={t(messages.validation.namePlaceholder)}
                   />
                 </Field>
 
@@ -195,9 +182,7 @@ export const DashboardAccountPage = () => {
                   <Small className="uppercase tracking-wide font-medium">
                     {t(messages.auth.email)}
                   </Small>
-                  <P className="text-sm font-medium">
-                    {user?.email}
-                  </P>
+                  <P className="text-sm font-medium">{user?.email}</P>
                 </div>
 
                 <div className="flex justify-end">
@@ -215,23 +200,17 @@ export const DashboardAccountPage = () => {
                     className="flex items-center gap-2"
                   >
                     {loading && <Spinner size={16} />}
-                    <span>
-                      {t(messages.common.actions.saveChanges)}
-                    </span>
+                    <span>{t(messages.common.actions.saveChanges)}</span>
                   </Button>
                 </div>
               </form>
             </SectionCard>
-
-            
           </div>
 
           <div className="space-y-6 lg:basis-2/5 lg:flex-1">
             <SectionCard
               title={t(messages.dashboard.account.interfaceTitle)}
-              description={t(
-                messages.dashboard.account.interfaceDescription,
-              )}
+              description={t(messages.dashboard.account.interfaceDescription)}
             >
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-4">
@@ -240,10 +219,7 @@ export const DashboardAccountPage = () => {
                       {t(messages.dashboard.account.themeLabel)}
                     </P>
                     <Small>
-                      {t(
-                        messages.dashboard.account
-                          .themeDescription,
-                      )}
+                      {t(messages.dashboard.account.themeDescription)}
                     </Small>
                   </div>
                   <ThemeToggle />
@@ -252,16 +228,10 @@ export const DashboardAccountPage = () => {
                 <div className="flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
                     <P className="text-sm font-medium">
-                      {t(
-                        messages.dashboard.account
-                          .languageLabel,
-                      )}
+                      {t(messages.dashboard.account.languageLabel)}
                     </P>
                     <Small>
-                      {t(
-                        messages.dashboard.account
-                          .languageDescription,
-                      )}
+                      {t(messages.dashboard.account.languageDescription)}
                     </Small>
                   </div>
                   <LanguageSwitcher />
@@ -270,99 +240,68 @@ export const DashboardAccountPage = () => {
             </SectionCard>
             <SectionCard
               title={t(messages.dashboard.account.authTitle)}
-              description={t(
-                messages.dashboard.account.authDescription,
-              )}
+              description={t(messages.dashboard.account.authDescription)}
             >
-              {Array.isArray(authProviders) &&
-              authProviders.length > 0 ? (
+              {Array.isArray(authProviders) && authProviders.length > 0 ? (
                 <ul className="space-y-2 text-sm">
-                  {authProviders.map(
-                    (provider: any, index: number) => {
-                      const providerName =
-                        (provider.provider ?? provider.name ?? "")
-                          .toString()
-                          .toLowerCase();
+                  {authProviders.map((provider: any, index: number) => {
+                    const providerName = (
+                      provider.provider ??
+                      provider.name ??
+                      ""
+                    )
+                      .toString()
+                      .toLowerCase();
 
-                      if (providerName === "google") {
-                        return (
-                          <li
-                            key={
-                              provider.id ??
-                              provider.provider ??
-                              index
-                            }
-                            className="flex items-center"
-                          >
-                            <GoogleButton preview />
-                          </li>
-                        );
-                      }
-
+                    if (providerName === "google") {
                       return (
                         <li
-                          key={
-                            provider.id ??
-                            provider.provider ??
-                            index
-                          }
-                          className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2"
+                          key={provider.id ?? provider.provider ?? index}
+                          className="flex items-center"
                         >
-                          <div className="flex flex-col">
-                            <P className="text-sm font-medium">
-                              {provider.provider ??
-                                t(
-                                  messages.dashboard.account
-                                    .providerFallbackName,
-                                )}
-                            </P>
-                            {provider.displayName && (
-                              <Small>
-                                {provider.displayName}
-                              </Small>
-                            )}
-                          </div>
-                          {provider.createdAt && (
-                            <Small>
-                              {t(
-                                messages.dashboard.account
-                                  .providerLinkedPrefix,
-                              )}{" "}
-                              {new Date(
-                                provider.createdAt,
-                              ).toLocaleDateString()}
-                            </Small>
-                          )}
+                          <GoogleButton preview />
                         </li>
                       );
-                    },
-                  )}
+                    }
+
+                    return (
+                      <li
+                        key={provider.id ?? provider.provider ?? index}
+                        className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2"
+                      >
+                        <div className="flex flex-col">
+                          <P className="text-sm font-medium">
+                            {provider.provider ??
+                              t(
+                                messages.dashboard.account.providerFallbackName,
+                              )}
+                          </P>
+                          {provider.displayName && (
+                            <Small>{provider.displayName}</Small>
+                          )}
+                        </div>
+                        {provider.createdAt && (
+                          <Small>
+                            {t(messages.dashboard.account.providerLinkedPrefix)}{" "}
+                            {new Date(provider.createdAt).toLocaleDateString()}
+                          </Small>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
-                <P
-                  color={TextColorEnum.Muted}
-                  className="text-sm"
-                >
-                  {t(
-                    messages.dashboard.account.providersEmpty,
-                  )}
+                <P color={TextColorEnum.Muted} className="text-sm">
+                  {t(messages.dashboard.account.providersEmpty)}
                 </P>
               )}
             </SectionCard>
 
             <DangerZoneSection
-              titleKey={
-                messages.dashboard.account.delete.title
-              }
-              descriptionKey={
-                messages.dashboard.account.delete.description
-              }
-              buttonLabelKey={
-                messages.dashboard.account.delete.buttonLabel
-              }
-              onClick={() =>
-                user && requestAccountDelete(user as User)
-              }
+              titleKey={messages.dashboard.account.delete.title}
+              descriptionKey={messages.dashboard.account.delete.description}
+              buttonLabelKey={messages.dashboard.account.delete.buttonLabel}
+              onClick={() => user && requestAccountDelete(user as User)}
             />
           </div>
         </section>

@@ -9,7 +9,11 @@ import {
   type MarketingTemplate,
   type SystemTemplate,
 } from "@/entities/communication/email";
-import { UserApi, useAppPermissions, usePermissionGuard } from "@/entities/identity";
+import {
+  UserApi,
+  useAppPermissions,
+  usePermissionGuard,
+} from "@/entities/identity";
 import { sortEnum } from "@/shared/types/api/pagination";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
@@ -25,7 +29,7 @@ import { EmailTemplateCard } from "@/entities/communication/email/templates";
 import { EmailPreviewModal } from "@/features/email/preview";
 import { SendEmailModal } from "@/features/email/send";
 import { MarketingTemplateModal } from "@/features/email/marketing-template";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 const getDefaultBranding = (t: (key: string) => string): EmailBranding => ({
   brandName: t(messages.dashboard.email.branding.defaults.brandName),
@@ -58,12 +62,10 @@ export const DashboardEmailPage = () => {
     enabled: allowed,
   });
 
-  const {
-    data: brandingQuery,
-    isLoading: brandingLoading,
-  } = EmailApi.useEmailBranding({
-    enabled: allowed,
-  });
+  const { data: brandingQuery, isLoading: brandingLoading } =
+    EmailApi.useEmailBranding({
+      enabled: allowed,
+    });
   const updateBranding = EmailApi.useUpdateEmailBranding();
 
   const brandingSource =
@@ -100,10 +102,7 @@ export const DashboardEmailPage = () => {
 
   const marketingTemplates = templateList?.marketingTemplates ?? [];
 
-  const {
-    data: users,
-    isLoading: usersLoading,
-  } = UserApi.User.useUsers(
+  const { data: users, isLoading: usersLoading } = UserApi.User.useUsers(
     {
       page: 1,
       limit: 50,
@@ -199,7 +198,8 @@ export const DashboardEmailPage = () => {
         type === "marketing" && "id" in tpl ? tpl.id : undefined,
       defaultData: tpl.previewData ?? {},
       subjectKey: tpl.subjectKey,
-      category: tpl.category ?? (type === "marketing" ? "marketing" : "transactional"),
+      category:
+        tpl.category ?? (type === "marketing" ? "marketing" : "transactional"),
       type,
     });
   };
@@ -214,7 +214,9 @@ export const DashboardEmailPage = () => {
 
   return (
     <PageShell>
-      <LoadingOverlay loading={templatesLoading || brandingLoading || usersLoading} />
+      <LoadingOverlay
+        loading={templatesLoading || brandingLoading || usersLoading}
+      />
       <Container>
         <PageHeader
           title={t(messages.dashboard.email.title)}

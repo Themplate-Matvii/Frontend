@@ -3,7 +3,7 @@
 import React from "react";
 import { useSyncExternalStore } from "react";
 import clsx from "clsx";
-import { toastStore } from "@/shared/ui/toast";
+import { toastStore } from "@/shared/ui/toast/toast";
 import { X } from "lucide-react";
 import { useI18n } from "@/shared/lib/i18n";
 import { messages } from "@/i18n/messages";
@@ -25,12 +25,9 @@ export function AppToaster() {
           key={toast.id}
           className={clsx(
             "rounded-xl border bg-background px-4 py-3 text-sm text-text shadow-lg",
-            toast.variant === "success" &&
-              "border-success",
-            toast.variant === "error" &&
-              "border-danger",
-            toast.variant === "info" &&
-              "border-border",
+            toast.variant === "success" && "border-success",
+            toast.variant === "error" && "border-danger",
+            toast.variant === "info" && "border-border",
           )}
           role="status"
           aria-live="polite"

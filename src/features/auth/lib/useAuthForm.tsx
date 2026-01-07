@@ -12,13 +12,14 @@ import { ENV } from "@/shared/config";
 import { useGoogleOAuth } from "@/features/auth/lib/useGoogleOAuth";
 import { useTheme } from "@/shared/lib/theme";
 import { OAuthIntent, UserApi } from "@/entities/identity";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 /** Parse "i18n.key|{json}" into { key, params } */
 function parseI18n(raw: unknown): { key: string | null; params: any } {
   if (typeof raw !== "string") return { key: null, params: {} };
   const s = raw.trim();
-  if (/^\d+\}?$/.test(s) || /^\{.*\}$/.test(s)) return { key: null, params: {} };
+  if (/^\d+\}?$/.test(s) || /^\{.*\}$/.test(s))
+    return { key: null, params: {} };
   const [k, rest] = s.split("|", 2);
   if (!k) return { key: null, params: {} };
   if (!rest) return { key: k, params: {} };
@@ -30,7 +31,11 @@ function parseI18n(raw: unknown): { key: string | null; params: any } {
 }
 
 /** Force i18n result to string */
-function tText<T extends object = any>(tfn: any, key: string, params?: T): string {
+function tText<T extends object = any>(
+  tfn: any,
+  key: string,
+  params?: T,
+): string {
   const v = tfn(key as any, params);
   return typeof v === "string" ? v : String(v ?? "");
 }
@@ -116,15 +121,15 @@ export function useAuthForm<TValues extends Record<string, any>>(
       delete next[name as string];
       if (!parsed.success) {
         const errs = zodToFieldErrors(parsed.error as ZodError);
-        if (errs[name as string]?.length) next[name as string] = errs[name as string];
+        if (errs[name as string]?.length)
+          next[name as string] = errs[name as string];
       }
       return next;
     });
   };
 
   const handleChange =
-    (name: keyof TValues) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (name: keyof TValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const v = e.target.value;
       setValues((s) => ({ ...s, [name]: v }));
       setGlobalMsg(null);
@@ -148,12 +153,10 @@ export function useAuthForm<TValues extends Record<string, any>>(
       }
       if (shouldRedirect) router.replace(redirectTarget);
     } catch (err: any) {
-
       const data = err?.response?.data;
       const perField: FieldErrors = data?.errors || {};
       if (Object.keys(perField).length) setFieldErrors(perField);
-      const message =
-        (data?.message as string) || t(messages.errors.generic);
+      const message = (data?.message as string) || t(messages.errors.generic);
       setGlobalMsg(message);
       toast.error(message);
     }
@@ -166,41 +169,40 @@ export function useAuthForm<TValues extends Record<string, any>>(
 
   // Google OAuth (PKCE)
   const google =
-  opts.googleEnabled && ENV.GOOGLE_CLIENT_ID
-    ? useGoogleOAuth({
-        clientId: ENV.GOOGLE_CLIENT_ID || "",
-        scope: "openid email profile",
-        uxMode: "popup",
-        onCode: async (code, locale) => {
-          // clear previous errors
-          setFieldErrors({});
-          setGlobalMsg(null);
+    opts.googleEnabled && ENV.GOOGLE_CLIENT_ID
+      ? useGoogleOAuth({
+          clientId: ENV.GOOGLE_CLIENT_ID || "",
+          scope: "openid email profile",
+          uxMode: "popup",
+          onCode: async (code, locale) => {
+            // clear previous errors
+            setFieldErrors({});
+            setGlobalMsg(null);
 
-          try {
-            await oauthLogin({
-              code,
-              redirect_uri: "postmessage",
-              locale,
-              theme,
-              intent: opts.oauthIntent ?? OAuthIntent.login,
-            });
-            if (opts.successToastKey) {
-              toast.success(t(opts.successToastKey));
+            try {
+              await oauthLogin({
+                code,
+                redirect_uri: "postmessage",
+                locale,
+                theme,
+                intent: opts.oauthIntent ?? OAuthIntent.login,
+              });
+              if (opts.successToastKey) {
+                toast.success(t(opts.successToastKey));
+              }
+              if (shouldRedirect) router.replace(redirectTarget);
+            } catch (err: any) {
+              const data = err?.response?.data;
+              const perField: FieldErrors = data?.errors || {};
+              if (Object.keys(perField).length) setFieldErrors(perField);
+              const message =
+                (data?.message as string) || t(messages.errors.generic);
+              setGlobalMsg(message);
+              toast.error(message);
             }
-            if (shouldRedirect) router.replace(redirectTarget);
-          } catch (err: any) {
-            const data = err?.response?.data;
-            const perField: FieldErrors = data?.errors || {};
-            if (Object.keys(perField).length) setFieldErrors(perField);
-            const message =
-              (data?.message as string) ||
-              t(messages.errors.generic);
-            setGlobalMsg(message);
-            toast.error(message);
-          }
-        }
-      })
-    : null;
+          },
+        })
+      : null;
 
   const isBusy = Boolean(isOauthPending || (google && google.isRunning));
 

@@ -17,7 +17,7 @@ import Field from "@/shared/ui/forms/Field";
 import PasswordInput from "@/shared/ui/forms/PasswordInput";
 import Spinner from "@/shared/ui/loading/Spinner";
 import FormMessage, { FormMessageVariant } from "@/shared/ui/forms/FormMessage";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 /** Reset password schema */
 const resetPasswordSchema = z.object({
@@ -44,10 +44,13 @@ export const ResetPasswordForm = () => {
     isBusy,
   } = useAuthForm<ResetPasswordValues>({
     initial: { password: "", confirmPassword: "" },
-    schema: resetPasswordSchema.refine((data) => data.password === data.confirmPassword, {
-      message: messages.validation.passwordMismatch,
-      path: ["confirmPassword"],
-    }) as z.ZodSchema<ResetPasswordValues>,
+    schema: resetPasswordSchema.refine(
+      (data) => data.password === data.confirmPassword,
+      {
+        message: messages.validation.passwordMismatch,
+        path: ["confirmPassword"],
+      },
+    ) as z.ZodSchema<ResetPasswordValues>,
     pick: {
       password: strongPassword,
       confirmPassword: z.string(),
@@ -66,14 +69,12 @@ export const ResetPasswordForm = () => {
       if (res?.success) {
         setVariant(FormMessageVariant.success);
         // show backend message if present, fallback to i18n
-        const message =
-          res.message ?? t(messages.auth.passwordResetSuccess);
+        const message = res.message ?? t(messages.auth.passwordResetSuccess);
         setGlobalMsg(message);
         toast.success(t(messages.notifications.auth.passwordResetSuccess));
       } else {
         setVariant(FormMessageVariant.error);
-        const message =
-          res?.message ?? t(messages.auth.passwordResetError);
+        const message = res?.message ?? t(messages.auth.passwordResetError);
         setGlobalMsg(message);
         toast.error(message);
       }

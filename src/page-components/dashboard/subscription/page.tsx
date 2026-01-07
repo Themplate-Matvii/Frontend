@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/identity";
+import {
+  useAuth,
+  useAppPermissions,
+  usePermissionGuard,
+} from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import {
@@ -9,7 +13,11 @@ import {
   type PricingProduct,
   BillingMode,
 } from "@/entities/monetization/pricing";
-import { PaymentsApi, SubscriptionsApi, type Payment } from "@/entities/monetization/subscriptions";
+import {
+  PaymentsApi,
+  SubscriptionsApi,
+  type Payment,
+} from "@/entities/monetization/subscriptions";
 import { BonusApi } from "@/entities/monetization/bonus";
 import { Container } from "@/shared/layout/Container";
 import { PageHeader } from "@/shared/layout/PageHeader";
@@ -22,13 +30,16 @@ import { PlansSection } from "@/widgets/billing/pricing";
 import { OneTimeSection } from "@/widgets/billing/one-time";
 import { PaymentsSection } from "@/widgets/billing/payments";
 import { BonusSection } from "@/widgets/billing/bonus";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 export const DashboardSubscriptionPage = () => {
   const { t } = useI18n();
   const { user, loading: authLoading } = useAuth();
-  const { subscriptions: subscriptionPermissions, payments: paymentPermissions, bonus } =
-    useAppPermissions();
+  const {
+    subscriptions: subscriptionPermissions,
+    payments: paymentPermissions,
+    bonus,
+  } = useAppPermissions();
   const [globalLoading, setGlobalLoading] = useState(false);
 
   const canViewSubscriptions = subscriptionPermissions.own.view;
@@ -36,23 +47,20 @@ export const DashboardSubscriptionPage = () => {
   const canViewPayments = paymentPermissions.own.view;
   const canViewBonus = bonus.history.own.view;
 
-  const canAccessPage =
-    canViewSubscriptions || canViewPayments || canViewBonus;
+  const canAccessPage = canViewSubscriptions || canViewPayments || canViewBonus;
 
   const { canAccess } = usePermissionGuard({ canAccess: canAccessPage });
   const canShowPage = canAccess || authLoading;
 
-  const {
-    data: subscriptionResponse,
-    isLoading: subscriptionLoading,
-  } = SubscriptionsApi.useMySubscription({
-    enabled: canShowPage && canViewSubscriptions,
-  });
+  const { data: subscriptionResponse, isLoading: subscriptionLoading } =
+    SubscriptionsApi.useMySubscription({
+      enabled: canShowPage && canViewSubscriptions,
+    });
 
   const { data: payments, isLoading: paymentsLoading } =
     PaymentsApi.useMyPayments({
-    enabled: canShowPage && canViewPayments,
-  });
+      enabled: canShowPage && canViewPayments,
+    });
 
   const {
     data: subscriptionProducts = [],
@@ -63,14 +71,12 @@ export const DashboardSubscriptionPage = () => {
     select: (data: PricingProduct[]) => data ?? [],
   });
 
-  const {
-    data: oneTimeProducts = [],
-    isLoading: oneTimePricingLoading,
-  } = PricingApi.usePricing({
-    mode: BillingMode.one_time,
-    enabled: canShowPage && canManage,
-    select: (data: PricingProduct[]) => data ?? [],
-  });
+  const { data: oneTimeProducts = [], isLoading: oneTimePricingLoading } =
+    PricingApi.usePricing({
+      mode: BillingMode.one_time,
+      enabled: canShowPage && canManage,
+      select: (data: PricingProduct[]) => data ?? [],
+    });
 
   const checkoutMutation = PaymentsApi.useCheckout();
   const oneTimeCheckoutMutation = PaymentsApi.useOneTimeCheckout();
@@ -78,10 +84,9 @@ export const DashboardSubscriptionPage = () => {
   const resumeSubscriptionMutation = SubscriptionsApi.useResumeSubscription();
   const { data: bonusHistory = [], isLoading: bonusLoading } =
     BonusApi.useMyBonusHistory({
-    enabled: canShowPage && canViewBonus,
-  });
+      enabled: canShowPage && canViewBonus,
+    });
 
-  
   const subscription = subscriptionResponse?.subscription ?? null;
   const subscriptionMessage = subscriptionResponse?.message ?? null;
 
@@ -150,7 +155,7 @@ export const DashboardSubscriptionPage = () => {
   };
 
   const aiCredits = typeof user?.aiCredits === "number" ? user?.aiCredits : 0;
-  
+
   if (!canShowPage && !authLoading) {
     return null;
   }
@@ -184,7 +189,7 @@ export const DashboardSubscriptionPage = () => {
                 loading={
                   subscriptionPricingLoading || checkoutMutation.isPending
                 }
-                  onSelect={handleSubscribe}
+                onSelect={handleSubscribe}
                 isFullWidth={true}
                 isProcessing={globalLoading}
               />

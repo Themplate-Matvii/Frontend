@@ -4,7 +4,11 @@ import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { MediaApi, type MediaItem } from "@/entities/content/media";
-import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/identity";
+import {
+  useAuth,
+  useAppPermissions,
+  usePermissionGuard,
+} from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 
@@ -24,7 +28,7 @@ import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
 import Spinner from "@/shared/ui/loading/Spinner";
 import { DangerZoneSection } from "@/shared/ui/section/DangerZoneSection";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 export const DashboardMediaDetailPage = () => {
   const { t } = useI18n();
@@ -71,21 +75,22 @@ export const DashboardMediaDetailPage = () => {
         description !== (media.description ?? "")),
   );
 
-  const { requestDelete, modalProps, isPending } = useDeleteWithConfirm<MediaItem>({
-    canDelete: canDeleteMedia,
-    getLabel: (item) => item.name || item.filename,
-    onDelete: async (item) => {
-      try {
-        await deleteMedia.mutateAsync(item.id);
-        toast.success(t(messages.notifications.media.deleteSuccess));
-        router.push("/dashboard/media");
-      } catch (error: any) {
-        const message =
-          error?.response?.data?.message || t(messages.errors.generic);
-        toast.error(message);
-      }
-    },
-  });
+  const { requestDelete, modalProps, isPending } =
+    useDeleteWithConfirm<MediaItem>({
+      canDelete: canDeleteMedia,
+      getLabel: (item) => item.name || item.filename,
+      onDelete: async (item) => {
+        try {
+          await deleteMedia.mutateAsync(item.id);
+          toast.success(t(messages.notifications.media.deleteSuccess));
+          router.push("/dashboard/media");
+        } catch (error: any) {
+          const message =
+            error?.response?.data?.message || t(messages.errors.generic);
+          toast.error(message);
+        }
+      },
+    });
 
   const handleSave = (event: FormEvent) => {
     event.preventDefault();
@@ -217,7 +222,9 @@ export const DashboardMediaDetailPage = () => {
 
                   <Field
                     id="media-description"
-                    label={t(messages.dashboard.media.detail.fields.description)}
+                    label={t(
+                      messages.dashboard.media.detail.fields.description,
+                    )}
                   >
                     <Input
                       id="media-description"
@@ -269,7 +276,7 @@ export const DashboardMediaDetailPage = () => {
                   {renderMeta(
                     t(messages.dashboard.media.detail.fields.uploadedBy),
                     media.uploadedBy
-                      ? (media.uploadedBy.name ?? media.uploadedBy.email ?? null)
+                      ? media.uploadedBy.name ?? media.uploadedBy.email ?? null
                       : null,
                   )}
                   {renderMeta(
@@ -281,7 +288,9 @@ export const DashboardMediaDetailPage = () => {
               {canDeleteMedia && (
                 <DangerZoneSection
                   titleKey={messages.dashboard.media.detail.deleteTitle}
-                  descriptionKey={messages.dashboard.media.detail.deleteDescription}
+                  descriptionKey={
+                    messages.dashboard.media.detail.deleteDescription
+                  }
                   buttonLabelKey={messages.common.actions.delete}
                   onClick={() => requestDelete(media)}
                   disabled={isPending}

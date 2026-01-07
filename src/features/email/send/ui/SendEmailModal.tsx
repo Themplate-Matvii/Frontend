@@ -18,7 +18,7 @@ import Input from "@/shared/ui/forms/Input";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { Select, Option } from "@/shared/ui/forms/Select";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 type RecipientMode = "all" | "selected" | "custom";
 
@@ -88,7 +88,9 @@ export function SendEmailModal({
     () =>
       users.map((u) => ({
         value: u.id,
-        label: `${u.name || u.email} (${u.settings?.locale?.toUpperCase() ?? "?"})`,
+        label: `${u.name || u.email} (${
+          u.settings?.locale?.toUpperCase() ?? "?"
+        })`,
       })),
     [users],
   );
@@ -293,10 +295,7 @@ export function SendEmailModal({
               onChange={(e) => setSubject(e.target.value)}
             />
           </Field>
-          <Field
-            id="locale"
-            label={t(messages.dashboard.email.send.locale)}
-          >
+          <Field id="locale" label={t(messages.dashboard.email.send.locale)}>
             <Select
               id="locale"
               value={locale}
@@ -324,9 +323,7 @@ export function SendEmailModal({
           />
         </Field>
 
-        {error ? (
-          <Small className="text-red-500">{error}</Small>
-        ) : null}
+        {error ? <Small className="text-red-500">{error}</Small> : null}
         {status ? (
           <div className="flex items-center gap-2 text-green-500">
             <MailCheck size={16} />

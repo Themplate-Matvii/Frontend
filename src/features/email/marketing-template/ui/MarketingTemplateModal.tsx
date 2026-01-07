@@ -15,7 +15,7 @@ import Input from "@/shared/ui/forms/Input";
 import { Select } from "@/shared/ui/forms/Select";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 type MarketingTemplateModalProps = {
   open: boolean;
@@ -143,15 +143,14 @@ export function MarketingTemplateModal({
     >
       <div className="space-y-4">
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field
-            id="name"
-            label={t(messages.dashboard.email.marketing.name)}
-          >
+          <Field id="name" label={t(messages.dashboard.email.marketing.name)}>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder={t(messages.dashboard.email.marketing.namePlaceholder)}
+              placeholder={t(
+                messages.dashboard.email.marketing.namePlaceholder,
+              )}
             />
           </Field>
           <Field
@@ -174,7 +173,9 @@ export function MarketingTemplateModal({
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder={t(messages.dashboard.email.marketing.descriptionPlaceholder)}
+            placeholder={t(
+              messages.dashboard.email.marketing.descriptionPlaceholder,
+            )}
           />
         </Field>
 
@@ -243,9 +244,7 @@ export function MarketingTemplateModal({
         </Field>
 
         {error ? <Small className="text-red-500">{error}</Small> : null}
-        {status ? (
-          <Small className="text-green-500">{status}</Small>
-        ) : null}
+        {status ? <Small className="text-green-500">{status}</Small> : null}
 
         <div className="flex justify-end gap-2">
           <Button

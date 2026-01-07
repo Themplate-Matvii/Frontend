@@ -20,11 +20,7 @@ import { PageHeader } from "@/shared/layout/PageHeader";
 import { PageShell } from "@/shared/layout/PageShell";
 import Spinner from "@/shared/ui/loading/Spinner";
 import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
-import {
-  Button,
-  ButtonSizeEnum,
-  ButtonVariantEnum,
-} from "@/shared/ui/Button";
+import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import { DeleteModal } from "@/shared/ui/modal/DeleteModal";
@@ -38,7 +34,7 @@ import {
 } from "@/features/media/upload";
 import { MediaApi } from "@/entities/content/media";
 import { resolveMediaName } from "@/shared/lib/media";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 import {
   PaymentsApi,
   SubscriptionsApi,
@@ -84,7 +80,9 @@ export const DashboardUserDetailPage = () => {
   } = UserApi.User.useUserById(userId ?? "");
 
   const { data: subscriptionData, isLoading: subscriptionLoading } =
-    SubscriptionsApi.useUserSubscription(userId, { enabled: canViewSubscriptions });
+    SubscriptionsApi.useUserSubscription(userId, {
+      enabled: canViewSubscriptions,
+    });
 
   const { data: userPayments = [], isLoading: userPaymentsLoading } =
     PaymentsApi.useUserPayments(userId, { enabled: canViewPayments });
@@ -110,7 +108,8 @@ export const DashboardUserDetailPage = () => {
   const resumeUserSubscription = SubscriptionsApi.useResumeUserSubscription();
 
   const roleLabel = useMemo(() => {
-    if (!viewedUser?.role?.key) return viewedUser?.role?.name ?? viewedUser?.role?.key;
+    if (!viewedUser?.role?.key)
+      return viewedUser?.role?.name ?? viewedUser?.role?.key;
     return viewedUser.role.key === UserRoleEnum.ADMIN
       ? t(messages.dashboard.users.role.admin)
       : t(messages.dashboard.users.role.user);
@@ -130,7 +129,9 @@ export const DashboardUserDetailPage = () => {
     setAvatar(viewedUser?.avatar ?? null);
     setAvatarSelection(null);
     setAiCreditsValue(
-      typeof viewedUser?.aiCredits === "number" ? String(viewedUser.aiCredits) : "0",
+      typeof viewedUser?.aiCredits === "number"
+        ? String(viewedUser.aiCredits)
+        : "0",
     );
   }, [viewedUser]);
 
@@ -181,7 +182,8 @@ export const DashboardUserDetailPage = () => {
           avatarSelection.name || name,
         );
         const { media } = await uploadMedia.mutateAsync({
-          file: avatarSelection.type === "file" ? avatarSelection.file : undefined,
+          file:
+            avatarSelection.type === "file" ? avatarSelection.file : undefined,
           url: avatarSelection.type === "url" ? avatarSelection.url : undefined,
           name: inferredName || undefined,
         });
@@ -219,12 +221,14 @@ export const DashboardUserDetailPage = () => {
   };
 
   const handleCancelSubscription = () => {
-    if (!userId || !canManageSubscriptions || !subscriptionData?.subscription) return;
+    if (!userId || !canManageSubscriptions || !subscriptionData?.subscription)
+      return;
     cancelUserSubscription.mutate(userId);
   };
 
   const handleResumeSubscription = () => {
-    if (!userId || !canManageSubscriptions || !subscriptionData?.subscription) return;
+    if (!userId || !canManageSubscriptions || !subscriptionData?.subscription)
+      return;
     resumeUserSubscription.mutate(userId);
   };
 
@@ -234,7 +238,9 @@ export const DashboardUserDetailPage = () => {
 
     const parsedCredits = Number(aiCreditsValue);
     if (Number.isNaN(parsedCredits) || parsedCredits < 0) {
-      setBonusError(t(messages.dashboard.users.detail.bonusAdjust.invalidValue));
+      setBonusError(
+        t(messages.dashboard.users.detail.bonusAdjust.invalidValue),
+      );
       return;
     }
 
@@ -345,7 +351,9 @@ export const DashboardUserDetailPage = () => {
                       setUploadError(null);
                     }}
                     error={uploadError}
-                    disabled={!canEditAnyUsers || saving || uploadMedia.isPending}
+                    disabled={
+                      !canEditAnyUsers || saving || uploadMedia.isPending
+                    }
                   />
 
                   <div className="flex justify-end">
@@ -379,17 +387,21 @@ export const DashboardUserDetailPage = () => {
               <SectionCard title={t(messages.dashboard.users.detail.metaTitle)}>
                 <div className="space-y-1">
                   <Small color={TextColorEnum.Secondary}>
-                    {t(messages.dashboard.users.detail.fields.id)}: {viewedUser.id}
+                    {t(messages.dashboard.users.detail.fields.id)}:{" "}
+                    {viewedUser.id}
                   </Small>
                   <Small color={TextColorEnum.Secondary}>
-                    {t(messages.dashboard.users.detail.fields.role)}: {roleLabel || "—"}
+                    {t(messages.dashboard.users.detail.fields.role)}:{" "}
+                    {roleLabel || "—"}
                   </Small>
                   <Small color={TextColorEnum.Secondary}>
-                    {t(messages.dashboard.users.detail.fields.plan)}: {planLabel || "—"}
+                    {t(messages.dashboard.users.detail.fields.plan)}:{" "}
+                    {planLabel || "—"}
                   </Small>
                   {typeof viewedUser?.aiCredits === "number" && (
                     <Small color={TextColorEnum.Secondary}>
-                      {t(messages.common.aiCreditsLabel)}: {viewedUser.aiCredits}
+                      {t(messages.common.aiCreditsLabel)}:{" "}
+                      {viewedUser.aiCredits}
                     </Small>
                   )}
                 </div>
@@ -398,22 +410,29 @@ export const DashboardUserDetailPage = () => {
               {canAdjustBonus && (
                 <SectionCard
                   title={t(messages.dashboard.users.detail.bonusAdjust.title)}
-                  description={t(messages.dashboard.users.detail.bonusAdjust.subtitle)}
+                  description={t(
+                    messages.dashboard.users.detail.bonusAdjust.subtitle,
+                  )}
                   bodyClassName="space-y-3"
                 >
                   <form onSubmit={handleAdjustBonus} className="space-y-3">
                     <Field
                       id="user-ai-credits"
-                      label={t(messages.dashboard.users.detail.bonusAdjust.inputLabel)}
+                      label={t(
+                        messages.dashboard.users.detail.bonusAdjust.inputLabel,
+                      )}
                     >
                       <Input
                         id="user-ai-credits"
                         type="number"
                         min={0}
                         value={aiCreditsValue}
-                        onChange={(event) => setAiCreditsValue(event.target.value)}
+                        onChange={(event) =>
+                          setAiCreditsValue(event.target.value)
+                        }
                         placeholder={t(
-                          messages.dashboard.users.detail.bonusAdjust.inputPlaceholder,
+                          messages.dashboard.users.detail.bonusAdjust
+                            .inputPlaceholder,
                         )}
                         disabled={adjustUserBonus.isPending}
                       />
@@ -452,7 +471,9 @@ export const DashboardUserDetailPage = () => {
               {canDeleteAnyUsers && (
                 <DangerZoneSection
                   titleKey={messages.dashboard.users.detail.deleteTitle}
-                  descriptionKey={messages.dashboard.users.detail.deleteDescription}
+                  descriptionKey={
+                    messages.dashboard.users.detail.deleteDescription
+                  }
                   buttonLabelKey={messages.common.actions.delete}
                   onClick={() => requestUserDelete(viewedUser)}
                   disabled={deletePending}

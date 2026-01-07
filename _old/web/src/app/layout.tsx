@@ -5,7 +5,7 @@ import { getI18n } from "@packages/locales/server";
 import { messages } from "@packages/locales";
 import { FaviconDark } from "@packages/assets";
 import { NoFlashThemeScript } from "@packages/ui";
-import NetworkStatusToast from "@/shared/ui/NetworkStatusToast";
+import NetworkStatusToast from "@/shared/ui/toast/NetworkStatusToast";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getI18n();

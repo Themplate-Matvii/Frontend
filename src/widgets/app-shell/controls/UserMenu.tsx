@@ -11,7 +11,7 @@ import { useOnEscape } from "@/shared/lib/hooks/useOnEscape";
 import Spinner from "@/shared/ui/loading/Spinner";
 import { UserAvatar } from "@/entities/identity";
 import { Button, ButtonSizeEnum } from "@/shared/ui/Button";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 export default function UserMenu() {
   const { user, logout, loading } = useAuth();
@@ -52,10 +52,7 @@ export default function UserMenu() {
             // keep hover behavior consistent with previous version
             style={{ filter: open ? "brightness(0.95)" : undefined }}
           >
-            <UserAvatar
-              user={user}
-              className="h-full w-full"
-            />
+            <UserAvatar user={user} className="h-full w-full" />
           </button>
 
           {/* dropdown */}
@@ -91,9 +88,7 @@ export default function UserMenu() {
                   setOpen(false);
                   try {
                     await logout();
-                    toast.success(
-                      t(messages.notifications.auth.logoutSuccess),
-                    );
+                    toast.success(t(messages.notifications.auth.logoutSuccess));
                   } catch (error: any) {
                     const message =
                       error?.response?.data?.message ||
@@ -113,7 +108,10 @@ export default function UserMenu() {
 
       {/* sign-in button when unauthenticated */}
       {!loading && !user && (
-        <Button onClick={() => router.push("/auth/sign-in")} size={ButtonSizeEnum.md}>
+        <Button
+          onClick={() => router.push("/auth/sign-in")}
+          size={ButtonSizeEnum.md}
+        >
           {t(messages.auth.login)}
         </Button>
       )}

@@ -12,7 +12,11 @@ import {
 } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
-import { BillingMode, PricingApi, type PricingProduct } from "@/entities/monetization/pricing";
+import {
+  BillingMode,
+  PricingApi,
+  type PricingProduct,
+} from "@/entities/monetization/pricing";
 
 import { Container } from "@/shared/layout/Container";
 import { PageHeader } from "@/shared/layout/PageHeader";
@@ -28,7 +32,7 @@ import { useDeleteWithConfirm } from "@/shared/lib/hooks/useDeleteWithConfirm";
 import { ListSection } from "@/shared/ui/list/ListSection";
 import { Select } from "@/shared/ui/forms/Select";
 import { sortEnum } from "@/shared/types/api/pagination";
-import { toast } from "@/shared/ui/toast";
+import { toast } from "@/shared/ui/toast/toast";
 
 export const DashboardUsersPage = () => {
   const { t } = useI18n();
@@ -52,7 +56,6 @@ export const DashboardUsersPage = () => {
   const { canAccess } = usePermissionGuard({
     canAccess: canViewAnyUsers,
   });
-  
 
   const queryParams = useMemo(
     () => ({
@@ -72,15 +75,12 @@ export const DashboardUsersPage = () => {
     refetch,
   } = UserApi.User.useUsers(queryParams);
 
-  const {
-    data: pricingData,
-    isLoading: pricingLoading,
-  } = PricingApi.usePricing({
-    mode: BillingMode.subscription,
-    enabled: canViewAnyUsers,
-    select: (data: PricingProduct[]) => data,
-  });
-
+  const { data: pricingData, isLoading: pricingLoading } =
+    PricingApi.usePricing({
+      mode: BillingMode.subscription,
+      enabled: canViewAnyUsers,
+      select: (data: PricingProduct[]) => data,
+    });
 
   const planOptions = useMemo<PricingProduct[]>(() => {
     if (Array.isArray(pricingData)) return pricingData;
@@ -98,30 +98,28 @@ export const DashboardUsersPage = () => {
         label: plan.name ?? plan.nameKey ?? plan.key,
       })),
     ],
-    [planOptions, t]
+    [planOptions, t],
   );
 
   const deleteUserMutation = UserApi.User.useDeleteUser();
 
-  const {
-    requestDelete,
-    modalProps: deleteModalProps,
-  } = useDeleteWithConfirm<User>({
-    canDelete: canDeleteAnyUsers,
-    getLabel: (u) =>
-      u.name && u.name.trim().length > 0 ? u.name.trim() : u.email,
-    onDelete: async (u) => {
-      try {
-        await deleteUserMutation.mutateAsync(u.id);
-        toast.success(t(messages.notifications.users.deleteSuccess));
-        await refetch();
-      } catch (error: any) {
-        const message =
-          error?.response?.data?.message || t(messages.errors.generic);
-        toast.error(message);
-      }
-    },
-  });
+  const { requestDelete, modalProps: deleteModalProps } =
+    useDeleteWithConfirm<User>({
+      canDelete: canDeleteAnyUsers,
+      getLabel: (u) =>
+        u.name && u.name.trim().length > 0 ? u.name.trim() : u.email,
+      onDelete: async (u) => {
+        try {
+          await deleteUserMutation.mutateAsync(u.id);
+          toast.success(t(messages.notifications.users.deleteSuccess));
+          await refetch();
+        } catch (error: any) {
+          const message =
+            error?.response?.data?.message || t(messages.errors.generic);
+          toast.error(message);
+        }
+      },
+    });
 
   const handleResetFilters = () => {
     setSearch("");
@@ -185,30 +183,20 @@ export const DashboardUsersPage = () => {
             ),
           }}
           emptyTitleKey={messages.dashboard.users.list.emptyTitle}
-          emptyDescriptionKey={
-            messages.dashboard.users.list.emptyDescription
-          }
+          emptyDescriptionKey={messages.dashboard.users.list.emptyDescription}
           renderItem={(user) => (
             <ItemCard
               canEdit={canEditAnyUsers}
               canDelete={canDeleteAnyUsers}
-              onEdit={() =>
-                router.push(`/dashboard/users/${user.id}`)
-              }
+              onEdit={() => router.push(`/dashboard/users/${user.id}`)}
               onDelete={() => requestDelete(user)}
               actionsSide="right"
             >
-              <UserPreview
-                user={user}
-                showEmail
-                showPlan
-                showRoleBadge
-              />
+              <UserPreview user={user} showEmail showPlan showRoleBadge />
             </ItemCard>
           )}
           getItemKey={(user) => user.id}
         />
-
       </Container>
 
       <DeleteModal
