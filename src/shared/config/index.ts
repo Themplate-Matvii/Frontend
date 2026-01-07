@@ -20,7 +20,7 @@ export const I18N = {
   DEFAULT_LOCALE: "ru",
 } as const;
 
-export const THEME_COOKIE = "NEXT_THEME";
+export const THEME_STORAGE_KEY = "theme";
 
 export const COMPANY = {
   name: "Example Technologies Sp. z o.o.",

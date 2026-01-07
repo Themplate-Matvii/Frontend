@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { MediaApi, type MediaItem } from "@/entities/content/media";
+import { useAuth, useAppPermissions, usePermissionGuard } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 
@@ -24,6 +25,20 @@ import { toast } from "@/shared/ui/toast";
 export const DashboardMediaPage = () => {
   const { t } = useI18n();
   const router = useRouter();
+  const { loading: authLoading } = useAuth();
+  const { media: mediaPermissions } = useAppPermissions();
+
+  const canViewMedia = mediaPermissions.any.view || mediaPermissions.own.view;
+  const canCreateMedia =
+    mediaPermissions.any.create || mediaPermissions.own.create;
+  const canEditMedia =
+    mediaPermissions.any.update || mediaPermissions.own.update;
+  const canDeleteMedia =
+    mediaPermissions.any.delete || mediaPermissions.own.delete;
+
+  const { canAccess } = usePermissionGuard({
+    canAccess: canViewMedia,
+  });
 
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
@@ -43,11 +58,11 @@ export const DashboardMediaPage = () => {
   );
 
   const { data: mediaPage, isLoading, isError, refetch } =
-    MediaApi.useMediaList(queryParams);
+    MediaApi.useMediaList(queryParams, { enabled: canViewMedia });
   const deleteMedia = MediaApi.useDeleteMedia();
 
   const { requestDelete, modalProps } = useDeleteWithConfirm<MediaItem>({
-    canDelete: true,
+    canDelete: canDeleteMedia,
     getLabel: (media) => media.name || media.filename,
     onDelete: async (media) => {
       try {
@@ -83,19 +98,31 @@ export const DashboardMediaPage = () => {
     setPage(1);
   };
 
+  if (!canAccess && !authLoading) {
+    return null;
+  }
+
   return (
     <PageShell>
       <Container>
         <PageHeader
           title={t(messages.dashboard.media.list.title)}
           subtitle={t(messages.dashboard.media.list.subtitle)}
-          addLabel={t(messages.dashboard.media.list.createButton)}
-          onAdd={() => router.push("/dashboard/media/create")}
+          addLabel={
+            canCreateMedia
+              ? t(messages.dashboard.media.list.createButton)
+              : undefined
+          }
+          onAdd={
+            canCreateMedia
+              ? () => router.push("/dashboard/media/create")
+              : undefined
+          }
         />
 
         <ListSection<MediaItem>
-          canView
-          authLoading={false}
+          canView={canViewMedia}
+          authLoading={authLoading}
           isError={isError}
           isLoading={isLoading}
           onRetry={refetch}
@@ -134,8 +161,8 @@ export const DashboardMediaPage = () => {
           emptyDescriptionKey={messages.dashboard.media.list.emptyDescription}
           renderItem={(media) => (
             <ItemCard
-              canEdit
-              canDelete
+              canEdit={canEditMedia}
+              canDelete={canDeleteMedia}
               onEdit={() => router.push(`/dashboard/media/${media.id}`)}
               onDelete={() => requestDelete(media)}
               actionsSide="right"

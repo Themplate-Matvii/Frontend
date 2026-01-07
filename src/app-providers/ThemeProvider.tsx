@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Theme } from "@/shared/ui";
-import { THEME_COOKIE } from "@/shared/config";
-import { getCookie, setCookie } from "@/shared/lib/cookies";
+import { THEME_STORAGE_KEY } from "@/shared/config";
 import { useAuth } from "@/entities/identity";
 import { ThemeContext } from "@/shared/lib/theme";
 
@@ -13,12 +12,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const { user } = useAuth();
   const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
   const [resolvedTheme, setResolvedTheme] = useState<Theme>(Theme.LIGHT);
+  const hasStoredTheme = useRef(false);
 
-  // Load theme from cookie or system preference
+  const readStoredTheme = () => {
+    if (typeof window === "undefined") return null;
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored && Object.values(Theme).includes(stored as Theme)) {
+      return stored as Theme;
+    }
+    return null;
+  };
+
+  // Load theme from localStorage or system preference
   useEffect(() => {
-    const saved = getCookie(THEME_COOKIE) as Theme | null;
-
-    if (saved && Object.values(Theme).includes(saved)) {
+    const saved = readStoredTheme();
+    if (saved) {
+      hasStoredTheme.current = true;
       setTheme(saved);
     } else {
       const prefersDark =
@@ -30,7 +39,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const backendTheme = user?.settings?.theme as Theme | undefined;
-    if (!backendTheme) return;
+    if (!backendTheme || hasStoredTheme.current) return;
 
     setTheme(backendTheme);
   }, [user?.settings?.theme, setTheme]);
@@ -50,10 +59,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => media.removeEventListener("change", sync);
   }, [theme]);
 
-  // Apply theme class and sync to cookie
+  // Apply theme class and sync to localStorage
   useEffect(() => {
     if (typeof document !== "undefined") {
-      document.documentElement.classList.remove(Theme.LIGHT);
       document.documentElement.classList.toggle(
         "dark",
         resolvedTheme === Theme.DARK,
@@ -61,7 +69,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       document.documentElement.dataset.theme = theme;
       document.documentElement.dataset.resolvedTheme = resolvedTheme;
     }
-    setCookie(THEME_COOKIE, theme);
+    if (typeof window !== "undefined") {
+      const persisted =
+        theme === Theme.SYSTEM ? resolvedTheme : theme;
+      window.localStorage.setItem(THEME_STORAGE_KEY, persisted);
+    }
   }, [theme, resolvedTheme]);
 
   const toggleTheme = () =>
