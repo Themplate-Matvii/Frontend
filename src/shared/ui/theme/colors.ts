@@ -20,6 +20,10 @@ export const colors = {
     light: "#eaf1fd",
     dark:  "#1e293b",
   },
+  card: {
+    light: "#eaf1fd",
+    dark:  "#1e293b",
+  },
 
   text: {
     light: "#111827",
@@ -36,6 +40,10 @@ export const colors = {
     dark:  "#334155",
   },
   muted: {
+    light: "#9ca3af",
+    dark:  "#64748b",
+  },
+  "muted-foreground": {
     light: "#9ca3af",
     dark:  "#64748b",
   },
