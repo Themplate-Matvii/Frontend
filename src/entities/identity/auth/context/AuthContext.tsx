@@ -16,6 +16,10 @@ import { useRouter } from "next/navigation";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 import { toast } from "@/shared/ui/toast/toast";
+import {
+  registerSessionExpiredHandler,
+  resetSessionExpiredNotification,
+} from "@/shared/lib/auth/session";
 
 type Ctx = {
   user: User | null;
@@ -39,6 +43,35 @@ export function AuthProvider({
   const [user, setUser] = useState<User | null>(initialUser);
   const [loading, setLoading] = useState<boolean>(!initialUser);
   const refreshInFlight = useRef<Promise<void> | null>(null);
+  const sessionExpiredHandled = useRef(false);
+
+  const performLogout = useCallback(
+    async (toastOptions?: {
+      variant: "success" | "error" | "info" | "warning";
+      title: string;
+      description?: string;
+    }) => {
+      setLoading(true);
+      try {
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          cache: "no-store",
+          credentials: "include",
+        });
+      } finally {
+        setUser(null);
+        setLoading(false);
+        router.replace("/auth/sign-in");
+        if (toastOptions) {
+          toast[toastOptions.variant](
+            toastOptions.title,
+            toastOptions.description,
+          );
+        }
+      }
+    },
+    [router],
+  );
 
   const refreshUser = useCallback(async () => {
     if (refreshInFlight.current) {
@@ -56,6 +89,8 @@ export function AuthProvider({
         if (res.ok) {
           const nextUser = (await res.json()) as User;
           setUser(nextUser);
+          resetSessionExpiredNotification();
+          sessionExpiredHandled.current = false;
         } else {
           setUser(null);
         }
@@ -80,23 +115,31 @@ export function AuthProvider({
   const login = useCallback((data: AuthResponse) => {
     setUser(data.user);
     setLoading(false);
+    resetSessionExpiredNotification();
+    sessionExpiredHandled.current = false;
   }, []);
 
   const logout = useCallback(async () => {
-    setLoading(true);
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        cache: "no-store",
-        credentials: "include",
-      });
-      toast.success(t(messages.notifications.auth.logoutSuccess));
-    } finally {
-      setUser(null);
-      setLoading(false);
-      router.replace("/auth/sign-in");
-    }
-  }, [router, t]);
+    await performLogout({
+      variant: "success",
+      title: t(messages.notifications.auth.logoutSuccess),
+    });
+  }, [performLogout, t]);
+
+  const handleSessionExpired = useCallback(async () => {
+    if (sessionExpiredHandled.current) return;
+    sessionExpiredHandled.current = true;
+    await performLogout({
+      variant: "warning",
+      title: t(messages.notifications.auth.sessionExpiredTitle),
+      description: t(messages.notifications.auth.sessionExpiredDescription),
+    });
+  }, [performLogout, t]);
+
+  useEffect(() => {
+    const unregister = registerSessionExpiredHandler(handleSessionExpired);
+    return () => unregister();
+  }, [handleSessionExpired]);
 
   const value = useMemo<Ctx>(
     () => ({

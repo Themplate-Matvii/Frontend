@@ -88,7 +88,6 @@ export default function UserMenu() {
                   setOpen(false);
                   try {
                     await logout();
-                    toast.success(t(messages.notifications.auth.logoutSuccess));
                   } catch (error: any) {
                     const message =
                       error?.response?.data?.message ||

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { I18N, ENV } from "@/shared/config";
 import { getCookie } from "@/shared/lib/cookies";
+import { notifySessionExpired } from "@/shared/lib/auth/session";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
@@ -56,12 +57,21 @@ apiClient.interceptors.response.use(
       (originalRequest as any).__skipAuthRefresh ||
       AUTH_ANY.some((re) => re.test(url));
 
+    if (!skip && error.response?.status === 401 && originalRequest._retry) {
+      notifySessionExpired();
+      return Promise.reject(error);
+    }
+
     if (!skip && error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise<string | null>((resolve, reject) =>
           failedQueue.push({ resolve, reject }),
         ).then((token) => {
-          if (token) originalRequest.headers.Authorization = `Bearer ${token}`;
+          if (token) {
+            originalRequest.headers =
+              originalRequest.headers || ({} as typeof originalRequest.headers);
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+          }
           return apiClient(originalRequest);
         });
       }
@@ -84,6 +94,7 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (err) {
         processQueue(err, null);
+        notifySessionExpired();
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

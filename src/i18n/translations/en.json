@@ -990,7 +990,9 @@
       "logoutSuccess": "You have been signed out.",
       "registerSuccess": "Your account has been created.",
       "resetLinkSent": "Password reset email sent.",
-      "passwordResetSuccess": "Your password has been updated."
+      "passwordResetSuccess": "Your password has been updated.",
+      "sessionExpiredTitle": "Session expired",
+      "sessionExpiredDescription": "Please sign in again to continue."
     },
     "contact": {
       "success": "Thanks! We will get back to you soon.",

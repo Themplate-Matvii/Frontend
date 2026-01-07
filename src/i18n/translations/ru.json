@@ -989,7 +989,9 @@
       "logoutSuccess": "Вы вышли из аккаунта.",
       "registerSuccess": "Аккаунт создан.",
       "resetLinkSent": "Письмо для сброса пароля отправлено.",
-      "passwordResetSuccess": "Пароль обновлён."
+      "passwordResetSuccess": "Пароль обновлён.",
+      "sessionExpiredTitle": "Сессия истекла",
+      "sessionExpiredDescription": "Пожалуйста, войдите снова, чтобы продолжить."
     },
     "contact": {
       "success": "Спасибо! Мы скоро свяжемся с вами.",

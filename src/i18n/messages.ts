@@ -996,6 +996,8 @@ export const messages = {
       registerSuccess: "notifications.auth.registerSuccess",
       resetLinkSent: "notifications.auth.resetLinkSent",
       passwordResetSuccess: "notifications.auth.passwordResetSuccess",
+      sessionExpiredTitle: "notifications.auth.sessionExpiredTitle",
+      sessionExpiredDescription: "notifications.auth.sessionExpiredDescription",
     },
     contact: {
       success: "notifications.contact.success",
