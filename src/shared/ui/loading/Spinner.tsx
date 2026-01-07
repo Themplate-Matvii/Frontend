@@ -1,24 +1,18 @@
 "use client";
 
-import { Theme } from "@/shared/ui";
-import { useTheme } from "@/shared/lib/theme";
 import * as React from "react";
 
 /** Simple inline spinner that adapts color to current theme */
 export default function Spinner({ size = 20 }: { size?: number }) {
-  const { theme } = useTheme();
-
   const s = size;
   const stroke = Math.max(2, Math.round(size / 10));
-  const colorClass =
-    theme === Theme.DARK ? "text-background" : "text-gray-900"; // adjust to match palette
 
   return (
     <svg
       width={s}
       height={s}
       viewBox="0 0 50 50"
-      className={`animate-spin text-text`}
+      className="animate-spin text-text"
       aria-hidden="true"
     >
       <circle

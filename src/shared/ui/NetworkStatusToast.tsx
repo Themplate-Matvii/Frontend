@@ -176,7 +176,7 @@ export default function NetworkStatusToast() {
             type="button"
             aria-label={t(messages.common.actions.close)}
             onClick={() => setVisible(false)}
-            className="ml-2 rounded-md p-1 text-current/70 hover:text-current hover:bg-black/5 dark:hover:bg-white/5 transition"
+            className="ml-2 rounded-md p-1 text-current/70 hover:text-current hover:bg-surface/60 transition"
           >
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
               <path

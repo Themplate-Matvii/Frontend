@@ -188,8 +188,8 @@ export function Sidebar({
       <aside
         className={clsx(
           "hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 z-10",
-          "bg-background text-text border-r border-border",
-          "transition-all duration-300 ease-in-out",
+          "bg-surface text-text border-r border-border",
+          "transition-[width] duration-300 ease-in-out motion-reduce:transition-none",
           isExpanded ? "md:w-64" : "md:w-16",
         )}
         onMouseEnter={onEnter}
@@ -247,18 +247,23 @@ export function Sidebar({
             className="w-full justify-center transition-all"
           >
             <LogOut size={18} className="shrink-0" />
-            {isExpanded && (
-              <span className="ml-2">
-                {t(messages.auth.logout)}
-              </span>
-            )}
+            <span
+              className={clsx(
+                "ml-2 overflow-hidden transition-[opacity,transform,max-width] duration-200 ease-in-out motion-reduce:transition-none",
+                isExpanded
+                  ? "max-w-[120px] opacity-100 translate-x-0"
+                  : "max-w-0 opacity-0 -translate-x-2",
+              )}
+            >
+              {t(messages.auth.logout)}
+            </span>
           </Button>
         </div>
       </aside>
 
       <div
         className={clsx(
-          "hidden md:block shrink-0",
+          "hidden md:block shrink-0 transition-[width] duration-300 ease-in-out motion-reduce:transition-none",
           isExpanded ? "w-64" : "w-16",
         )}
       />

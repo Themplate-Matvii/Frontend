@@ -251,7 +251,7 @@ export function MediaUploadField({
                 onClick={
                   "previewUrl" in displayPreview ? handleClearSelection : handleClearSaved
                 }
-                className="absolute right-1 top-1 rounded-full bg-white text-black flex justify-center items-center min-h-4 min-w-4 leading-none"
+                className="absolute right-1 top-1 rounded-full bg-background text-text border border-border flex justify-center items-center min-h-4 min-w-4 leading-none shadow-sm"
                 disabled={disabled}
               >
                 <X size={14} strokeWidth={2} className="w-3" />

@@ -35,8 +35,7 @@ export function GoogleButton({
       onClick={isInteractive ? handleClick : undefined}
       disabled={preview ? false : disabled || !isReady}
       className="w-full rounded-md border border-border px-3 py-2 text-sm transition flex items-center justify-center gap-2 disabled:opacity-60
-                 bg-white text-gray-900 hover:bg-gray-50
-                 dark:bg-[#111111] dark:text-white dark:hover:bg-black"
+                 bg-background text-text hover:bg-surface"
       aria-label={t(messages.auth.oauth.googleLabel)}
       title={t(messages.auth.oauth.googleLabel)}
     >

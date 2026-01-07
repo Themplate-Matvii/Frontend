@@ -26,23 +26,23 @@ export const SidebarMobileDrawer = ({
   const { t } = useI18n();
 
   return (
-    <div
-      className={clsx(
-        "md:hidden fixed inset-0 z-50 transition-opacity duration-300",
-        open ? "pointer-events-auto" : "pointer-events-none"
-      )}
+      <div
+        className={clsx(
+          "md:hidden fixed inset-0 z-50 transition-opacity duration-300 motion-reduce:transition-none",
+          open ? "pointer-events-auto" : "pointer-events-none"
+        )}
       aria-hidden={!open}
     >
       <div
         className={clsx(
-          "absolute inset-0 transition-opacity duration-300 bg-black/40",
+          "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none bg-black/40",
           open ? "opacity-100" : "opacity-0"
         )}
         onClick={onClose}
       />
       <div
         className={clsx(
-          "absolute inset-y-0 left-0 w-72 bg-background text-text border-r border-border transition-transform duration-300 ease-in-out flex flex-col",
+          "absolute inset-y-0 left-0 w-72 bg-surface text-text border-r border-border transition-transform duration-300 ease-in-out motion-reduce:transition-none flex flex-col",
           open ? "translate-x-0" : "-translate-x-full"
         )}
         role="dialog"

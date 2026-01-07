@@ -8,7 +8,7 @@
   --color-primarySoft: rgba(37, 99, 235, 0.12);
   --color-background: #ffffff;
   --color-surface: #eaf1fd;
-  --color-card: #ffffff;
+  --color-card: var(--color-surface);
   --color-text: #111827;
   --color-secondary: #6b7280;
   --color-border: #e5e7eb;
@@ -31,7 +31,7 @@
   --color-primarySoft: rgba(59, 130, 246, 0.18);
   --color-background: #0f172a;
   --color-surface: #1e293b;
-  --color-card: #0f172a;
+  --color-card: var(--color-surface);
   --color-text: #f8fafc;
   --color-secondary: #94a3b8;
   --color-border: #334155;

@@ -74,11 +74,18 @@ export const SidebarNavList = ({
     const active = isItemActive(item);
     const expanded = forceExpanded || isExpanded;
 
+    const labelClassName = clsx(
+      "truncate transition-[opacity,transform,max-width] duration-200 ease-in-out motion-reduce:transition-none",
+      expanded
+        ? "max-w-[160px] opacity-100 translate-x-0"
+        : "max-w-0 opacity-0 -translate-x-2",
+    );
+
     return (
       <Link
         href={item.href || "#"}
         className={clsx(
-          "group flex items-center rounded-md text-sm font-medium transition-all duration-200 border h-9 gap-3 px-2.5",
+          "group flex items-center rounded-md text-sm font-medium transition-[background-color,color,border-color,width] duration-200 border h-9 gap-3 px-2.5 motion-reduce:transition-none",
           expanded ? "h-9 gap-3 px-2.5" : "h-9 justify-center px-0",
           depth > 0 && expanded && "ml-2",
           active
@@ -100,7 +107,7 @@ export const SidebarNavList = ({
           />
         ) : null}
 
-        {expanded && <span className="truncate">{translate(item.label)}</span>}
+        <span className={labelClassName}>{translate(item.label)}</span>
 
         {expanded &&
           typeof item.badgeCount === "number" &&
@@ -129,7 +136,7 @@ export const SidebarNavList = ({
         <button
           type="button"
           className={clsx(
-            "w-full group flex items-center rounded-md text-sm font-medium transition-all duration-200 border h-9",
+            "w-full group flex items-center rounded-md text-sm font-medium transition-[background-color,color,border-color,width] duration-200 border h-9 motion-reduce:transition-none",
             isExpanded ? "px-2.5 gap-3" : "justify-center px-0",
             active
               ? "text-primary border-primary bg-primary/10"
@@ -148,11 +155,20 @@ export const SidebarNavList = ({
               )}
             />
           ) : null}
-          {isExpanded && <span className="truncate">{translate(item.label)}</span>}
+          <span
+            className={clsx(
+              "truncate transition-[opacity,transform,max-width] duration-200 ease-in-out motion-reduce:transition-none",
+              isExpanded
+                ? "max-w-[160px] opacity-100 translate-x-0"
+                : "max-w-0 opacity-0 -translate-x-2",
+            )}
+          >
+            {translate(item.label)}
+          </span>
           {isExpanded && (
             <ChevronDown
               className={clsx(
-                "ml-auto h-4 w-4 transition-transform", 
+                "ml-auto h-4 w-4 transition-transform motion-reduce:transition-none", 
                 isOpen ? "rotate-180" : "",
               )}
             />

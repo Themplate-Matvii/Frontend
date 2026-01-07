@@ -26,7 +26,7 @@ export const SidebarHeader = ({
   onMouseDownPin,
 }: SidebarHeaderProps) => {
   return (
-    <div className="relative flex items-center h-14 border-b border-border px-3 py-2">
+    <div className="relative flex items-center h-14 border-b border-border pl-3 pr-10 py-2">
       <div
         className={clsx(
           "flex items-center min-w-0 transition-all duration-200",
@@ -56,9 +56,9 @@ export const SidebarHeader = ({
             "absolute right-2 top-1/2 -translate-y-1/2",
             "h-8 w-8 !px-0 !py-0", // Removes default padding
             "rounded-md border border-border !text-text", // Matches original style
-            "hover:bg-surface !hover:text-text transition-all duration-300",
+            "hover:bg-surface !hover:text-text transition-all duration-300 motion-reduce:transition-none",
             !pinned && isHovering ? "rotate-180" : "rotate-0",
-            pinned ? "opacity-100" : isExpanded ? "opacity-100" : "opacity-0",
+            pinned ? "opacity-100" : isExpanded ? "opacity-100" : "opacity-0 pointer-events-none",
           )}
         >
           <ChevronLeft size={18} />

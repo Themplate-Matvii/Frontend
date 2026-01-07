@@ -70,19 +70,27 @@ export function BarChart({
     <div style={{ height }} className="w-full">
       <ResponsiveContainer>
         <RechartsBarChart data={data} margin={{ top: 10, right: 6, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.35)" />
-          <XAxis dataKey={xKey} tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+          <XAxis
+            dataKey={xKey}
+            tickLine={false}
+            axisLine={false}
+            tick={{ fill: "var(--color-muted)", fontSize: 12 }}
+          />
           <YAxis
             tickLine={false}
             axisLine={false}
             allowDecimals={false}
-            tick={{ fill: "#94a3b8", fontSize: 12 }}
+            tick={{ fill: "var(--color-muted)", fontSize: 12 }}
           />
           <Tooltip
             contentStyle={{
               borderRadius: 12,
-              border: "1px solid #e2e8f0",
-              boxShadow: "0 10px 25px rgba(15, 23, 42, 0.08)",
+              border: "1px solid var(--color-border)",
+              backgroundColor: "var(--color-background)",
+              color: "var(--color-text)",
+              boxShadow:
+                "0 10px 25px color-mix(in srgb, var(--color-text) 12%, transparent)",
             }}
             wrapperStyle={{ maxWidth: 320, wordBreak: "break-word" }}
             formatter={(value: any) =>

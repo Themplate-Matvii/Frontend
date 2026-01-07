@@ -99,19 +99,23 @@ export function Select({
       >
         <AriaButton
           className={clsx(
-            "flex h-[38px] w-full items-center justify-between gap-2 rounded-md border bg-background px-3 text-sm",
+            "relative flex h-[38px] w-full items-center gap-2 rounded-md border bg-background px-3 text-sm",
             "text-text shadow-sm transition focus:outline-none focus:ring-2 focus:ring-primary/30",
             isDisabled ? "opacity-60" : "cursor-pointer",
             invalid ? "border-danger" : "border-border",
-            isClearable && hasValue ? "pr-9" : "",
+            isClearable && hasValue ? "pr-16" : "pr-10",
           )}
         >
           <SelectValue>
-            {({ selectedText }) =>
-              selectedText || placeholderOption?.label || t(messages.common.actions.select)
-            }
+            {({ selectedText }) => (
+              <span className="flex-1 min-w-0 truncate">
+                {selectedText || placeholderOption?.label || t(messages.common.actions.select)}
+              </span>
+            )}
           </SelectValue>
-          <ChevronDown size={16} className="shrink-0 text-muted" />
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">
+            <ChevronDown size={16} className="shrink-0" />
+          </span>
         </AriaButton>
 
         {isClearable && hasValue && (
@@ -121,7 +125,7 @@ export function Select({
               event.stopPropagation();
               onChange(isMulti ? [] : "");
             }}
-            className="absolute right-8 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted hover:text-danger focus:outline-none focus:ring-2 focus:ring-danger/40"
+            className="absolute right-9 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted hover:text-danger focus:outline-none focus:ring-2 focus:ring-danger/40"
             aria-label={t(messages.common.actions.clear)}
           >
             <X size={12} />

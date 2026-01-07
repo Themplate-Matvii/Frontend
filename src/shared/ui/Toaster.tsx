@@ -24,7 +24,7 @@ export function AppToaster() {
         <div
           key={toast.id}
           className={clsx(
-            "rounded-xl border bg-white px-4 py-3 text-sm text-gray-900 shadow-lg",
+            "rounded-xl border bg-background px-4 py-3 text-sm text-text shadow-lg",
             toast.variant === "success" &&
               "border-success",
             toast.variant === "error" &&
@@ -42,7 +42,7 @@ export function AppToaster() {
               onClick={() => toastStore.remove(toast.id)}
               className={clsx(
                 "rounded-full p-1 transition-colors focus:outline-none focus:ring-2 cursor-pointer",
-                "text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:ring-primary/30",
+                "text-muted hover:text-text hover:bg-surface focus:ring-primary/30",
               )}
               aria-label={t(messages.common.actions.close)}
             >
