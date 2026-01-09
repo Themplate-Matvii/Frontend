@@ -219,6 +219,7 @@ export const messages = {
       sourceDevice: "media.upload.sourceDevice",
       sourceUrl: "media.upload.sourceUrl",
       previewUrl: "media.upload.previewUrl",
+      dropzoneText: "media.upload.dropzoneText",
       urlPlaceholder: "media.upload.urlPlaceholder",
       helper: "media.upload.helper",
       replace: "media.upload.replace",

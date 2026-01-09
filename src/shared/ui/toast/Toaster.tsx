@@ -1,26 +1,18 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { toastStore } from "@/shared/ui/toast/toast";
-import { ToastCard } from "@/shared/ui/toast/ToastCard";
+import { Toaster } from "sonner";
 
 export function AppToaster() {
-  const toasts = useSyncExternalStore(
-    toastStore.subscribe,
-    toastStore.getSnapshot,
-    toastStore.getSnapshot,
-  );
-  if (!toasts.length) return null;
-
   return (
-    <div className="fixed top-4 left-1/2 z-[70] -translate-x-1/2 z-[70] flex w-full max-w-sm flex-col gap-2 px-4 sm:px-0">
-      {toasts.map((toast) => (
-        <ToastCard
-          key={toast.id}
-          toast={toast}
-          onClose={() => toastStore.remove(toast.id)}
-        />
-      ))}
-    </div>
+    <Toaster
+      position="top-center"
+      visibleToasts={1}
+      expand
+      toastOptions={{
+        duration: 4000,
+        className:
+          "bg-transparent shadow-none border-0 p-0 m-0 pointer-events-auto",
+      }}
+    />
   );
 }

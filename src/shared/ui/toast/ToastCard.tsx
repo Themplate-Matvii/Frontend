@@ -1,6 +1,6 @@
 "use client";
 
-import { ToastItem } from "@/shared/ui/toast/toast";
+import type { ToastItem } from "@/shared/ui/toast/types";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 

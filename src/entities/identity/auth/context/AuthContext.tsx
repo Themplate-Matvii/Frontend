@@ -45,6 +45,17 @@ export function AuthProvider({
   const [loading, setLoading] = useState<boolean>(!initialUser);
   const refreshInFlight = useRef<Promise<void> | null>(null);
   const sessionExpiredHandled = useRef(false);
+  const hasSessionRef = useRef<boolean>(!!initialUser);
+
+  const persistSessionFlag = useCallback((nextValue: boolean) => {
+    hasSessionRef.current = nextValue;
+    if (typeof window === "undefined") return;
+    if (nextValue) {
+      window.localStorage.setItem("auth:has-session", "true");
+    } else {
+      window.localStorage.removeItem("auth:has-session");
+    }
+  }, []);
 
   const performLogout = useCallback(
     async (toastOptions?: {
@@ -63,6 +74,7 @@ export function AuthProvider({
         setUser(null);
         setLoading(false);
         router.replace("/auth/sign-in");
+        persistSessionFlag(false);
         if (toastOptions) {
           toast[toastOptions.variant](
             toastOptions.title,
@@ -71,7 +83,7 @@ export function AuthProvider({
         }
       }
     },
-    [router],
+    [persistSessionFlag, router],
   );
 
   const refreshUser = useCallback(async () => {
@@ -92,10 +104,14 @@ export function AuthProvider({
           setUser(nextUser);
           resetSessionExpiredNotification();
           sessionExpiredHandled.current = false;
+          persistSessionFlag(true);
         } else {
           setUser(null);
           if (res.status === 401 || res.status === 403) {
-            notifySessionExpired();
+            if (hasSessionRef.current) {
+              notifySessionExpired();
+              persistSessionFlag(false);
+            }
           }
         }
       } catch {
@@ -108,9 +124,14 @@ export function AuthProvider({
 
     refreshInFlight.current = refreshPromise;
     await refreshPromise;
-  }, []);
+  }, [persistSessionFlag]);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      hasSessionRef.current =
+        window.localStorage.getItem("auth:has-session") === "true" ||
+        hasSessionRef.current;
+    }
     if (!initialUser) {
       void refreshUser();
     }
@@ -121,18 +142,20 @@ export function AuthProvider({
     setLoading(false);
     resetSessionExpiredNotification();
     sessionExpiredHandled.current = false;
-  }, []);
+    persistSessionFlag(true);
+  }, [persistSessionFlag]);
 
   const logout = useCallback(async () => {
     await performLogout({
       variant: "success",
       title: t(messages.notifications.auth.logoutSuccess),
     });
-  }, [performLogout, t]);
+  }, [performLogout, persistSessionFlag, t]);
 
   const handleSessionExpired = useCallback(async () => {
     if (sessionExpiredHandled.current) return;
     sessionExpiredHandled.current = true;
+    persistSessionFlag(false);
     await performLogout({
       variant: "warning",
       title: t(messages.notifications.auth.sessionExpiredTitle),

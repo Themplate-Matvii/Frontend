@@ -224,6 +224,7 @@
       "sourceDevice": "From device",
       "sourceUrl": "From URL",
       "previewUrl": "Preview URL",
+      "dropzoneText": "Drag & drop an image here, or click to select from your device",
       "urlPlaceholder": "Paste image URL",
       "helper": "Supported formats: JPG, PNG, GIF.",
       "replace": "Replace",

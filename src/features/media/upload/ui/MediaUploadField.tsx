@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
+import { DropZone, FileTrigger } from "react-aria-components";
+import { isFileDropItem } from "react-aria";
 
 import { useI18n } from "@/shared/lib/i18n";
 import { messages } from "@/i18n/messages";
@@ -10,9 +12,10 @@ import type { MediaItem } from "@/entities/content/media/model/types";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
-import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
+import { Small, TextColorEnum } from "@/shared/ui/Typography";
 import { formatFileSize } from "@/shared/lib/files";
-import { X } from "lucide-react";
+import { Info, X } from "lucide-react";
+import Tooltip from "@/shared/ui/Tooltip";
 
 export type MediaUploadSelection =
   | {
@@ -58,7 +61,6 @@ export function MediaUploadField({
 }: MediaUploadFieldProps) {
   const { t } = useI18n();
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const filePreviewRef = useRef<string | null>(null);
 
   const [mode, setMode] = useState<UploadMode>("file");
@@ -101,8 +103,7 @@ export function MediaUploadField({
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileSelection = (file: File | null) => {
     if (!file || disabled) return;
 
     const previewUrl = URL.createObjectURL(file);
@@ -122,6 +123,10 @@ export function MediaUploadField({
     setFileSelection(selection);
     setMode("file");
     onSelectionChange?.(selection);
+  };
+
+  const handleFileChange = (files: FileList | null) => {
+    handleFileSelection(files?.[0] ?? null);
   };
 
   const handleUrlChange = (value: string) => {
@@ -264,31 +269,52 @@ export function MediaUploadField({
         )}
 
         {mode === "file" ? (
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="flex flex-col gap-1">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-                disabled={disabled}
-              />
-              <Button
-                type="button"
-                size={ButtonSizeEnum.md}
-                variant={ButtonVariantEnum.secondary}
-                onClick={() => fileInputRef.current?.click()}
-                disabled={disabled}
-                className="sm:w-auto w-full"
+          <div className="flex flex-col gap-2">
+            <FileTrigger
+              acceptedFileTypes={["image/*"]}
+              allowsMultiple={false}
+              onSelect={handleFileChange}
+            >
+              <DropZone
+                isDisabled={disabled}
+                onDrop={async (event) => {
+                  if (disabled) return;
+                  for (const item of event.items) {
+                    if (isFileDropItem(item)) {
+                      const file = await item.getFile();
+                      handleFileSelection(file);
+                      break;
+                    }
+                  }
+                }}
+                className={({ isDropTarget, isFocusVisible }) =>
+                  clsx(
+                    "flex w-full items-center justify-between gap-3 rounded-lg border border-dashed px-4 py-4 text-sm transition",
+                    "bg-surface/50 text-secondary",
+                    isDropTarget && "border-primary bg-primary/5 text-text",
+                    isFocusVisible && "ring-2 ring-primary/30",
+                    disabled
+                      ? "cursor-not-allowed opacity-60"
+                      : "cursor-pointer hover:border-primary/60 hover:bg-primary/5",
+                  )
+                }
               >
-                {t(messages.media.upload.selectFile)}
-              </Button>
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm text-text">
+                    {t(messages.media.upload.dropzoneText)}
+                  </span>
+                  <span className="text-xs text-secondary">
+                    {t(messages.media.upload.deviceHint)}
+                  </span>
+                </div>
 
-              <Small color={TextColorEnum.Secondary} className="flex-1">
-                {t(messages.media.upload.deviceHint)}
-              </Small>
-            </div>
+                <Tooltip content={t(messages.media.upload.helper)}>
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted">
+                    <Info size={16} />
+                  </span>
+                </Tooltip>
+              </DropZone>
+            </FileTrigger>
           </div>
         ) : (
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
