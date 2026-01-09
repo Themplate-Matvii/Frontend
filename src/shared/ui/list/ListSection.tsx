@@ -66,8 +66,6 @@ export function ListSection<T>({
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
   const currentPage = data?.page ?? page;
-  const showSkeleton = isLoading && items.length === 0;
-
   const showList = canView && !authLoading;
 
   return (
@@ -86,18 +84,17 @@ export function ListSection<T>({
             />
           )}
 
-          {!isError && items.length === 0 && !isLoading && (
-            <EmptyState
-              titleKey={emptyTitleKey}
-              descriptionKey={emptyDescriptionKey}
-            />
-          )}
-
-          <div className="relative" aria-busy={isLoading}>
-            <LoadingOverlay loading={isLoading && items.length > 0} />
-
-            {!isError && showSkeleton && (
-              <ListSkeleton rows={Math.min(pageSize, 6)} />
+          <LoadingOverlay
+            loading={isLoading}
+            variant={items.length > 0 ? "spinner" : "skeleton"}
+            skeleton={<ListSkeleton rows={Math.min(pageSize, 6)} />}
+            className="min-h-[240px] rounded-lg"
+          >
+            {!isError && items.length === 0 && !isLoading && (
+              <EmptyState
+                titleKey={emptyTitleKey}
+                descriptionKey={emptyDescriptionKey}
+              />
             )}
 
             {!isError && items.length > 0 && (
@@ -111,7 +108,7 @@ export function ListSection<T>({
                 ))}
               </div>
             )}
-          </div>
+          </LoadingOverlay>
 
           {!isError && items.length > 0 && totalPages > 1 && (
             <Pagination

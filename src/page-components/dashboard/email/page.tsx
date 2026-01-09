@@ -216,6 +216,7 @@ export const DashboardEmailPage = () => {
     <PageShell>
       <LoadingOverlay
         loading={templatesLoading || brandingLoading || usersLoading}
+        isGlobal
       />
       <Container>
         <PageHeader

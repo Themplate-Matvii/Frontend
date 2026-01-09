@@ -146,65 +146,65 @@ export const DashboardAccountPage = () => {
 
         <section className="flex flex-col gap-8 lg:flex-row">
           <div className="space-y-6 lg:basis-3/5 lg:flex-1">
-            <SectionCard
-              title={t(messages.dashboard.account.profileTitle)}
-              description={t(messages.dashboard.account.profileDescription)}
-            >
-              <form onSubmit={handleNameSubmit} className="space-y-4 relative">
-                <LoadingOverlay loading={loading} />
+            <LoadingOverlay loading={loading} className="rounded-xl">
+              <SectionCard
+                title={t(messages.dashboard.account.profileTitle)}
+                description={t(messages.dashboard.account.profileDescription)}
+              >
+                <form onSubmit={handleNameSubmit} className="space-y-4">
+                  <Field id="name" label={t(messages.validation.nameLabel)}>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      placeholder={t(messages.validation.namePlaceholder)}
+                    />
+                  </Field>
 
-                <Field id="name" label={t(messages.validation.nameLabel)}>
-                  <Input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder={t(messages.validation.namePlaceholder)}
+                  <MediaUploadField
+                    label={t(messages.media.fields.avatarLabel)}
+                    savedMedia={avatar}
+                    onSavedChange={(media) => {
+                      setAvatar(media);
+                      setAvatarSelection(null);
+                    }}
+                    onSelectionChange={(selection) => {
+                      setAvatarSelection(selection);
+                      setUploadError(null);
+                    }}
+                    error={uploadError}
+                    disabled={loading || uploadMedia.isPending}
                   />
-                </Field>
 
-                <MediaUploadField
-                  label={t(messages.media.fields.avatarLabel)}
-                  savedMedia={avatar}
-                  onSavedChange={(media) => {
-                    setAvatar(media);
-                    setAvatarSelection(null);
-                  }}
-                  onSelectionChange={(selection) => {
-                    setAvatarSelection(selection);
-                    setUploadError(null);
-                  }}
-                  error={uploadError}
-                  disabled={loading || uploadMedia.isPending}
-                />
+                  <div className="space-y-1">
+                    <Small className="uppercase tracking-wide font-medium">
+                      {t(messages.auth.email)}
+                    </Small>
+                    <P className="text-sm font-medium">{user?.email}</P>
+                  </div>
 
-                <div className="space-y-1">
-                  <Small className="uppercase tracking-wide font-medium">
-                    {t(messages.auth.email)}
-                  </Small>
-                  <P className="text-sm font-medium">{user?.email}</P>
-                </div>
-
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    size={ButtonSizeEnum.md}
-                    variant={ButtonVariantEnum.primary}
-                    disabled={
-                      loading ||
-                      !name ||
-                      (name === user?.name &&
-                        avatar?.id === user?.avatar?.id &&
-                        !avatarSelection)
-                    }
-                    className="flex items-center gap-2"
-                  >
-                    {loading && <Spinner size={16} />}
-                    <span>{t(messages.common.actions.saveChanges)}</span>
-                  </Button>
-                </div>
-              </form>
-            </SectionCard>
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      size={ButtonSizeEnum.md}
+                      variant={ButtonVariantEnum.primary}
+                      disabled={
+                        loading ||
+                        !name ||
+                        (name === user?.name &&
+                          avatar?.id === user?.avatar?.id &&
+                          !avatarSelection)
+                      }
+                      className="flex items-center gap-2"
+                    >
+                      {loading && <Spinner size={16} />}
+                      <span>{t(messages.common.actions.saveChanges)}</span>
+                    </Button>
+                  </div>
+                </form>
+              </SectionCard>
+            </LoadingOverlay>
           </div>
 
           <div className="space-y-6 lg:basis-2/5 lg:flex-1">

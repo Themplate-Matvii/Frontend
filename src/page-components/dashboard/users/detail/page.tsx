@@ -317,70 +317,70 @@ export const DashboardUserDetailPage = () => {
         {showContent && viewedUser && (
           <section className="flex flex-col gap-8 lg:flex-row">
             <div className="space-y-6 lg:basis-3/5 lg:flex-1">
-              <SectionCard
-                title={t(messages.dashboard.users.detail.infoTitle)}
-                description={viewedUser.email}
-                bodyClassName="space-y-4"
-              >
-                <form onSubmit={handleSubmit} className="space-y-4 relative">
-                  <LoadingOverlay loading={saving} />
-
-                  <Field
-                    id="user-name"
-                    label={t(messages.validation.nameLabel)}
-                  >
-                    <Input
+              <LoadingOverlay loading={saving} className="rounded-xl">
+                <SectionCard
+                  title={t(messages.dashboard.users.detail.infoTitle)}
+                  description={viewedUser.email}
+                  bodyClassName="space-y-4"
+                >
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <Field
                       id="user-name"
-                      type="text"
-                      value={name}
-                      onChange={(event) => setName(event.target.value)}
-                      placeholder={t(messages.validation.namePlaceholder)}
-                      disabled={!canEditAnyUsers || saving}
-                    />
-                  </Field>
-
-                  <MediaUploadField
-                    label={t(messages.media.fields.avatarLabel)}
-                    savedMedia={avatar}
-                    onSavedChange={(media) => {
-                      setAvatar(media);
-                      setAvatarSelection(null);
-                    }}
-                    onSelectionChange={(selection) => {
-                      setAvatarSelection(selection);
-                      setUploadError(null);
-                    }}
-                    error={uploadError}
-                    disabled={
-                      !canEditAnyUsers || saving || uploadMedia.isPending
-                    }
-                  />
-
-                  <div className="flex justify-end">
-                    <Button
-                      type="submit"
-                      size={ButtonSizeEnum.md}
-                      variant={ButtonVariantEnum.primary}
-                      disabled={
-                        !canEditAnyUsers ||
-                        saving ||
-                        (name === viewedUser.name &&
-                          avatar?.id === viewedUser.avatar?.id &&
-                          !avatarSelection)
-                      }
+                      label={t(messages.validation.nameLabel)}
                     >
-                      {saving ? (
-                        <span className="inline-flex items-center gap-2">
-                          <Spinner size={16} />
-                          {t(messages.common.actions.saveChanges)}
-                        </span>
-                      ) : (
-                        t(messages.common.actions.saveChanges)
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </SectionCard>
+                      <Input
+                        id="user-name"
+                        type="text"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        placeholder={t(messages.validation.namePlaceholder)}
+                        disabled={!canEditAnyUsers || saving}
+                      />
+                    </Field>
+
+                    <MediaUploadField
+                      label={t(messages.media.fields.avatarLabel)}
+                      savedMedia={avatar}
+                      onSavedChange={(media) => {
+                        setAvatar(media);
+                        setAvatarSelection(null);
+                      }}
+                      onSelectionChange={(selection) => {
+                        setAvatarSelection(selection);
+                        setUploadError(null);
+                      }}
+                      error={uploadError}
+                      disabled={
+                        !canEditAnyUsers || saving || uploadMedia.isPending
+                      }
+                    />
+
+                    <div className="flex justify-end">
+                      <Button
+                        type="submit"
+                        size={ButtonSizeEnum.md}
+                        variant={ButtonVariantEnum.primary}
+                        disabled={
+                          !canEditAnyUsers ||
+                          saving ||
+                          (name === viewedUser.name &&
+                            avatar?.id === viewedUser.avatar?.id &&
+                            !avatarSelection)
+                        }
+                      >
+                        {saving ? (
+                          <span className="inline-flex items-center gap-2">
+                            <Spinner size={16} />
+                            {t(messages.common.actions.saveChanges)}
+                          </span>
+                        ) : (
+                          t(messages.common.actions.saveChanges)
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </SectionCard>
+              </LoadingOverlay>
             </div>
 
             <div className="space-y-6 lg:basis-2/5 lg:flex-1">

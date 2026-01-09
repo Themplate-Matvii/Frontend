@@ -17,7 +17,6 @@ import { ItemCard } from "@/shared/ui/list/ItemCard";
 import { FeedbackPreview } from "@/entities/communication/feedback";
 import { ListSection } from "@/shared/ui/list/ListSection";
 import { sortEnum } from "@/shared/types/api/pagination";
-import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
 
 export const DashboardFeedbackPage = () => {
   const { t } = useI18n();
