@@ -463,7 +463,7 @@ export const DashboardBusinessAnalyticsPage = () => {
           </div>
         </SectionCard>
 
-        <LoadingOverlay loading={isLoading} />
+        <LoadingOverlay loading={isLoading} isGlobal />
 
         {isError && (
           <SectionCard>

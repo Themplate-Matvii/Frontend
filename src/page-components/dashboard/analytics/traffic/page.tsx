@@ -349,7 +349,7 @@ export const DashboardTrafficAnalyticsPage = () => {
           </div>
         </SectionCard>
 
-        <LoadingOverlay loading={isLoading} />
+        <LoadingOverlay loading={isLoading} isGlobal />
 
         {isError && (
           <SectionCard>

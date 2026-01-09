@@ -52,6 +52,7 @@
       "title": "Insufficient permissions",
       "description": "You don’t have permission to perform this action."
     },
+    "loading": "Loading",
     "aiCreditsLabel": "AI credits",
     "logoAlt": "Company logo"
   },

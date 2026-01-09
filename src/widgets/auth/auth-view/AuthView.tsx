@@ -50,61 +50,60 @@ export const AuthView = ({
   return (
     <PageShell>
       <Container size={ContainerSizeEnum.Narrow} className="py-16">
-        <div
-          className={[
-            "relative bg-surface border border-border rounded-xl",
-            "shadow-[0_8px_20px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
-            "p-8 sm:p-10 w-full mx-auto",
-            maxWidthClassName,
-            className,
-          ]
-            .filter(Boolean)
-            .join(" ")}
-        >
-          {/* Loading overlay */}
-          <LoadingOverlay loading={loading} />
+        <LoadingOverlay loading={loading} className="rounded-xl">
+          <div
+            className={[
+              "bg-surface border border-border rounded-xl",
+              "shadow-[0_8px_20px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
+              "p-8 sm:p-10 w-full mx-auto",
+              maxWidthClassName,
+              className,
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {/* Header */}
+            <H1 className="mb-2">{title}</H1>
+            {description ? <Lead className="mb-6">{description}</Lead> : null}
 
-          {/* Header */}
-          <H1 className="mb-2">{title}</H1>
-          {description ? <Lead className="mb-6">{description}</Lead> : null}
+            {/* Alerts above the form */}
+            {topAlertSlot}
 
-          {/* Alerts above the form */}
-          {topAlertSlot}
+            {/* Injected form */}
+            {form}
 
-          {/* Injected form */}
-          {form}
+            {/* Social section */}
+            {socialSlot ? (
+              <>
+                <div className="my-6 flex items-center gap-3">
+                  <div className="h-px flex-1 bg-border" />
+                  {dividerLabel ? (
+                    <Small color={TextColorEnum.Muted}>{dividerLabel}</Small>
+                  ) : null}
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                {socialSlot}
+              </>
+            ) : null}
 
-          {/* Social section */}
-          {socialSlot ? (
-            <>
-              <div className="my-6 flex items-center gap-3">
-                <div className="h-px flex-1 bg-border" />
-                {dividerLabel ? (
-                  <Small color={TextColorEnum.Muted}>{dividerLabel}</Small>
-                ) : null}
-                <div className="h-px flex-1 bg-border" />
+            {/* Links row */}
+            {linksRowSlot ? (
+              <div className="mt-4 flex flex-col sm:flex-row items-center justify-between text-sm gap-2 sm:gap-0 text-center">
+                {linksRowSlot}
               </div>
-              {socialSlot}
-            </>
-          ) : null}
+            ) : null}
 
-          {/* Links row */}
-          {linksRowSlot ? (
-            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between text-sm gap-2 sm:gap-0 text-center">
-              {linksRowSlot}
-            </div>
-          ) : null}
-
-          {/* Footer note */}
-          {footerNote ? (
-            <Small
-              color={TextColorEnum.Muted}
-              className="block text-center mt-6 border-t border-border pt-4"
-            >
-              {footerNote}
-            </Small>
-          ) : null}
-        </div>
+            {/* Footer note */}
+            {footerNote ? (
+              <Small
+                color={TextColorEnum.Muted}
+                className="block text-center mt-6 border-t border-border pt-4"
+              >
+                {footerNote}
+              </Small>
+            ) : null}
+          </div>
+        </LoadingOverlay>
       </Container>
     </PageShell>
   );

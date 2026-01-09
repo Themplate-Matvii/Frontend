@@ -197,63 +197,64 @@ export const DashboardMediaDetailPage = () => {
 
         {media && canViewMedia && !loading && !isError && (
           <section className="flex flex-col gap-8 lg:flex-row">
-            <SectionCard
-              className="space-y-6 lg:basis-3/5 lg:flex-1"
-              title={t(messages.dashboard.media.detail.infoTitle)}
-            >
-              <div className="relative space-y-4">
-                <LoadingOverlay loading={saving} />
-                <ItemCard canDelete={false} canEdit={false}>
-                  <MediaPreview media={media} />
-                </ItemCard>
+            <LoadingOverlay loading={saving} className="rounded-xl">
+              <SectionCard
+                className="space-y-6 lg:basis-3/5 lg:flex-1"
+                title={t(messages.dashboard.media.detail.infoTitle)}
+              >
+                <div className="space-y-4">
+                  <ItemCard canDelete={false} canEdit={false}>
+                    <MediaPreview media={media} />
+                  </ItemCard>
 
-                <form onSubmit={handleSave} className="space-y-4">
-                  <Field
-                    id="media-name"
-                    label={t(messages.dashboard.media.detail.fields.name)}
-                  >
-                    <Input
+                  <form onSubmit={handleSave} className="space-y-4">
+                    <Field
                       id="media-name"
-                      value={name}
-                      onChange={(event) => setName(event.target.value)}
-                      disabled={saving || !canEditMedia}
-                    />
-                  </Field>
-
-                  <Field
-                    id="media-description"
-                    label={t(
-                      messages.dashboard.media.detail.fields.description,
-                    )}
-                  >
-                    <Input
-                      id="media-description"
-                      value={description}
-                      onChange={(event) => setDescription(event.target.value)}
-                      disabled={saving || !canEditMedia}
-                    />
-                  </Field>
-
-                  <div className="flex justify-end">
-                    <Button
-                      type="submit"
-                      size={ButtonSizeEnum.md}
-                      variant={ButtonVariantEnum.primary}
-                      disabled={saving || !hasChanges || !canEditMedia}
+                      label={t(messages.dashboard.media.detail.fields.name)}
                     >
-                      {saving ? (
-                        <span className="inline-flex items-center gap-2">
-                          <Spinner size={16} />
-                          {t(messages.common.actions.saveChanges)}
-                        </span>
-                      ) : (
-                        t(messages.common.actions.saveChanges)
+                      <Input
+                        id="media-name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        disabled={saving || !canEditMedia}
+                      />
+                    </Field>
+
+                    <Field
+                      id="media-description"
+                      label={t(
+                        messages.dashboard.media.detail.fields.description,
                       )}
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </SectionCard>
+                    >
+                      <Input
+                        id="media-description"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                        disabled={saving || !canEditMedia}
+                      />
+                    </Field>
+
+                    <div className="flex justify-end">
+                      <Button
+                        type="submit"
+                        size={ButtonSizeEnum.md}
+                        variant={ButtonVariantEnum.primary}
+                        disabled={saving || !hasChanges || !canEditMedia}
+                      >
+                        {saving ? (
+                          <span className="inline-flex items-center gap-2">
+                            <Spinner size={16} />
+                            {t(messages.common.actions.saveChanges)}
+                          </span>
+                        ) : (
+                          t(messages.common.actions.saveChanges)
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+              </SectionCard>
+            </LoadingOverlay>
             <div className="space-y-6 lg:basis-2/5 lg:flex-1">
               <SectionCard title={t(messages.dashboard.media.detail.metaTitle)}>
                 <div className="space-y-3">

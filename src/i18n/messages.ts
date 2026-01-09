@@ -47,6 +47,7 @@ export const messages = {
       title: "common.noPermission.title",
       description: "common.noPermission.description",
     },
+    loading: "common.loading",
     aiCreditsLabel: "common.aiCreditsLabel",
     logoAlt: "common.logoAlt",
   },
