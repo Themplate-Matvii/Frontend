@@ -38,7 +38,13 @@ export function UserAvatar({
     (user?.name || user?.email ? `User: ${user?.name || user?.email}` : "User");
   
   if (user?.avatar) {
-    return <img src={user?.avatar.url} alt={user?.avatar.name} className="min-h-10 min-w-10 h-10 w-10 object-cover rounded-full inline-flex select-none items-center justify-centervtext-sm font-semibold uppercasevbg-primary text-white" />
+    return (
+      <img
+        src={user?.avatar.url}
+        alt={user?.avatar.name}
+        className="min-h-10 min-w-10 h-10 w-10 object-cover rounded-full inline-flex select-none items-center justify-center text-sm font-semibold uppercase bg-primary text-onPrimary"
+      />
+    );
   }
 
   return (
@@ -49,7 +55,7 @@ export function UserAvatar({
         "min-h-10 min-w-10 rounded-full",
         "inline-flex select-none items-center justify-center",
         "text-sm font-semibold uppercase",
-        "bg-primary text-white",
+        "bg-primary text-onPrimary",
         className || "",
       ]
         .filter(Boolean)

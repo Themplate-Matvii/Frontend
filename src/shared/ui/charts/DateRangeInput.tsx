@@ -141,7 +141,7 @@ export function DateRangeInput({
                   {(date) => (
                     <CalendarCell
                       date={date}
-                      className="mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sm transition data-[outside-visible-range]:text-muted/50 data-[disabled]:text-muted/40 data-[hovered]:bg-primary/10 data-[selected]:bg-primary/15 data-[selected]:text-text data-[selection-start]:bg-primary data-[selection-start]:text-white data-[selection-end]:bg-primary data-[selection-end]:text-white"
+                      className="mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sm transition data-[outside-visible-range]:text-muted/50 data-[disabled]:text-muted/40 data-[hovered]:bg-primary/10 data-[selected]:bg-primary/15 data-[selected]:text-text data-[selection-start]:bg-primary data-[selection-start]:text-onPrimary data-[selection-end]:bg-primary data-[selection-end]:text-onPrimary"
                     />
                   )}
                 </CalendarGridBody>

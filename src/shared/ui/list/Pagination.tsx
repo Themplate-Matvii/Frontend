@@ -110,7 +110,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 "min-w-[2rem] rounded-md px-2 py-1 text-xs border border-transparent",
                 "hover:bg-muted/60 transition-colors",
                 isActive &&
-                  "bg-primary text-white border-primary",
+                  "bg-primary text-onPrimary border-primary",
               )}
             >
               {value}

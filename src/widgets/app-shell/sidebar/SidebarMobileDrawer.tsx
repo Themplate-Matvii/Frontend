@@ -35,7 +35,7 @@ export const SidebarMobileDrawer = ({
     >
       <div
         className={clsx(
-          "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none bg-black/40",
+          "absolute inset-0 transition-opacity duration-300 motion-reduce:transition-none bg-overlay",
           open ? "opacity-100" : "opacity-0"
         )}
         onClick={onClose}

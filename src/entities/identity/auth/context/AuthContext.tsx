@@ -18,6 +18,7 @@ import { useI18n } from "@/shared/lib/i18n";
 import { toast } from "@/shared/ui/toast/toast";
 import {
   registerSessionExpiredHandler,
+  notifySessionExpired,
   resetSessionExpiredNotification,
 } from "@/shared/lib/auth/session";
 
@@ -93,6 +94,9 @@ export function AuthProvider({
           sessionExpiredHandled.current = false;
         } else {
           setUser(null);
+          if (res.status === 401 || res.status === 403) {
+            notifySessionExpired();
+          }
         }
       } catch {
         setUser(null);
