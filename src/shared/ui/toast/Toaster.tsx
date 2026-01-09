@@ -6,7 +6,6 @@ export function AppToaster() {
   return (
     <Toaster
       position="top-center"
-      offset={16}
       toastOptions={{
         duration: 4000,
         className:
