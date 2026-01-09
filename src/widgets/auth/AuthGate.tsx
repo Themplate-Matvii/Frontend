@@ -18,7 +18,8 @@ export default function AuthGate({
   children,
   redirectTo,
 }: AuthGateProps) {
-  const { user, loading } = useAuth();
+  const { user, status } = useAuth();
+  const loading = status === "loading";
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
