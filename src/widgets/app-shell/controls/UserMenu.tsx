@@ -75,7 +75,7 @@ export default function UserMenu() {
               <Link
                 href="/dashboard"
                 role="menuitem"
-                className="block w-full text-left px-3 py-2 text-sm whitespace-nowrap text-text transition-colors hover:bg-primaryHover hover:text-white active:bg-primary active:text-white"
+                className="block w-full text-left px-3 py-2 text-sm whitespace-nowrap text-text transition-colors hover:bg-primaryHover hover:text-onPrimary active:bg-primary active:text-onPrimary"
                 onClick={() => setOpen(false)}
               >
                 {t(messages.dashboard.sidebar.items.dashboard)}
@@ -96,7 +96,7 @@ export default function UserMenu() {
                   }
                   requestAnimationFrame(() => buttonRef.current?.focus());
                 }}
-                className="block w-full text-left px-3 py-2 text-sm whitespace-nowrap text-text transition-colors hover:bg-primaryHover hover:text-white active:bg-primary active:text-white"
+                className="block w-full text-left px-3 py-2 text-sm whitespace-nowrap text-text transition-colors hover:bg-primaryHover hover:text-onPrimary active:bg-primary active:text-onPrimary"
               >
                 {t(messages.auth.logout)}
               </button>

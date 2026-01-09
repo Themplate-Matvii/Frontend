@@ -58,7 +58,7 @@ export function ItemCard({
                 "!min-w-10 min-h-10 !p-0",
               )}
             >
-              <Pencil size={16} className="text-white" />
+              <Pencil size={16} className="text-onPrimary" />
             </Button>
           </Tooltip>
         )}
@@ -72,7 +72,7 @@ export function ItemCard({
                 "!min-w-10 min-h-10 !p-0",
               )}
             >
-              <Trash2 size={16} className="text-white" />
+              <Trash2 size={16} className="text-onPrimary" />
             </Button>
           </Tooltip>
         )}

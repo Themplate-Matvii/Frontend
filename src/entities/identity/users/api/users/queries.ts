@@ -7,6 +7,7 @@ import {
 import { UpdateUserRequest, User, UsersPaginationParams } from "@/entities/identity/users/model/user/types";
 import { userService } from "./service";
 import { Paginated } from "@/shared/types/api/pagination";
+import { notifySessionExpired } from "@/shared/lib/auth/session";
 
 // Get current user
 export const useCurrentUser = (options?: Partial<UseQueryOptions<User>>) => {
@@ -19,6 +20,9 @@ export const useCurrentUser = (options?: Partial<UseQueryOptions<User>>) => {
       });
 
       if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          notifySessionExpired();
+        }
         throw new Error(`ME_${res.status}`);
       }
 

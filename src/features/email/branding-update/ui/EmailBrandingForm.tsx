@@ -9,6 +9,7 @@ import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import { Small } from "@/shared/ui/Typography";
 import { Skeleton } from "@/shared/ui/loading/Skeleton";
+import { defaultEmailBrandingColors } from "@/entities/communication/email/branding/lib/defaults";
 
 type EmailBrandingFormProps = {
   value: EmailBranding;
@@ -119,7 +120,12 @@ export function EmailBrandingForm({
                 id={field.key}
                 type="color"
                 className="h-10 w-14 p-1"
-                value={(value[field.key] as string) ?? "#4f46e5"}
+                value={
+                  (value[field.key] as string) ??
+                  defaultEmailBrandingColors[
+                    field.key as keyof typeof defaultEmailBrandingColors
+                  ]
+                }
                 onChange={(e) => updateField(field.key, e.target.value)}
               />
               <Input

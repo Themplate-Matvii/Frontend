@@ -30,14 +30,11 @@ import { EmailPreviewModal } from "@/features/email/preview";
 import { SendEmailModal } from "@/features/email/send";
 import { MarketingTemplateModal } from "@/features/email/marketing-template";
 import { toast } from "@/shared/ui/toast/toast";
+import { defaultEmailBrandingColors } from "@/entities/communication/email/branding/lib/defaults";
 
 const getDefaultBranding = (t: (key: string) => string): EmailBranding => ({
   brandName: t(messages.dashboard.email.branding.defaults.brandName),
-  primaryColor: "#2563eb",
-  secondaryColor: "#111827",
-  accentColor: "#22d3ee",
-  backgroundColor: "#0b1224",
-  textColor: "#e5e7eb",
+  ...defaultEmailBrandingColors,
   footerText: t(messages.dashboard.email.branding.defaults.footerText),
   supportEmail: t(messages.dashboard.email.branding.defaults.supportEmail),
   supportUrl: t(messages.dashboard.email.branding.defaults.supportUrl),

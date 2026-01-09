@@ -144,7 +144,7 @@ export function Select({
               <ListBoxItem
                 id={item.value}
                 textValue={item.label}
-                className="cursor-pointer rounded-md px-3 py-2 outline-none transition-colors focus:bg-primary/10 focus:text-text data-[hovered]:bg-primary/10 data-[selected]:bg-primary data-[selected]:text-white data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary/40"
+                className="cursor-pointer rounded-md px-3 py-2 outline-none transition-colors focus:bg-primary/10 focus:text-text data-[hovered]:bg-primary/10 data-[selected]:bg-primary data-[selected]:text-onPrimary data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary/40"
               >
                 {item.label}
               </ListBoxItem>

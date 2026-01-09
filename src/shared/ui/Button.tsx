@@ -47,7 +47,7 @@ export function Button({
         //
         !disabled &&
           variant === ButtonVariantEnum.primary &&
-          "bg-primary text-white hover:bg-primaryHover",
+          "bg-primary text-onPrimary hover:bg-primaryHover",
 
         //
         // secondary
@@ -59,7 +59,7 @@ export function Button({
             "inline-flex items-center justify-center",
             "rounded-md border border-border",
             "bg-surface text-text",
-            "hover:bg-secondary hover:text-white transition-all duration-300"
+            "hover:bg-secondary hover:text-onPrimary transition-all duration-300"
           ),
 
         //
@@ -67,14 +67,14 @@ export function Button({
         //
         !disabled &&
           variant === ButtonVariantEnum.danger &&
-          "bg-danger text-white hover:opacity-90",
+          "bg-danger text-onPrimary hover:opacity-90",
 
         //
         // icon
         //
         !disabled &&
           isIcon &&
-          "bg-primary text-white hover:bg-primaryHover",
+          "bg-primary text-onPrimary hover:bg-primaryHover",
 
         //
         // ghost

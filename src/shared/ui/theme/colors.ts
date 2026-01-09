@@ -11,6 +11,22 @@ export const colors = {
     light: "rgba(37, 99, 235, 0.12)",
     dark:  "rgba(59, 130, 246, 0.18)",
   },
+  onPrimary: {
+    light: "#ffffff",
+    dark:  "#ffffff",
+  },
+  onPrimaryMuted: {
+    light: "rgba(255, 255, 255, 0.8)",
+    dark:  "rgba(255, 255, 255, 0.82)",
+  },
+  onPrimarySoft: {
+    light: "rgba(255, 255, 255, 0.1)",
+    dark:  "rgba(255, 255, 255, 0.14)",
+  },
+  overlay: {
+    light: "rgba(15, 23, 42, 0.4)",
+    dark:  "rgba(15, 23, 42, 0.6)",
+  },
 
   background: {
     light: "#ffffff",

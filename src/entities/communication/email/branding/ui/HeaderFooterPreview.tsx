@@ -25,10 +25,10 @@ export function HeaderFooterPreview({
 }: HeaderFooterPreviewProps) {
   const { t } = useI18n();
 
-  const primary = branding?.primaryColor ?? "#2563eb";
-  const background = branding?.backgroundColor ?? "#0b1224";
-  const textColor = branding?.textColor ?? "#e5e7eb";
-  const accent = branding?.accentColor ?? "#22d3ee";
+  const primary = branding?.primaryColor ?? "var(--color-primary)";
+  const background = branding?.backgroundColor ?? "var(--color-background)";
+  const textColor = branding?.textColor ?? "var(--color-text)";
+  const accent = branding?.accentColor ?? "var(--color-primaryHover)";
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
@@ -36,15 +36,14 @@ export function HeaderFooterPreview({
         className="p-5"
         style={{
           background: `linear-gradient(135deg, ${primary}, ${accent})`,
-          color: "#fff",
         }}
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <P className="text-base font-semibold text-white">
+            <P className="text-base font-semibold text-onPrimary">
               {branding?.brandName || t(messages.dashboard.email.preview.brandingFallback)}
             </P>
-            <Small className="text-white/80">
+            <Small className="text-onPrimaryMuted">
               {t(messages.dashboard.email.preview.brandingDescription)}
             </Small>
           </div>
@@ -55,17 +54,17 @@ export function HeaderFooterPreview({
               width={120}
               height={40}
               unoptimized
-              className="h-10 w-auto rounded bg-white/10 p-2 shadow"
+              className="h-10 w-auto rounded bg-onPrimarySoft p-2 shadow"
             />
           )}
         </div>
         {headerHtml ? (
           <div
-            className="mt-4 rounded-lg bg-white/10 p-3 text-sm text-white/90"
+            className="mt-4 rounded-lg bg-onPrimarySoft p-3 text-sm text-onPrimary"
             dangerouslySetInnerHTML={{ __html: headerHtml }}
           />
         ) : (
-          <Small className="mt-3 block text-white/80">
+          <Small className="mt-3 block text-onPrimaryMuted">
             {t(messages.dashboard.email.preview.headerPlaceholder)}
           </Small>
         )}
@@ -102,8 +101,8 @@ export function HeaderFooterPreview({
           "space-y-2 border-t border-border p-5 text-sm",
         )}
         style={{
-          backgroundColor: "#0b1224",
-          color: "#cbd5e1",
+          backgroundColor: "var(--color-surface)",
+          color: "var(--color-secondary)",
         }}
       >
         {footerHtml ? (
@@ -120,7 +119,7 @@ export function HeaderFooterPreview({
                 {t(messages.dashboard.email.preview.footerPlaceholder)}
               </P>
             )}
-            <Small className="text-xs text-slate-400">
+            <Small className="text-xs text-muted">
               {branding?.supportEmail || branding?.supportUrl
                 ? t(messages.dashboard.email.preview.footerSupport, {
                     email:
@@ -137,7 +136,7 @@ export function HeaderFooterPreview({
 
         {showUnsubscribe && (
           <div className="pt-2">
-            <Small className="text-xs text-slate-400">
+            <Small className="text-xs text-muted">
               {t(messages.dashboard.email.preview.unsubscribeHint)}
             </Small>
           </div>
