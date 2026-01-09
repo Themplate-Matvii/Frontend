@@ -38,7 +38,7 @@ export const ThemeToggle = () => {
         },
         {
           onSuccess: async () => {
-            await refreshUser();
+            await refreshUser({ silent: true });
           },
         }
       );

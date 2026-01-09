@@ -28,7 +28,7 @@ type Ctx = {
   loading: boolean; // "auth is resolving" flag
   login: (data: AuthResponse) => void;
   logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  refreshUser: (options?: { silent?: boolean }) => Promise<void>;
 };
 
 const AuthContext = createContext<Ctx | undefined>(undefined);
@@ -90,14 +90,16 @@ export function AuthProvider({
     [persistSessionFlag, router],
   );
 
-  const refreshUser = useCallback(async () => {
+  const refreshUser = useCallback(async (options?: { silent?: boolean }) => {
     if (refreshInFlight.current) {
       await refreshInFlight.current;
       return;
     }
 
     const refreshPromise = (async () => {
-      setStatus((prev) => (prev === "loading" ? prev : "loading"));
+      if (!options?.silent) {
+        setStatus((prev) => (prev === "loading" ? prev : "loading"));
+      }
       try {
         const res = await fetch("/api/me", {
           cache: "no-store",

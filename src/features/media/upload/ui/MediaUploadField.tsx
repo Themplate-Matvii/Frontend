@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
-import { DropZone, FileTrigger } from "react-aria-components";
+import { DropZone } from "react-aria-components";
 import { isFileDropItem } from "react-aria";
 
 import { useI18n } from "@/shared/lib/i18n";
@@ -62,6 +62,8 @@ export function MediaUploadField({
   const { t } = useI18n();
 
   const filePreviewRef = useRef<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputId = useId();
 
   const [mode, setMode] = useState<UploadMode>("file");
   const [fileSelection, setFileSelection] = useState<MediaUploadSelection | null>(null);
@@ -270,51 +272,65 @@ export function MediaUploadField({
 
         {mode === "file" ? (
           <div className="flex flex-col gap-2">
-            <FileTrigger
-              acceptedFileTypes={["image/*"]}
-              allowsMultiple={false}
-              onSelect={handleFileChange}
-            >
-              <DropZone
-                isDisabled={disabled}
-                onDrop={async (event) => {
-                  if (disabled) return;
-                  for (const item of event.items) {
-                    if (isFileDropItem(item)) {
-                      const file = await item.getFile();
-                      handleFileSelection(file);
-                      break;
-                    }
+            <input
+              id={fileInputId}
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(event) => handleFileChange(event.target.files)}
+              disabled={disabled}
+            />
+            <DropZone
+              isDisabled={disabled}
+              onDrop={async (event) => {
+                if (disabled) return;
+                for (const item of event.items) {
+                  if (isFileDropItem(item)) {
+                    const file = await item.getFile();
+                    handleFileSelection(file);
+                    break;
                   }
-                }}
-                className={({ isDropTarget, isFocusVisible }) =>
-                  clsx(
-                    "flex w-full items-center justify-between gap-3 rounded-lg border border-dashed px-4 py-4 text-sm transition",
-                    "bg-surface/50 text-secondary",
-                    isDropTarget && "border-primary bg-primary/5 text-text",
-                    isFocusVisible && "ring-2 ring-primary/30",
-                    disabled
-                      ? "cursor-not-allowed opacity-60"
-                      : "cursor-pointer hover:border-primary/60 hover:bg-primary/5",
-                  )
                 }
-              >
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm text-text">
-                    {t(messages.media.upload.dropzoneText)}
-                  </span>
-                  <span className="text-xs text-secondary">
-                    {t(messages.media.upload.deviceHint)}
-                  </span>
-                </div>
+              }}
+              onClick={() => {
+                if (disabled) return;
+                fileInputRef.current?.click();
+              }}
+              onKeyDown={(event) => {
+                if (disabled) return;
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
+              className={({ isDropTarget, isFocusVisible }) =>
+                clsx(
+                  "flex w-full items-center justify-between gap-3 rounded-lg border border-dashed px-4 py-4 text-sm transition",
+                  "bg-surface/50 text-secondary",
+                  isDropTarget && "border-primary bg-primary/5 text-text",
+                  isFocusVisible && "ring-2 ring-primary/30",
+                  disabled
+                    ? "cursor-not-allowed opacity-60"
+                    : "cursor-pointer hover:border-primary/60 hover:bg-primary/5",
+                )
+              }
+            >
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-text">
+                  {t(messages.media.upload.dropzoneText)}
+                </span>
+                <span className="text-xs text-secondary">
+                  {t(messages.media.upload.deviceHint)}
+                </span>
+              </div>
 
-                <Tooltip content={t(messages.media.upload.helper)}>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted">
-                    <Info size={16} />
-                  </span>
-                </Tooltip>
-              </DropZone>
-            </FileTrigger>
+              <Tooltip content={t(messages.media.upload.helper)}>
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted">
+                  <Info size={16} />
+                </span>
+              </Tooltip>
+            </DropZone>
           </div>
         ) : (
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">

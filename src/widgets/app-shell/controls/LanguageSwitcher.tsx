@@ -62,7 +62,7 @@ export const LanguageSwitcher = () => {
         },
         {
           onSuccess: async () => {
-            await refreshUser();
+            await refreshUser({ silent: true });
           },
         }
       );
