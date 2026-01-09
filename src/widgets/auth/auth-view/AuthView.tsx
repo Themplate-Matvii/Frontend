@@ -50,18 +50,18 @@ export const AuthView = ({
   return (
     <PageShell>
       <Container size={ContainerSizeEnum.Narrow} className="py-16">
-        <LoadingOverlay loading={loading} className="rounded-xl">
-          <div
-            className={[
-              "bg-surface border border-border rounded-xl",
-              "shadow-[0_8px_20px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
-              "p-8 sm:p-10 w-full mx-auto",
-              maxWidthClassName,
-              className,
-            ]
-              .filter(Boolean)
-              .join(" ")}
-          >
+        <div
+          className={[
+            "bg-surface border border-border rounded-xl",
+            "shadow-[0_8px_20px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
+            "p-8 sm:p-10 w-full mx-auto",
+            maxWidthClassName,
+            className,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <LoadingOverlay loading={loading} className="rounded-xl">
             {/* Header */}
             <H1 className="mb-2">{title}</H1>
             {description ? <Lead className="mb-6">{description}</Lead> : null}
@@ -102,8 +102,8 @@ export const AuthView = ({
                 {footerNote}
               </Small>
             ) : null}
-          </div>
-        </LoadingOverlay>
+          </LoadingOverlay>
+        </div>
       </Container>
     </PageShell>
   );

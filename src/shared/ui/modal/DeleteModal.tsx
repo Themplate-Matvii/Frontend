@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Modal, ModalSize } from "./Modal";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Spinner from "@/shared/ui/loading/Spinner";
-import { P, Small, TextColorEnum } from "@/shared/ui/Typography";
-import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
+import { Small, TextColorEnum } from "@/shared/ui/Typography";
 import { messages } from "@/i18n/messages";
 import { useI18n } from "@/shared/lib/i18n";
 
@@ -38,10 +37,7 @@ export function DeleteModal({
     }
   }, [open]);
 
-  const disabled =
-    loading ||
-    !value.trim() ||
-    value.trim() !== requiredValue;
+  const disabled = loading || !value.trim() || value.trim() !== requiredValue;
 
   const handleClose = () => {
     if (loading) return;
@@ -65,63 +61,58 @@ export function DeleteModal({
       open={open}
       onClose={handleClose}
       size={ModalSize.md}
+      loading={loading}
       title={t(messages.common.modal.delete.title)}
       description={t(messages.common.modal.delete.description)}
     >
-      <LoadingOverlay loading={loading} className="rounded-lg">
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <Small
-              className="font-medium"
-              color={TextColorEnum.Default}
-            >
-              {t(messages.common.modal.delete.confirmLabel, { name: requiredValue })}
-            </Small>
-          </div>
-
-          <Field
-            id="delete-confirm"
-            label={""}
-          >
-            <Input
-              id="delete-confirm"
-              value={value}
-              onChange={(event) => setValue(event.target.value)}
-              placeholder={t(messages.common.modal.delete.confirmPlaceholder)}
-              autoComplete="off"
-            />
-          </Field>
-
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              size={ButtonSizeEnum.md}
-              variant={ButtonVariantEnum.secondary}
-              onClick={handleClose}
-              disabled={loading}
-            >
-              {t(messages.common.actions.cancel)}
-            </Button>
-
-            <Button
-              type="button"
-              size={ButtonSizeEnum.md}
-              variant={ButtonVariantEnum.danger}
-              disabled={disabled}
-              onClick={handleConfirm}
-            >
-              {loading ? (
-                <span className="inline-flex items-center gap-2">
-                  <Spinner size={16} />
-                  {t(messages.common.actions.delete)}
-                </span>
-              ) : (
-                t(messages.common.actions.delete)
-              )}
-            </Button>
-          </div>
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <Small className="font-medium" color={TextColorEnum.Default}>
+            {t(messages.common.modal.delete.confirmLabel, {
+              name: requiredValue,
+            })}
+          </Small>
         </div>
-      </LoadingOverlay>
+
+        <Field id="delete-confirm" label={""}>
+          <Input
+            id="delete-confirm"
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+            placeholder={t(messages.common.modal.delete.confirmPlaceholder)}
+            autoComplete="off"
+          />
+        </Field>
+
+        <div className="flex justify-end gap-2 pt-2">
+          <Button
+            type="button"
+            size={ButtonSizeEnum.md}
+            variant={ButtonVariantEnum.secondary}
+            onClick={handleClose}
+            disabled={loading}
+          >
+            {t(messages.common.actions.cancel)}
+          </Button>
+
+          <Button
+            type="button"
+            size={ButtonSizeEnum.md}
+            variant={ButtonVariantEnum.danger}
+            disabled={disabled}
+            onClick={handleConfirm}
+          >
+            {loading ? (
+              <span className="inline-flex items-center gap-2">
+                <Spinner size={16} />
+                {t(messages.common.actions.delete)}
+              </span>
+            ) : (
+              t(messages.common.actions.delete)
+            )}
+          </Button>
+        </div>
+      </div>
     </Modal>
   );
-};
+}

@@ -13,8 +13,8 @@ export default function Input({ invalid, className, ...rest }: InputProps) {
         "w-full rounded-md border px-3 py-2 text-sm outline-none",
         "bg-background text-text placeholder:text-muted",
         invalid
-          ? "border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
-          : "border-border focus:ring-2 focus:ring-primary focus:border-primary",
+          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+          : "border-border focus:ring-primary focus:border-primary",
         className,
       ]
         .filter(Boolean)

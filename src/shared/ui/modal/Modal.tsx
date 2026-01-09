@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { H2, Small, TextColorEnum } from "@/shared/ui/Typography";
 import { X } from "lucide-react";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "../Button";
+import { LoadingOverlay } from "../loading/LoadingOverlay";
 
 export enum ModalSize {
   sm = "sm",
@@ -19,6 +20,7 @@ type ModalProps = {
   description?: React.ReactNode;
   children?: React.ReactNode;
   size?: ModalSize;
+  loading?: boolean;
 };
 
 export const Modal: React.FC<ModalProps> = ({
@@ -28,6 +30,7 @@ export const Modal: React.FC<ModalProps> = ({
   description,
   children,
   size = ModalSize.md,
+  loading,
 }) => {
   if (!open) return null;
 
@@ -50,39 +53,42 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         className={clsx(
           "relative mx-auto w-full overflow-hidden rounded-xl border border-border bg-background shadow-lg",
-          "p-5 sm:p-6",
           "max-h-[85vh] overflow-y-auto",
           sizeClass,
         )}
-        onClick={stop}
       >
-        {/* Close button – styled exactly as requested */}
-        <Button
-          type="button"
-          variant={ButtonVariantEnum.secondary}
-          size={ButtonSizeEnum.sm}
-          onClick={onClose}
-          className="absolute right-3 top-3 h-8 w-8 max-h-8 max-w-8 !px-0 !py-0"
-        >
-          <X size={18} />
-        </Button>
+        <LoadingOverlay loading={loading} className="rounded-lg">
+          <div className={"p-5 sm:p-6"} onClick={stop}>
+            {/* Close button – styled exactly as requested */}
+            <Button
+              type="button"
+              variant={ButtonVariantEnum.secondary}
+              size={ButtonSizeEnum.sm}
+              onClick={onClose}
+              className="absolute right-3 top-3 h-8 w-8 max-h-8 max-w-8 !px-0 !py-0"
+            >
+              <X size={18} />
+            </Button>
 
-        {(title || description) && (
-          <div className="mb-4 space-y-1 pr-10">
-            {title && (
-              <H2 className="text-lg sm:text-xl" color={TextColorEnum.Default}>
-                {title}
-              </H2>
+            {(title || description) && (
+              <div className="mb-4 space-y-1 pr-10">
+                {title && (
+                  <H2
+                    className="text-lg sm:text-xl"
+                    color={TextColorEnum.Default}
+                  >
+                    {title}
+                  </H2>
+                )}
+                {description && (
+                  <Small color={TextColorEnum.Secondary}>{description}</Small>
+                )}
+              </div>
             )}
-            {description && (
-              <Small color={TextColorEnum.Secondary}>
-                {description}
-              </Small>
-            )}
+
+            {children}
           </div>
-        )}
-
-        {children}
+        </LoadingOverlay>
       </div>
     </div>
   );
