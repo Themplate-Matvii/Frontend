@@ -1,18 +1,9 @@
 "use client";
 
-import type { ClipboardEvent } from "react";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import type { ClipboardEvent, KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import clsx from "clsx";
-import {
-  Dialog,
-  DropZone,
-  Modal,
-  ModalOverlay,
-  Tab,
-  TabList,
-  TabPanel,
-  Tabs,
-} from "react-aria-components";
+import { DropZone } from "react-aria-components";
 import { isFileDropItem } from "react-aria";
 
 import { useI18n } from "@/shared/lib/i18n";
@@ -22,9 +13,9 @@ import type { MediaItem } from "@/entities/content/media/model/types";
 import { Button, ButtonSizeEnum, ButtonVariantEnum } from "@/shared/ui/Button";
 import Field from "@/shared/ui/forms/Field";
 import Input from "@/shared/ui/forms/Input";
+import Spinner from "@/shared/ui/loading/Spinner";
 import { Small, TextColorEnum } from "@/shared/ui/Typography";
-import { formatFileSize } from "@/shared/lib/files";
-import { Link as LinkIcon, Upload, X } from "lucide-react";
+import { Link as LinkIcon, Pencil, Upload, X } from "lucide-react";
 
 export type MediaUploadSelection =
   | {
@@ -47,9 +38,8 @@ type MediaUploadFieldProps = {
   onSelectionChange?: (selection: MediaUploadSelection | null) => void;
   error?: string | null;
   disabled?: boolean;
+  isUploading?: boolean;
 };
-
-type UploadTab = "upload" | "link";
 
 function isValidHttpUrl(value: string): boolean {
   try {
@@ -60,6 +50,34 @@ function isValidHttpUrl(value: string): boolean {
   }
 }
 
+const imageExtensionRegex =
+  /\.(png|jpe?g|gif|webp|avif|bmp|svg)(\?.*)?$/i;
+
+function extractFirstUriListEntry(value: string): string | null {
+  const lines = value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const entry = lines.find((line) => !line.startsWith("#"));
+  return entry || null;
+}
+
+function extractImageFromHtml(html: string): string | null {
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?.[1] ?? null;
+}
+
+async function isRemoteImage(url: string): Promise<boolean> {
+  if (imageExtensionRegex.test(url)) return true;
+  try {
+    const response = await fetch(url, { method: "HEAD" });
+    const contentType = response.headers.get("content-type");
+    return Boolean(contentType?.startsWith("image/"));
+  } catch {
+    return true;
+  }
+}
+
 export function MediaUploadField({
   label,
   savedMedia,
@@ -67,6 +85,7 @@ export function MediaUploadField({
   onSelectionChange,
   error,
   disabled,
+  isUploading = false,
 }: MediaUploadFieldProps) {
   const { t } = useI18n();
 
@@ -78,9 +97,9 @@ export function MediaUploadField({
   const [urlInput, setUrlInput] = useState<string>("");
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<UploadTab>("upload");
   const [isCoarsePointer, setIsCoarsePointer] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [isCheckingUrl, setIsCheckingUrl] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -109,29 +128,12 @@ export function MediaUploadField({
 
   const displayPreview = selection ?? savedMedia ?? null;
 
-  const formattedSize = useMemo(() => {
-    if (!displayPreview) return null;
-    if ("previewUrl" in displayPreview) {
-      return displayPreview.type === "file"
-        ? formatFileSize(displayPreview.file.size)
-        : null;
-    }
-    return formatFileSize(displayPreview.size);
-  }, [displayPreview]);
-
   const previewName =
     displayPreview && "previewUrl" in displayPreview
       ? displayPreview.name || t(messages.media.upload.previewNameFallback)
       : displayPreview
         ? displayPreview.name ?? displayPreview.filename
         : null;
-
-  const previewMeta =
-    displayPreview && "previewUrl" in displayPreview
-      ? displayPreview.type === "url"
-        ? displayPreview.url
-        : formattedSize
-      : formattedSize;
 
   const handleFileSelection = (file: File | null) => {
     if (!file || disabled) return;
@@ -148,6 +150,8 @@ export function MediaUploadField({
 
     setPreviewError(null);
     setUrlError(null);
+    setUrlInput("");
+    setShowUrlInput(false);
     const nextSelection: MediaUploadSelection = {
       type: "file",
       file,
@@ -155,11 +159,13 @@ export function MediaUploadField({
       name: file.name,
     };
     setSelection(nextSelection);
-    setIsModalOpen(false);
   };
 
   const handleFileChange = (files: FileList | null) => {
     handleFileSelection(files?.[0] ?? null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleUrlInputChange = (value: string) => {
@@ -168,13 +174,22 @@ export function MediaUploadField({
     setUrlError(null);
   };
 
-  const handleUrlSave = () => {
-    const trimmed = urlInput.trim();
+  const applyUrlSelection = async (rawValue: string) => {
+    const trimmed = rawValue.trim();
     if (!trimmed) {
       setUrlError(null);
       return;
     }
     if (!isValidHttpUrl(trimmed)) {
+      setUrlError(t(messages.media.upload.previewError));
+      return;
+    }
+
+    setIsCheckingUrl(true);
+    const isImage = await isRemoteImage(trimmed);
+    setIsCheckingUrl(false);
+
+    if (!isImage) {
       setUrlError(t(messages.media.upload.previewError));
       return;
     }
@@ -186,8 +201,23 @@ export function MediaUploadField({
       name: undefined,
     };
     setSelection(nextSelection);
+    setPreviewError(null);
     setUrlError(null);
-    setIsModalOpen(false);
+    setUrlInput(trimmed);
+    setShowUrlInput(true);
+  };
+
+  const handleUrlSave = async () => {
+    await applyUrlSelection(urlInput);
+  };
+
+  const handleUrlKeyDown = async (
+    event: KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      await handleUrlSave();
+    }
   };
 
   const handleClearSelection = () => {
@@ -196,6 +226,7 @@ export function MediaUploadField({
 
     setSelection(null);
     setUrlInput("");
+    setShowUrlInput(false);
     if (filePreviewRef.current) {
       URL.revokeObjectURL(filePreviewRef.current);
       filePreviewRef.current = null;
@@ -207,6 +238,7 @@ export function MediaUploadField({
     setUrlError(null);
     setSelection(null);
     setUrlInput("");
+    setShowUrlInput(false);
     if (filePreviewRef.current) {
       URL.revokeObjectURL(filePreviewRef.current);
       filePreviewRef.current = null;
@@ -227,10 +259,11 @@ export function MediaUploadField({
 
   const footerMessage = [error, urlError, previewError].filter(Boolean).join(" • ");
 
-  const handlePaste = (event: ClipboardEvent<HTMLElement>) => {
+  const handlePaste = async (event: ClipboardEvent<HTMLElement>) => {
     if (disabled) return;
     const clipboard = event.clipboardData;
     if (!clipboard) return;
+
     const items = Array.from(clipboard.items ?? []);
     const imageItem = items.find((item) => item.type.startsWith("image/"));
     if (imageItem) {
@@ -242,15 +275,27 @@ export function MediaUploadField({
       }
     }
 
-    const text = clipboard.getData("text");
-    if (!text) return;
-    const trimmed = text.trim();
-    if (!isValidHttpUrl(trimmed)) return;
+    const uriList = clipboard.getData("text/uri-list");
+    const plainText = clipboard.getData("text/plain");
+    const htmlText = clipboard.getData("text/html");
+
+    const htmlImage = htmlText ? extractImageFromHtml(htmlText) : null;
+    const rawValue =
+      (uriList ? extractFirstUriListEntry(uriList) : null) ||
+      htmlImage ||
+      (plainText ? plainText.trim() : null);
+
+    if (!rawValue || !isValidHttpUrl(rawValue)) return;
+
     event.preventDefault();
-    setUrlInput(trimmed);
-    setUrlError(null);
-    setActiveTab("link");
-    setIsModalOpen(true);
+    setUrlInput(rawValue);
+    setShowUrlInput(true);
+    await applyUrlSelection(rawValue);
+  };
+
+  const handleOpenPicker = () => {
+    if (disabled) return;
+    fileInputRef.current?.click();
   };
 
   return (
@@ -265,11 +310,10 @@ export function MediaUploadField({
         )
       }
     >
-      <div className="space-y-3">
-        {displayPreview && (
-          <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/60 p-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3">
-              <div className="relative inline-block">
+      <div className="space-y-3 focus:outline-none" onPaste={handlePaste} tabIndex={0}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+          {displayPreview && (
+            <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-xl border border-border bg-surface/60">
               <img
                 src={
                   "previewUrl" in displayPreview
@@ -281,228 +325,168 @@ export function MediaUploadField({
                     ? displayPreview.name || t(messages.media.upload.previewAlt)
                     : displayPreview.name ?? displayPreview.filename
                 }
-                className="h-20 w-20 rounded-lg object-cover"
+                className="h-full w-full object-cover"
                 onError={handlePreviewError}
               />
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-text">{previewName}</p>
-                <Small color={TextColorEnum.Secondary} className="block">
-                  {previewMeta}
-                </Small>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                type="button"
-                size={ButtonSizeEnum.sm}
-                variant={ButtonVariantEnum.secondary}
-                onClick={() => {
-                  setActiveTab("upload");
-                  setIsModalOpen(true);
-                }}
-                disabled={disabled}
-                className="min-w-[110px]"
-              >
-                {t(messages.media.upload.replace)}
-              </Button>
               <Button
                 type="button"
                 size={ButtonSizeEnum.sm}
                 variant={ButtonVariantEnum.secondary}
                 onClick={
-                  "previewUrl" in displayPreview ? handleClearSelection : handleClearSaved
+                  "previewUrl" in displayPreview
+                    ? handleClearSelection
+                    : handleClearSaved
                 }
                 disabled={disabled}
-                className="min-w-[90px]"
+                className="absolute right-2 top-2 h-7 w-7 !px-0 !py-0"
+                aria-label={t(messages.media.upload.remove)}
               >
-                {t(messages.media.upload.remove)}
+                <X size={14} />
+              </Button>
+              <Button
+                type="button"
+                size={ButtonSizeEnum.sm}
+                variant={ButtonVariantEnum.icon}
+                onClick={handleOpenPicker}
+                disabled={disabled}
+                className="absolute bottom-2 right-2 h-7 w-7 !px-0 !py-0"
+                aria-label={t(messages.media.upload.replace)}
+              >
+                <Pencil size={14} />
               </Button>
             </div>
-          </div>
-        )}
+          )}
 
-        <input
-          id={fileInputId}
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="sr-only"
-          onChange={(event) => handleFileChange(event.target.files)}
-          disabled={disabled}
-        />
-        {!displayPreview && (
-          <DropZone
-            isDisabled={disabled}
-            onDrop={async (event) => {
-              if (disabled) return;
-              for (const item of event.items) {
-                if (isFileDropItem(item)) {
-                  const file = await item.getFile();
-                  handleFileSelection(file);
-                  break;
+          <div className="flex-1 space-y-2">
+            <input
+              id={fileInputId}
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(event) => handleFileChange(event.target.files)}
+              disabled={disabled}
+            />
+            <DropZone
+              isDisabled={disabled}
+              onDrop={async (event) => {
+                if (disabled) return;
+                for (const item of event.items) {
+                  if (isFileDropItem(item)) {
+                    const file = await item.getFile();
+                    handleFileSelection(file);
+                    break;
+                  }
                 }
+              }}
+              onClick={handleOpenPicker}
+              onKeyDown={(event) => {
+                if (disabled) return;
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  handleOpenPicker();
+                }
+              }}
+              className={({ isDropTarget, isFocusVisible }) =>
+                clsx(
+                  "flex w-full flex-col items-start gap-2 rounded-xl border border-dashed px-5 py-6 text-sm transition",
+                  "bg-surface/50 text-secondary",
+                  isDropTarget && "border-primary bg-primary/5 text-text",
+                  isFocusVisible && "ring-2 ring-primary/30",
+                  disabled
+                    ? "cursor-not-allowed opacity-60"
+                    : "cursor-pointer hover:border-primary/60 hover:bg-primary/5",
+                )
               }
-            }}
-            onPaste={handlePaste}
-            onClick={() => {
-              if (disabled) return;
-              setActiveTab("upload");
-              setIsModalOpen(true);
-            }}
-            onKeyDown={(event) => {
-              if (disabled) return;
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                setActiveTab("upload");
-                setIsModalOpen(true);
-              }
-            }}
-            className={({ isDropTarget, isFocusVisible }) =>
-              clsx(
-                "flex w-full flex-col items-start gap-2 rounded-xl border border-dashed px-5 py-6 text-sm transition",
-                "bg-surface/50 text-secondary",
-                isDropTarget && "border-primary bg-primary/5 text-text",
-                isFocusVisible && "ring-2 ring-primary/30",
-                disabled
-                  ? "cursor-not-allowed opacity-60"
-                  : "cursor-pointer hover:border-primary/60 hover:bg-primary/5",
-              )
-            }
-          >
-            <div className="flex items-start gap-3">
-              <span className="mt-0.5 text-primary">
-                <Upload size={18} />
-              </span>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-text">
-                  {t(
-                    isCoarsePointer
-                      ? messages.media.upload.dropzoneTitleMobile
-                      : messages.media.upload.dropzoneTitleDesktop,
-                  )}
-                </p>
-                <p className="text-xs text-secondary">
-                  {t(
-                    isCoarsePointer
-                      ? messages.media.upload.dropzoneSubtitleMobile
-                      : messages.media.upload.dropzoneSubtitleDesktop,
-                  )}
-                </p>
-              </div>
-            </div>
-          </DropZone>
-        )}
-      </div>
-
-      <ModalOverlay
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        isDismissable
-        className="fixed inset-0 z-50 flex items-end justify-center bg-overlay/70 backdrop-blur-sm sm:items-center"
-      >
-        <Modal className="w-full sm:max-w-lg">
-          <Dialog
-            className="relative mx-auto w-full rounded-2xl border border-border bg-background p-5 shadow-xl sm:p-6"
-            onPaste={handlePaste}
-            aria-label={t(messages.media.upload.modalTitle)}
-          >
-            <Button
-              type="button"
-              variant={ButtonVariantEnum.secondary}
-              size={ButtonSizeEnum.sm}
-              onClick={() => setIsModalOpen(false)}
-              className="absolute right-4 top-4 h-8 w-8 max-h-8 max-w-8 !px-0 !py-0"
+              aria-busy={isUploading || isCheckingUrl}
             >
-              <X size={18} />
-            </Button>
-            <div className="space-y-1 pr-10">
-              <p className="text-base font-semibold text-text">
-                {t(messages.media.upload.modalTitle)}
-              </p>
-              <Small color={TextColorEnum.Secondary}>
-                {t(messages.media.upload.modalDescription)}
-              </Small>
-            </div>
-
-            <Tabs
-              selectedKey={activeTab}
-              onSelectionChange={(key) => setActiveTab(key as UploadTab)}
-              className="mt-4"
-            >
-              <TabList className="flex rounded-full border border-border bg-surface p-1 text-sm">
-                <Tab
-                  id="upload"
-                  className="flex-1 rounded-full px-3 py-2 text-center text-xs font-medium transition data-[selected]:bg-background data-[selected]:text-text data-[selected]:shadow-sm"
-                >
-                  {t(messages.media.upload.modalTabUpload)}
-                </Tab>
-                <Tab
-                  id="link"
-                  className="flex-1 rounded-full px-3 py-2 text-center text-xs font-medium transition data-[selected]:bg-background data-[selected]:text-text data-[selected]:shadow-sm"
-                >
-                  {t(messages.media.upload.modalTabLink)}
-                </Tab>
-              </TabList>
-
-              <TabPanel id="upload" className="mt-5 space-y-4">
-                <div className="rounded-xl border border-dashed border-border bg-surface/60 p-4">
-                  <Button
-                    type="button"
-                    size={ButtonSizeEnum.md}
-                    variant={ButtonVariantEnum.primary}
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={disabled}
-                    className="w-full"
-                  >
-                    {t(messages.media.upload.modalUploadAction)}
-                  </Button>
-                  <p className="mt-3 text-xs text-secondary">
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 text-primary">
+                  <Upload size={18} />
+                </span>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-text">
                     {t(
                       isCoarsePointer
-                        ? messages.media.upload.modalUploadHintMobile
-                        : messages.media.upload.modalUploadHintDesktop,
+                        ? messages.media.upload.dropzoneTitleMobile
+                        : messages.media.upload.dropzoneTitleDesktop,
+                    )}
+                  </p>
+                  <p className="text-xs text-secondary">
+                    {t(
+                      isCoarsePointer
+                        ? messages.media.upload.dropzoneSubtitleMobile
+                        : messages.media.upload.dropzoneSubtitleDesktop,
                     )}
                   </p>
                 </div>
-              </TabPanel>
-
-              <TabPanel id="link" className="mt-5 space-y-3">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <div className="relative flex-1">
-                    <Input
-                      id="media-url"
-                      value={urlInput}
-                      onChange={(event) => handleUrlInputChange(event.target.value)}
-                      placeholder={t(messages.media.upload.modalLinkPlaceholder)}
-                      disabled={disabled}
-                      className="w-full"
-                    />
-                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">
-                      <LinkIcon size={16} />
-                    </span>
-                  </div>
-                  <Button
-                    type="button"
-                    size={ButtonSizeEnum.md}
-                    variant={ButtonVariantEnum.primary}
-                    onClick={handleUrlSave}
-                    disabled={disabled || !isValidHttpUrl(urlInput.trim())}
-                    className="sm:min-w-[110px]"
-                  >
-                    {t(messages.media.upload.modalLinkSave)}
-                  </Button>
+              </div>
+              {(isUploading || isCheckingUrl) && (
+                <div className="flex items-center gap-2 text-xs text-secondary">
+                  <Spinner size={14} />
+                  <span>{t(messages.common.loading)}</span>
                 </div>
-                {urlError && (
-                  <Small color={TextColorEnum.Danger} className="block">
-                    {urlError}
-                  </Small>
-                )}
-              </TabPanel>
-            </Tabs>
-          </Dialog>
-        </Modal>
-      </ModalOverlay>
+              )}
+            </DropZone>
+
+            {showUrlInput ? (
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <div className="relative flex-1">
+                  <Input
+                    id="media-url"
+                    value={urlInput}
+                    onChange={(event) => handleUrlInputChange(event.target.value)}
+                    onKeyDown={handleUrlKeyDown}
+                    placeholder={t(messages.media.upload.urlPlaceholder)}
+                    disabled={disabled}
+                    className="w-full"
+                  />
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">
+                    <LinkIcon size={16} />
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  size={ButtonSizeEnum.sm}
+                  variant={ButtonVariantEnum.secondary}
+                  onClick={handleUrlSave}
+                  disabled={
+                    disabled || isCheckingUrl || !isValidHttpUrl(urlInput.trim())
+                  }
+                  className="sm:min-w-[90px]"
+                >
+                  {isCheckingUrl ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Spinner size={14} />
+                      {t(messages.common.loading)}
+                    </span>
+                  ) : (
+                    t(messages.media.upload.modalLinkSave)
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                size={ButtonSizeEnum.sm}
+                variant={ButtonVariantEnum.ghost}
+                onClick={() => setShowUrlInput(true)}
+                disabled={disabled}
+                className="inline-flex items-center gap-2 self-start text-xs"
+              >
+                <LinkIcon size={14} />
+                {t(messages.media.upload.uploadFromUrl)}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {previewName && (
+          <Small color={TextColorEnum.Secondary} className="block">
+            {previewName}
+          </Small>
+        )}
+      </div>
     </Field>
   );
 }

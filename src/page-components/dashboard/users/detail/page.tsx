@@ -353,6 +353,7 @@ export const DashboardUserDetailPage = () => {
                       disabled={
                         !canEditAnyUsers || saving || uploadMedia.isPending
                       }
+                      isUploading={uploadMedia.isPending}
                     />
 
                     <div className="flex justify-end">

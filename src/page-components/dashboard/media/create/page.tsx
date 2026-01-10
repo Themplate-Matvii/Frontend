@@ -112,6 +112,7 @@ export const DashboardMediaCreatePage = () => {
               onSelectionChange={handleSelectionChange}
               error={error}
               disabled={uploadMedia.isPending || !canCreateMedia}
+              isUploading={uploadMedia.isPending}
             />
 
             <Field

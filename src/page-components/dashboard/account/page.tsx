@@ -175,6 +175,7 @@ export const DashboardAccountPage = () => {
                     }}
                     error={uploadError}
                     disabled={loading || uploadMedia.isPending}
+                    isUploading={uploadMedia.isPending}
                   />
 
                   <div className="space-y-1">

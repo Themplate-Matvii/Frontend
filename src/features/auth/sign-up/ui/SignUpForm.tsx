@@ -202,6 +202,7 @@ export const SignUpForm = () => {
               : null
         }
         disabled={isBusy}
+        isUploading={isRegisterPending}
       />
 
       <Button
