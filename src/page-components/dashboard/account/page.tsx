@@ -4,8 +4,6 @@ import React, { FormEvent, useEffect, useMemo, useState } from "react";
 import { fromDate, getLocalTimeZone, parseDate, toCalendarDate } from "@internationalized/date";
 import { getTimeZones } from "@vvo/tzdb";
 import countries from "i18n-iso-countries";
-import enCountries from "i18n-iso-countries/langs/en.json";
-import ruCountries from "i18n-iso-countries/langs/ru.json";
 
 import { useAuth, UserApi, type User } from "@/entities/identity";
 import { messages } from "@/i18n/messages";
@@ -38,9 +36,6 @@ import { MediaApi } from "@/entities/content/media";
 import { resolveMediaName } from "@/shared/lib/media";
 import { toast } from "@/shared/ui/toast/toast";
 import { useGoogleOAuth } from "@/features/auth/lib/useGoogleOAuth";
-
-countries.registerLocale(enCountries);
-countries.registerLocale(ruCountries);
 
 const localTimeZone = getLocalTimeZone();
 
@@ -101,6 +96,7 @@ export const DashboardAccountPage = () => {
   const [changeEmail, setChangeEmail] = useState("");
   const [changeEmailCode, setChangeEmailCode] = useState("");
   const [profileError, setProfileError] = useState<string | null>(null);
+  const [countryLocale, setCountryLocale] = useState("en");
 
   const uploadMedia = MediaApi.useUploadMedia();
 
@@ -227,12 +223,30 @@ export const DashboardAccountPage = () => {
     );
   }, [account]);
 
-  const countryOptions = useMemo(() => {
-    const rawLocale = (user?.settings?.locale ?? i18n.language ?? "en")
+  useEffect(() => {
+    let isActive = true;
+    const baseLocale = (user?.settings?.locale ?? i18n.language ?? "en")
       .split("-")[0]
       .toLowerCase();
-    const locale = rawLocale === "ru" || rawLocale === "en" ? rawLocale : "en";
-    const countryNames = countries.getNames(locale, { select: "official" });
+    const loadLocale = (locale: string) =>
+      import(`i18n-iso-countries/langs/${locale}.json`).then((module) => {
+        if (!isActive) return;
+        countries.registerLocale(module.default ?? module);
+        setCountryLocale(locale);
+      });
+
+    loadLocale(baseLocale).catch(() => {
+      if (baseLocale === "en") return;
+      loadLocale("en");
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [i18n.language, user?.settings?.locale]);
+
+  const countryOptions = useMemo(() => {
+    const countryNames = countries.getNames(countryLocale, { select: "official" });
     const options = Object.entries(countryNames)
       .map(([code, label]) => ({
         value: code,
@@ -240,7 +254,7 @@ export const DashboardAccountPage = () => {
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
     return [{ value: "", label: t(messages.common.actions.select) }, ...options];
-  }, [i18n.language, t, user?.settings?.locale]);
+  }, [countryLocale, t]);
 
   const timezoneOptions = useMemo(() => {
     const rawLocale = user?.settings?.locale ?? i18n.language ?? "en";
