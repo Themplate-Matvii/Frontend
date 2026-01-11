@@ -18,7 +18,7 @@ import { LoadingOverlay } from "@/shared/ui/loading/LoadingOverlay";
 import { StatCard } from "@/widgets/analytics/overview";
 import { LineChart } from "@/shared/ui/charts/LineChart";
 import { BarChart } from "@/shared/ui/charts/BarChart";
-import { DateRangeInput, DateRange } from "@/shared/ui/charts/DateRangeInput";
+import { DatePicker, DateRange } from "@/shared/ui/forms/DatePicker";
 import { useAppPermissions, usePermissionGuard } from "@/entities/identity";
 
 export const DashboardTrafficAnalyticsPage = () => {
@@ -327,7 +327,8 @@ export const DashboardTrafficAnalyticsPage = () => {
             </div>
 
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
-              <DateRangeInput
+              <DatePicker
+                mode="range"
                 value={draftRange}
                 onChange={setDraftRange}
                 placeholder={t(

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import clsx from "clsx";
 import {
   Select as AriaSelect,
@@ -27,6 +27,7 @@ export type SelectProps = {
   isMulti?: boolean;
   isDisabled?: boolean;
   isClearable?: boolean;
+  isSearchable?: boolean;
 
   id?: string;
   className?: string;
@@ -44,12 +45,14 @@ export function Select({
   isMulti = false,
   isDisabled = false,
   isClearable = true,
+  isSearchable = false,
   id,
   className,
   invalid = false,
 }: SelectProps) {
   const { t } = useI18n();
   const placeholderOption = options.find((opt) => opt.value === "");
+  const [searchValue, setSearchValue] = useState("");
 
   const hasValue = isMulti
     ? Array.isArray(value) && value.length > 0
@@ -69,6 +72,15 @@ export function Select({
     return typeof value === "string" && value !== "" ? value : null;
   }, [isMulti, value]);
 
+  const filteredOptions = useMemo(() => {
+    const normalized = searchValue.trim().toLowerCase();
+    const available = options.filter((opt) => opt.value !== "");
+    if (!normalized) return available;
+    return available.filter((opt) =>
+      opt.label.toLowerCase().includes(normalized),
+    );
+  }, [options, searchValue]);
+
   return (
     <div className={clsx("relative", wrapperClassName)}>
       <AriaSelect
@@ -80,6 +92,9 @@ export function Select({
         selectionMode={isMulti ? "multiple" : "single"}
         selectedKey={selectedKey ?? undefined}
         selectedKeys={selectedKeys}
+        onOpenChange={(isOpen) => {
+          if (isOpen) setSearchValue("");
+        }}
         onSelectionChange={(selection) => {
           if (isMulti) {
             if (selection === "all") {
@@ -136,20 +151,39 @@ export function Select({
           className="z-50 mt-2 w-[--trigger-width] rounded-lg border border-border bg-background shadow-lg"
           placement="bottom start"
         >
-          <ListBox
-            className="max-h-60 overflow-auto p-1 text-sm text-text outline-none"
-            items={options.filter((opt) => opt.value !== "")}
-          >
-            {(item) => (
-              <ListBoxItem
-                id={item.value}
-                textValue={item.label}
-                className="cursor-pointer rounded-md px-3 py-2 outline-none transition-colors focus:bg-primary/10 focus:text-text data-[hovered]:bg-primary/10 data-[selected]:bg-primary data-[selected]:text-onPrimary data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary/40"
-              >
-                {item.label}
-              </ListBoxItem>
+          <div className="flex flex-col">
+            {isSearchable && (
+              <div className="border-b border-border p-2">
+                <input
+                  type="text"
+                  value={searchValue}
+                  onChange={(event) => setSearchValue(event.target.value)}
+                  placeholder={t(messages.common.actions.search)}
+                  className="w-full rounded-md border border-border bg-background px-2 py-1 text-sm text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
             )}
-          </ListBox>
+            {filteredOptions.length === 0 ? (
+              <div className="px-3 py-2 text-sm text-muted">
+                {t(messages.common.empty.title)}
+              </div>
+            ) : (
+              <ListBox
+                className="max-h-60 overflow-auto p-1 text-sm text-text outline-none"
+                items={filteredOptions}
+              >
+                {(item) => (
+                  <ListBoxItem
+                    id={item.value}
+                    textValue={item.label}
+                    className="cursor-pointer rounded-md px-3 py-2 outline-none transition-colors focus:bg-primary/10 focus:text-text data-[hovered]:bg-primary/10 data-[selected]:bg-primary data-[selected]:text-onPrimary data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary/40"
+                  >
+                    {item.label}
+                  </ListBoxItem>
+                )}
+              </ListBox>
+            )}
+          </div>
         </Popover>
       </AriaSelect>
     </div>
