@@ -210,10 +210,11 @@ export const DashboardAccountPage = () => {
   }, [account]);
 
   const countryOptions = useMemo(() => {
-    const regions =
-      typeof Intl !== "undefined" && "supportedValuesOf" in Intl
-        ? (Intl.supportedValuesOf("region") as string[])
-        : [];
+    // const regions =
+    //   typeof Intl !== "undefined" && "supportedValuesOf" in Intl
+    //     ? (Intl.supportedValuesOf("region") as string[])
+    //     : [];
+    const regions: any[] = [];
     const displayNames =
       typeof Intl !== "undefined" && "DisplayNames" in Intl
         ? new Intl.DisplayNames([user?.settings?.locale ?? "en"], {
