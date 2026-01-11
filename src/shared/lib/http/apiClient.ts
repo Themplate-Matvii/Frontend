@@ -57,7 +57,12 @@ apiClient.interceptors.response.use(
       (originalRequest as any).__skipAuthRefresh ||
       AUTH_ANY.some((re) => re.test(url));
 
+    const isMeRequest = /^\/api\/me/.test(url);
+
     if (!skip && error.response?.status === 401 && originalRequest._retry) {
+      if (isMeRequest) {
+        return Promise.reject(error);
+      }
       notifySessionExpired();
       return Promise.reject(error);
     }
