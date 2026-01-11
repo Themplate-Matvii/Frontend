@@ -257,8 +257,7 @@ export const DashboardAccountPage = () => {
   }, [countryLocale, t]);
 
   const timezoneOptions = useMemo(() => {
-    const rawLocale = user?.settings?.locale ?? i18n.language ?? "en";
-    const locale = rawLocale.startsWith("ru") ? "ru" : "en";
+    const locale = user?.settings?.locale ?? i18n.language ?? "en";
     const displayNames =
       typeof Intl !== "undefined" && "DisplayNames" in Intl
         ? new Intl.DisplayNames([locale], { type: "timeZone" })
