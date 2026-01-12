@@ -28,13 +28,25 @@ import {
 import { MediaApi } from "@/entities/content/media";
 import { resolveMediaName } from "@/shared/lib/media";
 import { toast } from "@/shared/ui/toast/toast";
+import { normalizeNullable } from "@/shared/lib/strings";
+
+// ✅ add DatePicker import (path adjust to where you placed this component)
+import { DatePicker } from "@/shared/ui/forms/DatePicker";
 
 countries.registerLocale(enCountries as any);
 
-const normalizeNullable = (value: string) => {
-  const trimmed = value.trim();
-  return trimmed.length ? trimmed : "";
-};
+function formatDateOnly(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function parseDate(value?: string | null) {
+  if (!value) return undefined;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? undefined : d;
+}
 
 export const DashboardAccountProfilePage = () => {
   const { t } = useI18n();
@@ -60,6 +72,9 @@ export const DashboardAccountProfilePage = () => {
   const [country, setCountry] = useState("");
   const [timezone, setTimezone] = useState("");
 
+  // ✅ birthday state
+  const [birthday, setBirthday] = useState<Date | undefined>(undefined);
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
@@ -67,10 +82,19 @@ export const DashboardAccountProfilePage = () => {
     const hasAvatarChange =
       avatar?.id !== user?.avatar?.id || Boolean(avatarSelection);
 
+    const currentBirthday = account?.birthday ?? "";
+    const nextBirthday = birthday ? formatDateOnly(birthday) : "";
+
     const hasProfileChange =
       phone !== (account?.phone ?? "") ||
       country !== (account?.country ?? "") ||
-      timezone !== (account?.timezone ?? "");
+      timezone !== (account?.timezone ?? "") ||
+      nextBirthday !==
+        (currentBirthday
+          ? formatDateOnly(
+              parseDate(currentBirthday) ?? new Date(currentBirthday),
+            )
+          : "");
 
     if (!hasNameChange && !hasAvatarChange && !hasProfileChange) return;
 
@@ -120,6 +144,8 @@ export const DashboardAccountProfilePage = () => {
           phone: normalizeNullable(phone),
           country: normalizeNullable(country),
           timezone: normalizeNullable(timezone),
+          // ✅ send birthday (YYYY-MM-DD) or null
+          birthday: normalizeNullable(birthday ? formatDateOnly(birthday) : ""),
         });
       }
 
@@ -154,6 +180,9 @@ export const DashboardAccountProfilePage = () => {
           ? Intl.DateTimeFormat().resolvedOptions().timeZone ?? ""
           : ""),
     );
+
+    // ✅ init birthday from account
+    setBirthday(parseDate(account.birthday));
   }, [account]);
 
   const countryOptions = useMemo(() => {
@@ -188,10 +217,17 @@ export const DashboardAccountProfilePage = () => {
     const hasAvatarChange =
       avatar?.id !== user?.avatar?.id || Boolean(avatarSelection);
 
+    const currentBirthday = account?.birthday ?? "";
+    const nextBirthday = birthday ? formatDateOnly(birthday) : "";
+    const accountBirthday = currentBirthday
+      ? formatDateOnly(parseDate(currentBirthday) ?? new Date(currentBirthday))
+      : "";
+
     const hasProfileChange =
       phone !== (account?.phone ?? "") ||
       country !== (account?.country ?? "") ||
-      timezone !== (account?.timezone ?? "");
+      timezone !== (account?.timezone ?? "") ||
+      nextBirthday !== accountBirthday;
 
     return hasNameChange || hasAvatarChange || hasProfileChange;
   }, [
@@ -206,6 +242,8 @@ export const DashboardAccountProfilePage = () => {
     account?.country,
     timezone,
     account?.timezone,
+    birthday,
+    account?.birthday,
   ]);
 
   return (
@@ -261,8 +299,17 @@ export const DashboardAccountProfilePage = () => {
                 placeholder="+12025550123"
               />
             </Field>
-
-            <div className="hidden md:block" />
+            <Field
+              id="birthday"
+              label={t(messages.dashboard.account.birthdayLabel)}
+            >
+              <DatePicker
+                id="birthday"
+                placeholder="Select date"
+                value={birthday}
+                onChange={(value) => setBirthday(value)}
+              />
+            </Field>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
