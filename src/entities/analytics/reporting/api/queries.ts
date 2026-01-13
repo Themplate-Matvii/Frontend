@@ -27,14 +27,15 @@ export function useBusinessAnalytics(
       if (!vars) throw new Error("date range is required");
       const { data } = await analyticsBusinessService.get(vars);
       const payload = (data as any).data ?? data;
+      const normalized = (payload as any).data ?? payload;
 
-      if ((payload as any).success === false) {
+      if ((normalized as any).success === false) {
         throw new Error(
-          (payload as any).message || "Failed to load business analytics",
+          (normalized as any).message || "Failed to load business analytics",
         );
       }
 
-      return payload as BusinessAnalyticsResponse;
+      return normalized as BusinessAnalyticsResponse;
     },
     enabled,
     select: options?.select,

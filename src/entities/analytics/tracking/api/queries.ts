@@ -50,7 +50,16 @@ export function useTrafficEvents(
     queryFn: async () => {
       if (!filters) throw new Error("filters are required");
       const { data } = await analyticsTrafficService.list(filters);
-      return data.data;
+      const payload = (data as any).data ?? data;
+      const normalized = (payload as any).data ?? payload;
+
+      if ((normalized as any).success === false) {
+        throw new Error(
+          (normalized as any).message || "Failed to load traffic analytics",
+        );
+      }
+
+      return normalized as TrafficAnalyticsResponse;
     },
     enabled,
     select: options?.select,
