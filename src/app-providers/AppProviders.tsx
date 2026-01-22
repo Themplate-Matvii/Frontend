@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./AuthProvider";
 import { I18nProvider } from "./I18nProvider";
 import { ThemeProvider } from "./ThemeProvider";
-import type { User } from "@/entities/identity";
+import type { User } from "@/entities/identity/users";
 import { AppToaster } from "@/shared/ui/toast/Toaster";
 
 type AppProvidersProps = {

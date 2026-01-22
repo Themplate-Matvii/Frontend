@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { User } from "@/entities/identity";
-import { AuthProvider as BaseAuthProvider } from "@/entities/identity";
+import type { User } from "@/entities/identity/users";
+import { AuthProvider as BaseAuthProvider } from "@/entities/identity/auth";
 
 type AuthProviderProps = {
   children: ReactNode;

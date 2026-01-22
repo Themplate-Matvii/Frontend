@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Theme } from "@/shared/ui";
 import { THEME_STORAGE_KEY } from "@/shared/config";
-import { useAuth } from "@/entities/identity";
+import { useAuth } from "@/entities/identity/users";
 import { ThemeContext } from "@/shared/lib/theme";
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({

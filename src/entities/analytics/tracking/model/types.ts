@@ -1,4 +1,5 @@
-import { ApiResponse } from './../../../types/global';
+import { ApiResponse } from "@/shared";
+
 export enum TrafficEventType {
   PageView = "pageView",
   Click = "click",

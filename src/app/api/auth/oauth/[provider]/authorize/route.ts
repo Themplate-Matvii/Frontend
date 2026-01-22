@@ -3,9 +3,10 @@ import { ENV } from "@/shared/config";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { provider: string } },
+  context: { params: Promise<{ provider: string }> },
 ) {
-  const { provider } = params;
+  const { provider } = await context.params;
+
   const incomingCookie = request.headers.get("cookie") ?? "";
   const acceptLanguage = request.headers.get("accept-language");
 
@@ -30,3 +31,4 @@ export async function GET(
     },
   });
 }
+

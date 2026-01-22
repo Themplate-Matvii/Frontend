@@ -15,22 +15,59 @@ import { apiClient } from "@/shared/lib/http/apiClient";
 import { I18N } from "@/shared/config";
 import { getCookie } from "@/shared/lib/cookies";
 
-const localeHeaders = () => {
+const localeHeaders = (): Record<string, string> => {
   const lng = getCookie(I18N.LOCALE_COOKIE_KEY) || I18N.DEFAULT_LOCALE;
   return lng ? { "Accept-Language": lng } : {};
 };
 
+const mergeHeadersToRecord = (
+  base: Record<string, string>,
+  extra?: HeadersInit,
+): Record<string, string> => {
+  const out: Record<string, string> = { ...base };
+
+  if (!extra) return out;
+
+  if (extra instanceof Headers) {
+    extra.forEach((value, key) => {
+      out[key] = value;
+    });
+    return out;
+  }
+
+  if (Array.isArray(extra)) {
+    for (const [key, value] of extra) {
+      out[key] = String(value);
+    }
+    return out;
+  }
+
+  for (const [key, value] of Object.entries(extra)) {
+    if (typeof value !== "undefined") out[key] = value;
+  }
+
+  return out;
+};
+
 const bffRequest = async <T>(
   url: string,
-  options: RequestInit & { headers?: Record<string, string> } = {},
+  options: RequestInit & { headers?: HeadersInit } = {},
 ) => {
   const body = options.body;
-  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
-  const headers: Record<string, string> = {
+  const isFormData =
+    typeof FormData !== "undefined" && body instanceof FormData;
+
+  const base: Record<string, string> = {
     ...localeHeaders(),
     ...(isFormData ? {} : { "Content-Type": "application/json" }),
-    ...(options.headers ?? {}),
   };
+
+  // Normalize any HeadersInit into a plain Record<string,string>
+  // so fetch() receives predictable headers and TS is satisfied.
+  const headers: Record<string, string> = mergeHeadersToRecord(
+    base,
+    options.headers,
+  );
 
   const res = await fetch(url, {
     ...options,
@@ -113,9 +150,10 @@ export const authService = {
 
   // Returns { accessToken } only
   refresh(config?: AxiosRequestConfig) {
+    // Axios headers can be non-plain (AxiosHeaders), normalize via HeadersInit path
     return bffRequest<RefreshResponse>("/api/auth/refresh", {
       method: "POST",
-      headers: { ...(config?.headers as Record<string, string>) },
+      headers: (config?.headers as unknown as HeadersInit) ?? undefined,
     });
   },
 
