@@ -1,3 +1,5 @@
+"use client";
+
 import {
   useQuery,
   useMutation,
@@ -13,31 +15,24 @@ import { userService } from "./service";
 import { Paginated } from "@/shared/types/api/pagination";
 import { notifySessionExpired } from "@/shared/lib/auth/session";
 
-// userService.getAll expects role/plan as strings (query params).
-// UsersPaginationParams in UI may type role as enum (UserRole), which conflicts.
-// Override role/plan via Omit to avoid intersection (UserRole & string).
-type UsersGetAllParams = Omit<UsersPaginationParams, "role" | "plan"> & {
-  role?: string;
-  plan?: string;
-};
+// getAll expects: UsersPaginationParams plus role/plan as strings
+type UsersGetAllServiceParams =
+  | (UsersPaginationParams & { role?: string; plan?: string })
+  | undefined;
 
 const normalizeUsersParams = (
   params?: UsersPaginationParams,
-): UsersGetAllParams | undefined => {
+): UsersGetAllServiceParams => {
   if (!params) return undefined;
 
-  const anyParams = params as any;
+  // делаем копию + приводим role/plan к string, не меняя базовый тип
+  const p: UsersPaginationParams & { role?: unknown; plan?: unknown } =
+    params as any;
 
   return {
-    ...(params as Omit<UsersPaginationParams, "role" | "plan">),
-    role:
-      typeof anyParams.role === "undefined" || anyParams.role === null
-        ? undefined
-        : String(anyParams.role),
-    plan:
-      typeof anyParams.plan === "undefined" || anyParams.plan === null
-        ? undefined
-        : String(anyParams.plan),
+    ...params,
+    role: params.role ?? undefined,
+    plan: params.plan ?? undefined,
   };
 };
 
@@ -62,11 +57,11 @@ export const useCurrentUser = (options?: Partial<UseQueryOptions<User>>) => {
     },
     retry: false,
     enabled: false,
-    ...options, // allow override from outside (for example enabled: !user && !!accessToken)
+    ...options,
   });
 };
 
-// Get all users (paginated, with filters)
+// Get all users
 export const useUsers = (
   params?: UsersPaginationParams,
   options?: Partial<UseQueryOptions<Paginated<User>>>,

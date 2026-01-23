@@ -106,7 +106,7 @@ export function EmailPreviewModal({
           locale,
         });
         setPreview({
-          html: res.data?.html ?? res.data?.data?.html,
+          html: res.data?.html,
           subject: res.data?.subject ?? subjectKey ?? templateName,
           locale: res.data?.locale ?? locale,
           data: parsed,

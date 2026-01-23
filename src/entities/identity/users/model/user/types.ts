@@ -19,8 +19,8 @@ export enum UserRoleEnum {
 }
 
 export interface UsersPaginationParams extends PaginationParams {
-  role?: UserRole,
-  plan?: string
+  role?: UserRoleEnum;
+  plan?: string;
 }
 
 export interface UserRole {

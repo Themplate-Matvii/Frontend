@@ -88,8 +88,8 @@ export interface MarketingPreviewRequest {
 }
 
 export interface TemplatePreviewResult {
-  html?: string;
-  subject?: string;
+  html: string;
+  subject: string;
   locale?: string;
   data?: Record<string, unknown>;
 }
