@@ -4,10 +4,42 @@ import {
   useQueryClient,
   UseQueryOptions,
 } from "@tanstack/react-query";
-import { UpdateUserRequest, User, UsersPaginationParams } from "@/entities/identity/users/model/user/types";
+import {
+  UpdateUserRequest,
+  User,
+  UsersPaginationParams,
+} from "@/entities/identity/users/model/user/types";
 import { userService } from "./service";
 import { Paginated } from "@/shared/types/api/pagination";
 import { notifySessionExpired } from "@/shared/lib/auth/session";
+
+// userService.getAll expects role/plan as strings (query params).
+// UsersPaginationParams in UI may type role as enum (UserRole), which conflicts.
+// Override role/plan via Omit to avoid intersection (UserRole & string).
+type UsersGetAllParams = Omit<UsersPaginationParams, "role" | "plan"> & {
+  role?: string;
+  plan?: string;
+};
+
+const normalizeUsersParams = (
+  params?: UsersPaginationParams,
+): UsersGetAllParams | undefined => {
+  if (!params) return undefined;
+
+  const anyParams = params as any;
+
+  return {
+    ...(params as Omit<UsersPaginationParams, "role" | "plan">),
+    role:
+      typeof anyParams.role === "undefined" || anyParams.role === null
+        ? undefined
+        : String(anyParams.role),
+    plan:
+      typeof anyParams.plan === "undefined" || anyParams.plan === null
+        ? undefined
+        : String(anyParams.plan),
+  };
+};
 
 // Get current user
 export const useCurrentUser = (options?: Partial<UseQueryOptions<User>>) => {
@@ -42,8 +74,8 @@ export const useUsers = (
   useQuery<Paginated<User>>({
     queryKey: ["users", params],
     queryFn: async () => {
-      const { data } = await userService.getAll(params);
-
+      const normalized = normalizeUsersParams(params);
+      const { data } = await userService.getAll(normalized);
       return data.data;
     },
     ...options,
